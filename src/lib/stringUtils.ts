@@ -9,7 +9,7 @@ export function toLocaleDateString(date: Date, locale = SiteLanguage.SV) {
     weekday: "long",
     day: "numeric",
     month: "long",
-    timeZone: "Europe/Stockholm",
+    timeZone: "Europe/Tallinn",
   });
 }
 
@@ -17,7 +17,7 @@ export function toLocaleTimeString(date: Date, locale = SiteLanguage.SV) {
   return date.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Europe/Stockholm",
+    timeZone: "Europe/Tallinn",
   });
 }
 
