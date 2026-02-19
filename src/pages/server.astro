@@ -2,6 +2,15 @@
 import { EXAMPLE_ENV_VARIABLE } from "astro:env/server";
 
 export const prerender = false;
+
+const dateFormatter = new Intl.DateTimeFormat("sv-SE", {
+  dateStyle: "full",
+  timeStyle: "long",
+});
+const now = new Date();
+const formattedDate = dateFormatter.format(now);
+
+console.info(formattedDate);
 ---
 
 <html lang="en">
@@ -16,6 +25,6 @@ export const prerender = false;
 	<body>
 		<h1>Example</h1>
     <p>Example environment variable: {EXAMPLE_ENV_VARIABLE}</p>
-    <p>Current date and time: {new Date().toISOString()}</p>
+    <p>Current date and time: {formattedDate}</p>
 	</body>
 </html>
