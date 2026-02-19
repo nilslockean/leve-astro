@@ -3,6 +3,8 @@ import { defineConfig, envField } from "astro/config";
 import sanity from "@sanity/astro";
 import dotenv from "dotenv";
 import netlify from "@astrojs/netlify";
+import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
 
 // Load environment variables from local .env file into process.env
 dotenv.config();
@@ -23,12 +25,15 @@ console.log("Early env variables:", {
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://bagerileve.se",
   integrations: [sanity({
     projectId: "mz20cm4o",
     dataset: SANITY_DATASET,
     apiVersion: "2026-02-19",
     useCdn: false,
     token: SANITY_TOKEN,
+  }), mdx(), sitemap({
+    filter: (page) => !page.includes("/partials/")
   })],
   adapter: netlify(),
   image: {
