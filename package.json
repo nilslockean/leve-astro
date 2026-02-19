@@ -1,0 +1,16 @@
+{
+  "name": "leve-astro",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@sanity/astro": "^3.2.11",
+    "@sanity/client": "^7.15.0",
+    "astro": "^5.17.1"
+  }
+}
