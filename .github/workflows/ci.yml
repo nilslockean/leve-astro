@@ -1,0 +1,45 @@
+# Runs on PRs targeting main: lint + unit + E2E tests. Merge only when this passes (branch protection).
+# Netlify builds and deploys on push to main (i.e. when the PR is merged).
+#
+# Required GitHub secret (Settings → Secrets and variables → Actions):
+#   SANITY_TOKEN — Sanity API token (used by build and E2E)
+#
+# Branch protection (Settings → Branches → rule for main): require status check "Lint & test", require PR (0 approvals OK).
+name: Lint & test
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    name: Lint & test
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      SANITY_DATASET: preview
+      SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
