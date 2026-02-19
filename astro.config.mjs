@@ -1,7 +1,8 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import sanity from "@sanity/astro";
 import dotenv from "dotenv";
+import netlify from "@astrojs/netlify";
 
 // Load environment variables from local .env file into process.env
 dotenv.config();
@@ -28,5 +29,18 @@ export default defineConfig({
     apiVersion: "2026-02-19",
     useCdn: false,
     token: SANITY_TOKEN,
-  })]
+  })],
+  adapter: netlify(),
+  image: {
+    domains: ["cdn.sanity.io"],
+  },
+  env: {
+    schema: {
+      EXAMPLE_ENV_VARIABLE: envField.string({
+        context: "server",
+        access: "public",
+        default: "default value",
+      })
+    }
+  },
 });
