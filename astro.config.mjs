@@ -1,10 +1,15 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-
 import sanity from "@sanity/astro";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { SANITY_DATASET = "production", SANITY_TOKEN } = process.env;
 
+console.log({
+  SANITY_DATASET,
+  SANITY_TOKEN,
+})
 
 // https://astro.build/config
 export default defineConfig({

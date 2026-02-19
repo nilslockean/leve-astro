@@ -12,5 +12,8 @@
     "@sanity/astro": "^3.2.11",
     "@sanity/client": "^7.15.0",
     "astro": "^5.17.1"
+  },
+  "devDependencies": {
+    "dotenv": "^17.3.1"
   }
 }
