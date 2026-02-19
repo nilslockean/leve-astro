@@ -46,7 +46,7 @@ export default defineConfig({
   server: {
     allowedHosts: [
       "leve-astro-staging.netlify.app",
-      "devserver-main--leve-astro-staging.netlify.app",
+      "devserver-main--leve-astro.netlify.app",
     ],
   },
   env: {
