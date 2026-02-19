@@ -6,6 +6,8 @@ import netlify from "@astrojs/netlify";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
+import tailwindcss from "@tailwindcss/vite";
+
 // Load environment variables from local .env file into process.env
 dotenv.config();
 
@@ -26,6 +28,7 @@ console.log("Early env variables:", {
 // https://astro.build/config
 export default defineConfig({
   site: "https://bagerileve.se",
+
   integrations: [
     sanity({
       projectId: "mz20cm4o",
@@ -39,16 +42,20 @@ export default defineConfig({
       filter: (page) => !page.includes("/partials/"),
     }),
   ],
+
   adapter: netlify(),
+
   image: {
     domains: ["cdn.sanity.io"],
   },
+
   server: {
     allowedHosts: [
       "leve-astro-staging.netlify.app",
       "devserver-main--leve-astro.netlify.app",
     ],
   },
+
   env: {
     schema: {
       EXAMPLE_ENV_VARIABLE: envField.string({
@@ -57,5 +64,9 @@ export default defineConfig({
         default: "default value",
       }),
     },
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
   },
 });
