@@ -34,6 +34,9 @@ export default defineConfig({
   image: {
     domains: ["cdn.sanity.io"],
   },
+  server: {
+    allowedHosts: ["leve-astro-staging.netlify.app", "devserver-main--leve-astro-staging.netlify.app"],
+  },
   env: {
     schema: {
       EXAMPLE_ENV_VARIABLE: envField.string({
