@@ -15,6 +15,7 @@ const { apiKey } = Astro.props;
   is:inline></script>
 
 <script is:inline define:vars={{ apiKey }}>
+  // eslint-disable-next-line no-undef
   Weglot.initialize({
     api_key: apiKey,
   });
