@@ -1,0 +1,110 @@
+---
+import ButtonLink from "@components/ButtonLink.astro";
+import Section from "@components/Section.astro";
+import Layout from "src/layouts/Layout.astro";
+import Accordion from "@components/Accordion.astro";
+import { PortableText } from "astro-portabletext";
+import IntroText from "@components/IntroText.astro";
+import Video, { VideoName } from "@components/Video.astro";
+import { getImage } from "astro:assets";
+import videoPoster from "@lib/assets/Munk-4-poster.jpg";
+import { sanityAPI } from "@lib/sanityAPI";
+import GartnerFilm from "@components/GartnerFilm.astro";
+import { ENABLE_STOREFRONT } from "astro:env/server";
+
+if (ENABLE_STOREFRONT) {
+  return Astro.rewrite("/bestall-preview");
+}
+
+const optimizedVideoPoster = await getImage({
+  src: videoPoster,
+  format: "webp",
+});
+
+const orderTerms = await sanityAPI.getOrderTerms();
+---
+
+<Layout
+  title="Beställ"
+  metaDescription="Beställ dina fredagsmunkar i förväg och hämta enkelt upp vid vald tid."
+>
+  <Section>
+    <h1>Beställ dina fredagsmunkar</h1>
+    <IntroText class="mb-8">
+      Varje fredag gör vi en unik munk med extra allt som bara finns den dagen.
+      Den byts ut varje vecka och vi berättar på torsdagen vad veckans smak
+      kommer vara. Ibland säljer de slut fort, så beställ i förväg för att bli
+      garanterad en munk!
+    </IntroText>
+    <div class="grid lg:grid-cols-2 gap-8">
+      <div>
+        <Video
+          name={VideoName.Munk4}
+          class="w-full"
+          controls
+          poster={optimizedVideoPoster.src}
+        />
+        <GartnerFilm />
+      </div>
+
+      <div>
+        <div class="p-4 border-4 border-current max-w-prose">
+          <h2 class="h3">Gör såhär:</h2>
+
+          <ol>
+            <li>Gå till online-beställningen (men läs klart detta först).</li>
+            <li>Skapa ett konto med Facebook eller din email och logga in.</li>
+            <li>Välj antal munkar du önskar beställa.</li>
+            <li>Betala med Swish.</li>
+            <li>
+              Du kommer nu få ett bekräftelsemail från kvitto@trueapp.se med
+              ditt ordernummer.
+            </li>
+            <li>Klart!</li>
+          </ol>
+
+          <p>
+            Nu behöver du bara komma på fredagen under Leves öppettider och säga
+            ditt ordernummer. Ifall du vill handla något annat på plats går det
+            självklart också bra!
+          </p>
+        </div>
+        <ButtonLink
+          variant="primary"
+          href="https://web.trueapp.se/bagerileve/store1/"
+          target="_blank"
+          rel="noreferrer"
+          data-cta="primary"
+        >
+          Till online-beställningen
+        </ButtonLink>
+      </div>
+    </div>
+  </Section>
+  <Section>
+    <h2 class="mb-8">Beställningsvillkor</h2>
+    {
+      orderTerms.map(({ title, content }) => (
+        <Accordion title={title} class="mb-4 last:mb-0 portable-text">
+          <PortableText value={content} />
+        </Accordion>
+      ))
+    }
+  </Section>
+</Layout>
+
+<style>
+  @reference "tailwindcss";
+
+  ol {
+    @apply list-decimal list-inside;
+  }
+
+  li {
+    @apply mb-4;
+  }
+
+  p {
+    @apply max-w-prose;
+  }
+</style>

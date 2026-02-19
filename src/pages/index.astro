@@ -1,17 +1,140 @@
 ---
+import ButtonLink from "@components/ButtonLink.astro";
+import Section from "@components/Section.astro";
+import OpeningHours from "@components/OpeningHours.astro";
+import Layout from "../layouts/Layout.astro";
+import InstagramFeed from "@components/InstagramFeed.astro";
+import breadImage from "@lib/assets/brod.jpg";
+import IntroText from "@components/IntroText.astro";
+import MediaBlock from "@components/MediaBlock.astro";
+import { BEHOLD_FEED_ID } from "astro:env/server";
+import Video, { VideoName } from "@components/Video.astro";
+import { getImage } from "astro:assets";
+import heroVideoPoster from "@lib/assets/BrodTrim-poster.jpg";
+import footerVideoPoster from "@lib/assets/Kanelbulle-poster.jpg";
+import Hero from "@components/Hero.astro";
+import { sanityAPI } from "@lib/sanityAPI";
+import GartnerFilm from "@components/GartnerFilm.astro";
+import CourseCollection from "@components/CourseCollection.astro";
 
+const optimizedHeroVideoPoster = await getImage({
+  src: heroVideoPoster,
+  format: "webp",
+});
+const optimizedFooterVideoPoster = await getImage({
+  src: footerVideoPoster,
+  format: "webp",
+});
+
+const openingHours = await sanityAPI.getOpeningHours();
+const instagramFeedId = BEHOLD_FEED_ID;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<Layout
+  title="Bageri Leve"
+  description="Bageriet som vänder på bröddygnet"
+  metaDescription="Bageri Leve på Östra Rönneholmsvägen 6 i Malmö. Vi vill revolutionera bageribranschen och satsa på nybakat bröd till kvällen istället för på morgonen. Med bästa ekologiska ingredienserna som finns gör vi bröd på traditionellt sätt, utan att tillsätta modern bagerijäst."
+  fullwidth
+>
+  <Hero video={VideoName.BrodTrim} videoPoster={optimizedHeroVideoPoster.src}>
+    <h1>Ett hantverksbageri i hjärtat av Malmö</h1>
+    <IntroText>
+      Surdegsbröd ur ugnen på eftermiddagen och allt vi bakar är växtbaserat.
+    </IntroText>
+    <div>
+      <ButtonLink href="/bestall" variant="primary" data-cta="primary"
+        >Beställ fredagsmunk</ButtonLink
+      >
+      <ButtonLink
+        href="#oppettider"
+        variant="outline-light"
+        data-cta="secondary">Kolla öppettiderna</ButtonLink
+      >
+    </div>
+  </Hero>
+
+  <Section id="oppettider" class="lg:mt-8 grid lg:grid-cols-2 gap-8">
+    <div>
+      <h2>Öppettider</h2>
+      <OpeningHours
+        data={openingHours}
+        class="max-w-xl"
+        irregularLimit={0}
+        consolidated
+      >
+        <ButtonLink href="/kontakt#oppettider" slot="has-irregular">
+          Se avvikande öppettider
+        </ButtonLink>
+      </OpeningHours>
+    </div>
+    <div class="empty:hidden">
+      <CourseCollection
+        server:defer
+        showEmpty={false}
+        scope="upcoming"
+        title="Kommande kurser"
+      >
+        <p slot="fallback">Hämtar kommande kurser...</p>
+      </CourseCollection>
+    </div>
+  </Section>
+
+  <Section>
+    <h2>Välkommen till Bageri Leve</h2>
+    <p class="text-lg max-w-prose">
+      Ett nytänkande bageri mitt i Malmö. Vi har valt att baka på dagen istället
+      för på natten, att endast baka växtbaserade bakverk istället för att låsa
+      fast oss helt i traditionella smörbaserade recept och att baka surdegsbröd
+      som man gjorde förr, innan jästen ens var uppfunnen.
+    </p>
+  </Section>
+
+  <Section>
+    <MediaBlock image={{ src: breadImage, alt: "En hög bröd på ett bord" }}>
+      <h3 class="mb-4">Har du smakat riktigt bröd?</h3>
+      <p class="text-lg mb-4 max-w-prose">
+        Alla våra bröd är bakade i stenugn och med surdegskultur. När vi letar
+        efter råvaror kollar vi i vår närhet efter de bästa, mest smakrika
+        grejerna vi kan hitta.
+      </p>
+
+      <ButtonLink href="/kontakt">Kom hit</ButtonLink>
+    </MediaBlock>
+  </Section>
+
+  <Section class="my-8">
+    <IntroText>
+      Vi vill att vår verksamhet ska ha en låg miljöpåverkan, och därför arbetar
+      vi aktivt för att minimera svinn och använda de råvaror som finns lokalt
+      och är i säsong. Vi är också stora på växtbaserade sötsaker där smör och
+      ägg helt byts ut mot andra, vegetibilska alternativ. Utöver detta använder
+      vi second hand-möbler och kläder samt 100 % grön el.
+    </IntroText>
+  </Section>
+
+  {
+    typeof instagramFeedId === "string" && (
+      <Section>
+        <InstagramFeed feedId={instagramFeedId} />
+        <ButtonLink
+          href="https://www.instagram.com/bagerileve"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Följ @bagerileve
+        </ButtonLink>
+      </Section>
+    )
+  }
+
+  <Section fullwidth>
+    <GartnerFilm class="pl-4 pb-0" />
+    <Video
+      id="footer-video"
+      class="w-full"
+      name={VideoName.Kanelbulle}
+      poster={optimizedFooterVideoPoster.src}
+      controls
+    />
+  </Section>
+</Layout>

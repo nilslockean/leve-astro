@@ -1,0 +1,149 @@
+---
+import Section from "@components/Section.astro";
+import { PortableText } from "astro-portabletext";
+import Button from "@components/Button.astro";
+import { getCartUrl, getShopUrl } from "@config/site";
+import type { HTMLAttributes } from "astro/types";
+import type { Product } from "@lib/schemas/Product";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { urlFor } from "@lib/sanityAPI";
+import { Image } from "astro:assets";
+import { formatPrice } from "@lib/stringUtils";
+import ProductPickupDate from "./PickupDate.astro";
+import ProductOutOfStock from "./OutOfStock.astro";
+import ProductVariantSelector from "./VariantSelector.astro";
+import ProductQtySelector from "./QtySelector.astro";
+import { actions } from "astro:actions";
+import ButtonLink from "@components/ButtonLink.astro";
+import { getCart } from "@lib/cart";
+
+const cart = getCart(Astro.cookies);
+const result = Astro.getActionResult(actions.addToCart);
+const addedToCart = result && !result.error;
+const errorMessage = result?.error?.message;
+
+interface Props extends HTMLAttributes<"section"> {
+  product: Product;
+  availablePickupDates: string[];
+}
+
+const {
+  product,
+  availablePickupDates,
+  class: className,
+  ...rest
+} = Astro.props;
+const featuredImage = product.images[0];
+
+const qtyInCart = cart.items
+  .filter((item) => item.productId === product.id)
+  .map(({ qty }) => qty)
+  .reduce((a, b) => a + b, 0);
+
+const max = product.maxQuantityPerOrder;
+const isCartFull = max === qtyInCart;
+const isOutOfStock = max === 0;
+const disabled =
+  isOutOfStock || availablePickupDates.length === 0 || isCartFull;
+
+console.log({ pm: product.maxQuantityPerOrder, max, isCartFull });
+
+const buttonActionDescription = disabled ? "Ej tillgänlig" : "Beställ";
+const buttonLabel =
+  product.variants.length === 1
+    ? `${formatPrice([product.variants[0].price])} - ${buttonActionDescription}`
+    : buttonActionDescription;
+---
+
+<Section {...rest}>
+  <Breadcrumbs
+    trail={[
+      { label: "Hem", href: "/" },
+      { label: "Beställ", href: getShopUrl() },
+      { label: product.title },
+    ]}
+  />
+
+  <h1 class="mt-8 mb-16">{product.title}</h1>
+
+  {
+    addedToCart && (
+      <div class="bg-white/10 w-full px-6 py-4 mb-12 flex flex-wrap gap-6 justify-between items-center">
+        <p class="m-0">
+          <strong>{product.title}</strong> lades till i din varukorg
+        </p>
+        <ButtonLink
+          href={getCartUrl()}
+          variant="outline"
+          class="text-current m-0"
+        >
+          Visa kundvagn
+        </ButtonLink>
+      </div>
+    )
+  }
+
+  {
+    errorMessage && (
+      <div class="bg-red-200 border border-red-400 text-red-900 w-full px-6 py-4 mb-12">
+        {errorMessage}
+      </div>
+    )
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12">
+    <!-- Image and description -->
+    <div class="lg:col-span-2">
+      <Image
+        src={urlFor(featuredImage.asset).width(1980).height(1485).url()}
+        alt={featuredImage.alt}
+        inferSize
+        class="border-4 mb-6 block"
+      />
+      <div class="max-w-prose">
+        <PortableText value={product.content} />
+      </div>
+    </div>
+
+    <!-- Aside, add to cart button, variant and date selector -->
+    <div class="bg-blue-950 p-8 w-full">
+      <form method="POST" action={actions.addToCart}>
+        <input name="productId" value={product.id} class="hidden" />
+
+        {
+          isOutOfStock ? (
+            <ProductOutOfStock {product} />
+          ) : (
+            <ProductPickupDate {product} />
+          )
+        }
+
+        <ProductVariantSelector prices={product.variants} />
+
+        {!disabled && <ProductQtySelector max={max} qtyInCart={qtyInCart} />}
+
+        <fieldset>
+          {
+            isCartFull ? (
+              <ButtonLink
+                href={getCartUrl()}
+                variant="primary"
+                class="w-full text-center"
+              >
+                Visa kundvagn
+              </ButtonLink>
+            ) : disabled ? (
+              <Button type="button" variant="outline" class="w-full" disabled>
+                {buttonLabel}
+              </Button>
+            ) : (
+              <Button type="submit" variant="primary" class="w-full">
+                {buttonLabel}
+              </Button>
+            )
+          }
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</Section>

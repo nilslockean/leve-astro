@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { capitalize } from "@lib/stringUtils";
+interface Props extends HTMLAttributes<"fieldset"> {
+  availablePickupDates: string[];
+  legend?: string;
+}
+
+const { availablePickupDates, legend, class: className, ...rest } = Astro.props;
+const dateFormatter = new Intl.DateTimeFormat("sv-SE", {
+  dateStyle: "full",
+});
+function formatDate(dateStr: string) {
+  const formattedDate = dateFormatter.format(new Date(dateStr));
+  return capitalize(formattedDate);
+}
+---
+
+<fieldset {...rest}>
+  {legend && <legend>{legend}</legend>}
+  <label for="pickupDate">Upphämtningsdatum</label>
+  <select id="pickupDate" name="pickupDate" required>
+    <option value="" selected={availablePickupDates.length !== 1}>
+      {
+        availablePickupDates.length === 0
+          ? "Inga datum tillgängliga"
+          : "Välj datum för upphämtning"
+      }
+    </option>
+    {
+      availablePickupDates.map((dateStr, i) => (
+        <option
+          value={dateStr}
+          selected={availablePickupDates.length === 1 && i === 0}
+        >
+          {formatDate(dateStr)}
+        </option>
+      ))
+    }
+  </select>
+</fieldset>

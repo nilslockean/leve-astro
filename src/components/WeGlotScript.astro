@@ -1,0 +1,21 @@
+---
+interface Props {
+  apiKey: string;
+}
+
+const { apiKey } = Astro.props;
+---
+
+<link rel="alternate" hreflang="sv" href="https://bagerileve.se" />
+<link rel="alternate" hreflang="en" href="https://en.bagerileve.se" />
+
+<script
+  type="text/javascript"
+  src="https://cdn.weglot.com/weglot.min.js"
+  is:inline></script>
+
+<script is:inline define:vars={{ apiKey }}>
+  Weglot.initialize({
+    api_key: apiKey,
+  });
+</script>

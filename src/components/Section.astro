@@ -1,0 +1,17 @@
+---
+import { cn } from "@lib/cn";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {
+  fullwidth?: boolean;
+}
+
+const { fullwidth, class: className, ...rest } = Astro.props;
+---
+
+<section
+  {...rest}
+  class={cn({ "p-6 max-w-7xl mx-auto": !fullwidth }, className)}
+>
+  <slot />
+</section>

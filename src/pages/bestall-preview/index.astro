@@ -1,0 +1,40 @@
+---
+import Section from "@components/Section.astro";
+import Layout from "src/layouts/Layout.astro";
+import IntroText from "@components/IntroText.astro";
+import { getCollection } from "astro:content";
+import ProductOverview from "@components/ProductOverview.astro";
+import Link from "@components/Link.astro";
+import { ENABLE_STOREFRONT } from "astro:env/server";
+
+if (!ENABLE_STOREFRONT) {
+  return Astro.rewrite("/404");
+}
+
+const products = await getCollection("products");
+---
+
+<Layout
+  title="Beställ"
+  metaDescription="Beställ dina bakverk online och hämta upp i butik."
+>
+  <Section>
+    <h1>Beställ bakverk direkt från bageriet</h1>
+    <IntroText class="mb-8">
+      Beställ online och betala i butik. Välj upphämtningsdatum i kassan och
+      hämta i butiken under <Link href="/kontakt" label="våra öppettider" />.
+    </IntroText>
+  </Section>
+  <Section>
+    <h2 class="mb-8">Produkter</h2>
+    <ProductOverview products={products.map(({ data }) => data)} />
+  </Section>
+
+  <style>
+    @reference "tailwindcss";
+
+    p {
+      @apply max-w-prose;
+    }
+  </style>
+</Layout>

@@ -22,12 +22,18 @@
     "@sanity/client": "^7.15.0",
     "@tailwindcss/vite": "^4.2.0",
     "astro": "^5.17.1",
-    "tailwindcss": "^4.2.0"
+    "astro-portabletext": "^0.13.0",
+    "clsx": "^2.1.1",
+    "mailersend": "^2.6.0",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.0",
     "@typescript-eslint/parser": "^8.56.0",
     "dotenv": "^17.3.1",
     "eslint": "^10.0.0",

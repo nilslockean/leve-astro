@@ -1,0 +1,188 @@
+---
+import "../base.css";
+import Logo from "@components/Logo.astro";
+import { NavArea } from "@lib/enums/NavArea";
+import config, { getCartUrl, SiteLanguage } from "@config/site";
+import { LogoSize } from "@lib/enums/LogoSize";
+import NavLinks from "@components/NavLinks.astro";
+import OpeningHours from "@components/OpeningHours.astro";
+import { getNavLinks } from "@lib/navigation";
+import Link from "@components/Link.astro";
+import defaultOgImage from "@lib/assets/og.png";
+import { getImage } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+import {
+  ENABLE_WEGLOT,
+  ENABLE_VIEW_TRANSITIONS,
+  ENABLE_POSTHOG,
+  POSTHOG_PROJECT_API_KEY,
+  WEGLOT_API_KEY,
+} from "astro:env/server";
+import WeGlotScript from "@components/WeGlotScript.astro";
+import FientaEmbedScript from "@components/FientaEmbedScript.astro";
+import { getCanonicalUrl } from "@lib/canonicalUrl";
+import { sanityAPI } from "@lib/sanityAPI";
+import Posthog from "@components/Posthog.astro";
+import { isProduction } from "@lib/envUtils";
+import { ENABLE_STOREFRONT } from "astro:env/server";
+import Icon from "@components/Icon.astro";
+import { IconName } from "@lib/enums/IconName";
+import MobileHeader from "@components/MobileHeader.astro";
+import ButtonLink from "@components/ButtonLink.astro";
+
+interface Props {
+  title: string;
+  metaDescription: string;
+  description?: string;
+  fullwidth?: boolean;
+  ogImage?: ImageMetadata;
+}
+
+const {
+  title: pageTitle,
+  description = config.siteTitle,
+  metaDescription,
+  fullwidth,
+  ogImage,
+} = Astro.props;
+const { pathname } = Astro.url;
+
+const _getNavLinks = (area: NavArea) =>
+  getNavLinks(area, config.navigation, pathname);
+
+const openingHours = await sanityAPI.getOpeningHours();
+const { address } = config.contact;
+
+const title = `${pageTitle} • ${description}`;
+const canonical = getCanonicalUrl(config.siteUrl, pathname);
+const optimizedOgImage = await getImage({
+  src: ogImage || defaultOgImage,
+  format: "webp",
+});
+---
+
+<!doctype html>
+<html
+  lang={SiteLanguage.SV}
+  class="bg-blue-900 text-orange-100 lg:text-lg leading-normal min-h-screen antialiased"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Favicon -->
+    <meta name="theme-color" content="#0A163B" />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="mask-icon" href="/mask-icon.svg" color="#081235" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- HTML Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={metaDescription} />
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:image" content={optimizedOgImage.src} />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content={config.siteDomain} />
+    <meta property="twitter:url" content={canonical} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={optimizedOgImage.src} />
+
+    <!-- XML Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonical} />
+
+    {!isProduction() && <meta name="robots" content="noindex,nofollow" />}
+
+    <FientaEmbedScript />
+    {
+      ENABLE_WEGLOT && WEGLOT_API_KEY && (
+        <WeGlotScript apiKey={WEGLOT_API_KEY} />
+      )
+    }
+    {ENABLE_VIEW_TRANSITIONS && <ClientRouter />}
+    {ENABLE_POSTHOG && <Posthog projectApiKey={POSTHOG_PROJECT_API_KEY} />}
+
+    <slot name="head" />
+  </head>
+  <body>
+    <header
+      class="p-6 hidden md:flex items-center justify-between gap-6 max-w-screen-2xl mx-auto"
+    >
+      <a href="/" aria-label="Gå till startsidan">
+        <Logo />
+      </a>
+      <nav
+        class="flex lg:text-lg gap-x-3 gap-y-1 flex-wrap justify-end items-center"
+        aria-label="Huvudmeny"
+      >
+        <NavLinks links={_getNavLinks(NavArea.HEADER)} />
+        {
+          ENABLE_STOREFRONT && (
+            <ButtonLink
+              href={getCartUrl()}
+              variant="outline"
+              class="flex gap-2 items-center text-sm m-0 ml-4 py-2 px-3 border-2"
+              title="Visa kundvagn"
+            >
+              <Icon name={IconName.CART} />
+            </ButtonLink>
+          )
+        }
+      </nav>
+    </header>
+    <MobileHeader links={_getNavLinks(NavArea.HEADER)} />
+
+    <main class:list={[{ "py-16": !fullwidth }]} transition:animate="fade">
+      <slot />
+    </main>
+
+    <footer class="bg-blue-950 text-orange-50 px-6 py-8 sticky top-[100vh]">
+      <div
+        class="grid gap-x-8 gap-y-8 md:grid-cols-2 md:gap-y-16 xl:grid-cols-4 xl:gap-x-16"
+      >
+        <div>
+          <Logo size={LogoSize.SMALL} />
+        </div>
+        <div>
+          <p class="h4 mb-4">Öppettider</p>
+          <OpeningHours data={openingHours} irregularLimit={0} consolidated>
+            <p class="mt-4" slot="has-irregular">
+              <Link href="/kontakt#oppettider">Se avvikande öppettider </Link>
+            </p>
+          </OpeningHours>
+        </div>
+        <div>
+          <p class="h4 mb-4" id="footer-nav">Meny</p>
+          <nav class="flex flex-col gap-2 mb-4" aria-labelledby="footer-nav">
+            <NavLinks links={_getNavLinks(NavArea.FOOTER)} />
+          </nav>
+        </div>
+        <div>
+          <p class="h4 mb-4">{config.siteTitle}</p>
+          <Link href={address.googleMaps} target="_blank" rel="noreferrer">
+            {address.street}<br />
+            {address.zip}{" "}
+            {address.city}
+          </Link>
+        </div>
+      </div>
+      <hr class="my-8" />
+      <nav class="flex gap-3" aria-label="Juridisk information">
+        <NavLinks links={_getNavLinks(NavArea.COLOPHON)} />
+        <span class="hidden">{import.meta.env.MODE}</span>
+      </nav>
+    </footer>
+  </body>
+</html>

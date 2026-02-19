@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --font-futura: "Futura Heavy", sans-serif;
+  --font-sans: "Gothic725 Bd BT", sans-serif;
+}
+
+@layer base {
+  @font-face {
+    font-family: "Gothic725 Bd BT";
+    src:
+      url("/fonts/Gothic725BT-BoldA.woff2") format("woff2"),
+      url("/fonts/Gothic725BT-BoldA.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Futura Heavy";
+    src:
+      url("/fonts/Futura-Heavy.woff2") format("woff2"),
+      url("/fonts/Futura-Heavy.woff") format("woff");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Headings */
+  h1,
+  .h1 {
+    @apply text-4xl lg:text-5xl xl:text-6xl leading-tight -mx-1 mb-8;
+  }
+  h2,
+  .h2 {
+    @apply text-3xl lg:text-4xl mb-4;
+  }
+  h3,
+  .h3 {
+    @apply text-2xl lg:text-3xl tracking-wider;
+  }
+  h4,
+  .h4 {
+    @apply uppercase text-lg font-futura tracking-wider;
+  }
+  h5,
+  .h5 {
+    @apply uppercase text-base font-futura tracking-wider;
+  }
+
+  /* Paragraphs */
+  p {
+    @apply mb-4 last:mb-0;
+  }
+
+  /* Horizontal Rule */
+  hr {
+    @apply border-t-4;
+  }
+
+  /* Lists */
+  ul {
+    @apply list-disc ml-6 mb-4;
+  }
+  ol {
+    @apply list-decimal ml-6 mb-4;
+  }
+
+  /* Portable Text */
+  .portable-text a {
+    @apply decoration-2 underline aria-current:no-underline;
+  }
+
+  /* Forms */
+  fieldset {
+    @apply mb-6;
+  }
+  legend {
+    @apply uppercase tracking-widest mb-3;
+  }
+  label {
+    @apply block mb-2;
+  }
+  input + label {
+    @apply mt-4;
+  }
+  select {
+    @apply w-full border-4 rounded-none border-orange-100 bg-blue-900 p-3 text-orange-100 appearance-none focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700;
+  }
+  label:has(input[type="radio"]) {
+    @apply flex cursor-pointer items-center gap-3 border-4 border-transparent bg-blue-900 p-3 hover:border-blue-700;
+  }
+  label:has(input[type="radio"]:checked) {
+    @apply border-orange-100;
+  }
+  input[type="radio"] {
+    @apply h-5 w-5 accent-blue-400 focus:ring-orange-200;
+  }
+  input[type="number"] {
+    @apply w-24 border-4 border-orange-100 bg-blue-900 p-3 text-orange-100 focus:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-300;
+  }
+
+  /* Text inputs + textarea */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  textarea {
+    @apply w-full border-4 border-orange-100 rounded-none bg-blue-900 p-3 text-orange-100 placeholder-orange-300
+           focus:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-300
+           transition-colors;
+  }
+
+  textarea {
+    @apply min-h-32 resize-y;
+  }
+}

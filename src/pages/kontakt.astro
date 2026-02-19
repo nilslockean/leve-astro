@@ -1,0 +1,103 @@
+---
+import Accordion from "@components/Accordion.astro";
+import ButtonLink from "@components/ButtonLink.astro";
+import IconList from "@components/IconList.astro";
+import IconListItem from "@components/IconListItem.astro";
+import IntroText from "@components/IntroText.astro";
+import Link from "@components/Link.astro";
+import OpeningHours from "@components/OpeningHours.astro";
+import Section from "@components/Section.astro";
+import { IconName } from "@lib/enums/IconName";
+import { sanityAPI } from "@lib/sanityAPI";
+import { PortableText } from "astro-portabletext";
+import config from "@config/site";
+import Layout from "../layouts/Layout.astro";
+
+const { contact } = config;
+const phoneLink = `tel:${contact.phone
+  .replace(/^0/, "+46")
+  .replace(/[\s-]/g, "")}`;
+const emailLink = `mailto:${contact.email}`;
+
+const faq = await sanityAPI.getFaq();
+const openingHours = await sanityAPI.getOpeningHours();
+---
+
+<Layout
+  title="Kontakt"
+  metaDescription="Du är alltid välkommen att kontakta oss, men kolla gärna här om du hittar svaret på din fråga först."
+>
+  <Section>
+    <h1>Hör av dig!</h1>
+    <IntroText> Men om du har en fråga hittar du säkert svaret här. </IntroText>
+  </Section>
+
+  <Section class="lg:mt-8 grid lg:grid-cols-2 gap-8">
+    <div class="max-w-prose">
+      <h2 class="mb-8">Vanliga frågor</h2>
+      {
+        faq.map(({ question, answer }) => (
+          <Accordion title={question} class="mb-4 last:mb-0 portable-text">
+            <PortableText value={answer} />
+          </Accordion>
+        ))
+      }
+    </div>
+    <div class="max-w-xl">
+      <h2 id="oppettider">Öppettider</h2>
+      <OpeningHours data={openingHours} />
+    </div>
+  </Section>
+
+  <Section class="lg:mt-8 grid lg:grid-cols-2 gap-8">
+    <div class="bg-orange-100 text-blue-900 shadow-xl max-w-prose p-6 lg:p-12">
+      <h2>Söker du jobb?</h2>
+      <p>
+        Skulle det dyka upp lediga tjänster annonseras detta på Instagram.
+        Skicka in din ansökan till <Link href="mailto:jobb@bagerileve.se"
+          >jobb@bagerileve.se</Link
+        >när en tjänst dyker upp om du är intresserad.
+      </p>
+      <ButtonLink
+        href="https://www.instagram.com/bagerileve"
+        target="_blank"
+        rel="noreferrer"
+        variant="outline"
+        class="border-4 text-current"
+      >
+        Följ @bagerileve
+      </ButtonLink>
+    </div>
+    <div>
+      <h2>Kontaktuppgifter</h2>
+      <p class="mb-4">
+        Vill du beställa något går det fint att ringa till oss. Vi svarar i
+        telefon tisdag-lördag hela dagarna om inget annat anges här.
+      </p>
+      <p class="mb-4">
+        Vi tar inte emot munkbeställningar på fredagar, bara fram till torsdag
+        kväll. Det går inte att beställa via e-post.
+      </p>
+      <IconList>
+        <IconListItem icon={IconName.PHONE}>
+          <Link href={phoneLink}> {contact.phone}</Link>
+        </IconListItem>
+        <IconListItem icon={IconName.ENVELOPE}>
+          <Link href={emailLink}>{contact.email}</Link>
+        </IconListItem>
+        <IconListItem icon={IconName.MAP_PIN}>
+          <p>
+            {contact.address.street}
+            <br />{contact.address.zip}
+            {contact.address.city}
+          </p>
+        </IconListItem>
+      </IconList>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <Link href={contact.address.googleMaps}>Google Maps</Link>
+        <span>/</span>
+        <Link href={contact.address.appleMaps}>Apple Maps</Link>
+      </div>
+    </div>
+  </Section>
+</Layout>

@@ -1,4 +1,4 @@
-// @ts-check
+/* eslint-disable no-undef */
 import { defineConfig, envField } from "astro/config";
 import sanity from "@sanity/astro";
 import dotenv from "dotenv";
@@ -62,6 +62,78 @@ export default defineConfig({
         context: "server",
         access: "public",
         default: "default value",
+      }),
+      BEHOLD_FEED_ID: envField.string({
+        context: "server",
+        access: "public",
+        optional: true,
+      }),
+      FIENTA_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      ENABLE_WEGLOT: envField.boolean({
+        context: "server",
+        access: "public",
+        optional: true,
+        default: false,
+      }),
+      WEGLOT_API_KEY: envField.string({
+        context: "server",
+        access: "public",
+        optional: true,
+        default: "wg_137e3716c0aa4f3c19e9f429cfbb510b2",
+      }),
+      ENABLE_VIEW_TRANSITIONS: envField.boolean({
+        context: "server",
+        access: "public",
+        optional: true,
+        default: false,
+      }),
+      ENABLE_POSTHOG: envField.boolean({
+        context: "server",
+        access: "public",
+        optional: true,
+        default: true,
+      }),
+      POSTHOG_PROJECT_API_KEY: envField.string({
+        context: "server",
+        access: "public",
+        optional: true,
+        default: "phc_FpOtrZTQsFj3URscXo70ak6KyVRM1kAe5t8zqmS0r9r",
+      }),
+      PICKUP_DATE_MIN_OFFSET: envField.number({
+        context: "server",
+        access: "public",
+        optional: false,
+        default: 2,
+      }),
+      PICKUP_DATE_MAX_OFFSET: envField.number({
+        context: "server",
+        access: "public",
+        optional: false,
+        default: 30,
+      }),
+      ENABLE_STOREFRONT: envField.boolean({
+        context: "server",
+        access: "public",
+        optional: false,
+        default: false,
+      }),
+      MAILERSEND_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      ORDER_ADMIN_EMAIL: envField.string({
+        context: "server",
+        access: "public",
+        default: "order@bagerileve.se",
+      }),
+      ORDER_ADMIN_PRINTER_EMAIL: envField.string({
+        context: "server",
+        access: "public",
+        optional: true,
+        default: "cbty732mccw842@hpeprint.com",
       }),
     },
   },

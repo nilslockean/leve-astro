@@ -1,0 +1,49 @@
+---
+import { cn } from "@lib/cn";
+import type { HTMLAttributes } from "astro/types";
+import Icon from "./Icon.astro";
+import { IconName } from "@lib/enums/IconName";
+
+interface Props extends HTMLAttributes<"article"> {
+  title: string;
+  id?: string;
+}
+
+// Props
+const { title, class: className, ...rest } = Astro.props;
+---
+
+<details {...rest} class={cn("border-4 border-blue-950 group", className)}>
+  <summary
+    class="flex w-full justify-between items-baseline gap-4 p-4 bg-blue-950 transition-colors hover:bg-blue-900 group-open:bg-blue-900"
+  >
+    <h3 class="mb-0 text-2xl text-left">{title}</h3>
+
+    <span class="transition-all group-open:rotate-45">
+      <Icon name={IconName.PLUS} />
+    </span>
+  </summary>
+  <div class="p-4 pt-0 max-w-prose">
+    <slot />
+  </div>
+</details>
+
+<style>
+  @supports not (-ms-ime-align: auto) {
+    details summary {
+      cursor: pointer;
+    }
+
+    details summary > * {
+      display: inline;
+    }
+
+    /* Hide the default marker */
+    summary {
+      list-style: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+  }
+</style>
