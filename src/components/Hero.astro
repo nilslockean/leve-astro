@@ -1,12 +1,12 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import Section from "./Section.astro";
-import type { VideoName } from "./Video.astro";
+import { VideoName } from "./Video.astro";
 import Video from "./Video.astro";
 import { cn } from "@lib/cn";
 
 interface Props extends HTMLAttributes<"section"> {
-  video?: VideoName;
+  video?: (typeof VideoName)[keyof typeof VideoName];
   videoPoster?: string;
   image?: string;
   center?: boolean;

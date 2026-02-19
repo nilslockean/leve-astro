@@ -1,78 +1,28 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import config from "@config/site";
 
-export type VideoObject = {
-  id: string;
-  type: string;
+export const VideoName = {
+  BrodTrim: "BrodTrim",
+  Kanelbulle: "Kanelbulle",
+  Munk4: "Munk4",
 };
 
-export enum VideoName {
-  Vackergrej = "Vackergrej",
-  Semlor = "Semlor",
-  Semla2 = "Semla2",
-  Semla1 = "Semla1",
-  Princesstarta = "Princesstarta",
-  Munk4 = "Munk4",
-  Munk3 = "Munk3",
-  Munk2 = "Munk2",
-  Munk1 = "Munk1",
-  Kanelbulle = "Kanelbulle",
-  Jordgubbstartelette = "Jordgubbstartelette",
-  Croissant = "Croissant",
-  Brod = "Brod",
-  Biskvi = "Biskvi",
-  BrodTrim = "BrodTrim",
-}
+type VideoNameValue = keyof typeof VideoName;
 
-export const Videos: Record<VideoName, VideoObject[]> = {
-  Vackergrej: [{ id: "Vackergrej-min.mp4", type: "video/mp4" }],
-  Semlor: [{ id: "Semlor-min.mp4", type: "video/mp4" }],
-  Semla2: [{ id: "Semla-2-min.mp4", type: "video/mp4" }],
-  Semla1: [{ id: "Semla-1-min.mp4", type: "video/mp4" }],
-  Princesstarta: [{ id: "Princesstarta-min.mp4", type: "video/mp4" }],
-  Munk4: [{ id: "Munk-4-min.mp4", type: "video/mp4" }],
-  Munk3: [{ id: "Munk-3-min.mp4", type: "video/mp4" }],
-  Munk2: [{ id: "Munk-2-min.mp4", type: "video/mp4" }],
-  Munk1: [{ id: "Munk-1-min.mp4", type: "video/mp4" }],
-  Kanelbulle: [{ id: "Kanelbulle-min.mp4", type: "video/mp4" }],
-  Jordgubbstartelette: [
-    { id: "Jordgubbstartelette-min.mp4", type: "video/mp4" },
-  ],
-  Croissant: [{ id: "Croissant-min.mp4", type: "video/mp4" }],
-  Brod: [{ id: "Brod-min.mp4", type: "video/mp4" }],
-  Biskvi: [{ id: "Biskvi-min.mp4", type: "video/mp4" }],
-  BrodTrim: [{ id: "Brod-trim-min.mp4", type: "video/mp4" }],
+const VIDEO_FILES: Record<VideoNameValue, string> = {
+  BrodTrim: "Brod-trim-min.mp4",
+  Kanelbulle: "Kanelbulle-min.mp4",
+  Munk4: "Munk-4-min.mp4",
 };
 
 interface Props extends HTMLAttributes<"video"> {
-  name?: VideoName;
-  sources?: VideoObject[];
+  name: VideoNameValue;
 }
 
-const { sources, name, ...rest } = Astro.props;
-
-// Prefer sources prop over name
-let objects = sources;
-if (objects === undefined && name !== undefined) {
-  objects = Videos[name];
-}
-
-if (objects === undefined) {
-  throw new Error(
-    "You must provide either a name or sources to the Video component",
-  );
-}
-
-const composeUrl = (id: string) => `${config.r2BaseUrl}/${id}`;
+const { name, ...rest } = Astro.props;
+const src = `/videos/${VIDEO_FILES[name]}`;
 ---
 
 <video {...rest}>
-  {
-    objects.map((object) => (
-      <>
-        <source src={composeUrl(object.id)} type={object.type} />
-      </>
-    ))
-  }
+  <source src={src} type="video/mp4" />
 </video>
