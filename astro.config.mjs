@@ -2,11 +2,20 @@
 import { defineConfig } from "astro/config";
 import sanity from "@sanity/astro";
 import dotenv from "dotenv";
+
+// Load environment variables from local .env file into process.env
 dotenv.config();
 
+// These variables are needed before Astro is initialized and sets up the runtime 
+// environment variables so we need to access them directly from process.env
 const { SANITY_DATASET = "production", SANITY_TOKEN } = process.env;
 
-console.log({
+// Throw if no sanity token is found
+if (!SANITY_TOKEN) {
+  throw new Error("SANITY_TOKEN is not set in the environment variables");
+}
+
+console.log("Early env variables:", {
   SANITY_DATASET,
   SANITY_TOKEN,
 })
@@ -16,7 +25,7 @@ export default defineConfig({
   integrations: [sanity({
     projectId: "mz20cm4o",
     dataset: SANITY_DATASET,
-    apiVersion: "2024-01-21",
+    apiVersion: "2026-02-19",
     useCdn: false,
     token: SANITY_TOKEN,
   })]
