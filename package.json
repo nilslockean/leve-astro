@@ -8,7 +8,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier . --write",
-    "lint": "npx eslint \"src/**/*.{js,astro}\""
+    "lint": "npx eslint \"src/**/*.{js,astro}\"",
+    "test:unit": "vitest run",
+    "watch": "vitest"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -27,6 +29,8 @@
     "eslint": "^10.0.0",
     "eslint-plugin-astro": "^1.6.0",
     "prettier": "3.8.1",
-    "prettier-plugin-astro": "0.14.1"
+    "prettier-plugin-astro": "0.14.1",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.0.18"
   }
 }

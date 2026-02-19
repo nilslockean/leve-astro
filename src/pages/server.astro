@@ -1,5 +1,6 @@
 ---
 import { EXAMPLE_ENV_VARIABLE } from "astro:env/server";
+import { toLocaleDateString, toLocaleTimeString } from "@lib/stringUtils";
 
 export const prerender = false;
 
@@ -30,6 +31,8 @@ console.info(formattedDate);
     <p>import.meta.env.MODE: {import.meta.env.MODE}</p>
     <p>import.meta.env.PROD: {JSON.stringify(import.meta.env.PROD)}</p>
     <p>import.meta.env.DEV: {JSON.stringify(import.meta.env.DEV)}</p>
+    <p>Current date: {toLocaleDateString(now)}</p>
+    <p>Current time: {toLocaleTimeString(now)}</p>
     <p>Current date and time: {formattedDate}</p>
   </body>
 </html>
