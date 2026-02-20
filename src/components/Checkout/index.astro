@@ -24,7 +24,7 @@ interface Props extends HTMLAttributes<"section"> {
 const { availablePickupDates, total, contents, ...rest } = Astro.props;
 const result = Astro.getActionResult(actions.checkout);
 const errorMessage = result?.error?.message;
-const orderId = result?.data;
+const orderId = result?.data?.payload?.orderId;
 ---
 
 <Section {...rest}>
@@ -50,7 +50,7 @@ const orderId = result?.data;
   {
     orderId && (
       <div class="bg-green-200 border border-green-400 text-green-900 w-full px-6 py-4 mb-12">
-        {JSON.stringify(orderId)}
+        Beställning genomförd. Ordernummer: {orderId}
       </div>
     )
   }
