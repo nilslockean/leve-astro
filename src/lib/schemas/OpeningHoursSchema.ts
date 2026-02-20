@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "astro/zod";
 
 const WeekdaySchema = z.object({
   day: z.number(),

@@ -1,7 +1,7 @@
 import { addToCart as addToCartInStore, getCart, setCart } from "@lib/cart";
 import { defineAction, ActionError } from "astro:actions";
 import { getEntry } from "astro:content";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 import type { ActionSuccess } from "./types";
 
 export const addToCart = defineAction({

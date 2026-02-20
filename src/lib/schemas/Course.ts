@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from "astro/zod";
 
 export const CourseSchema = z.object({
   title: z.string(),
   description: z.string(),
-  url: z.url(),
+  url: z.string().url(),
   start: z.date(),
   dates: z.string(), // Lördag 17 juni - söndag 18 juni
   draft: z.boolean(),
@@ -11,7 +11,7 @@ export const CourseSchema = z.object({
   salesEnded: z.boolean(),
   slug: z.string(),
   year: z.number(),
-  image: z.url().optional(),
+  image: z.string().url().optional(),
 });
 
 export type Course = z.infer<typeof CourseSchema>;
