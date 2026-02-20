@@ -20,6 +20,16 @@ if (!ENABLE_STOREFRONT) {
   return Astro.rewrite("/404");
 }
 
+const actionResult = Astro.getActionResult(actions.checkout);
+const orderId = actionResult?.data?.payload?.orderId;
+const token = actionResult?.data?.payload?.token;
+
+// Redirect to thank-you page if checkout was successful
+if (actionResult?.data?.success && orderId && token) {
+  const thankYouUrl = composeThankYouUrl(orderId, token);
+  return Astro.redirect(thankYouUrl);
+}
+
 const cart = getCart(Astro.cookies);
 if (cart.items.length === 0) {
   return Astro.rewrite(getCartUrl());
@@ -45,16 +55,6 @@ const availablePickupDates = await getAvailablePickupDates(
   sanityAPI.getOpenDaysInRange.bind(sanityAPI),
   cartContents.map((item) => item.product),
 );
-
-const actionResult = Astro.getActionResult(actions.checkout);
-const orderId = actionResult?.data?.payload?.orderId;
-const token = actionResult?.data?.payload?.token;
-
-// Redirect to thank-you page if checkout was successful
-if (actionResult?.data?.success && orderId && token) {
-  const thankYouUrl = composeThankYouUrl(orderId, token);
-  return Astro.redirect(thankYouUrl);
-}
 ---
 
 <Layout
