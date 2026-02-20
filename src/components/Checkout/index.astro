@@ -21,14 +21,7 @@ interface Props extends HTMLAttributes<"section"> {
   }[];
 }
 
-const {
-  availablePickupDates,
-  total,
-  contents,
-  class: className,
-  ...rest
-} = Astro.props;
-
+const { availablePickupDates, total, contents, ...rest } = Astro.props;
 const result = Astro.getActionResult(actions.checkout);
 const errorMessage = result?.error?.message;
 const orderId = result?.data;

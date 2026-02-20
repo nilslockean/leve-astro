@@ -27,12 +27,7 @@ interface Props extends HTMLAttributes<"section"> {
   availablePickupDates: string[];
 }
 
-const {
-  product,
-  availablePickupDates,
-  class: className,
-  ...rest
-} = Astro.props;
+const { product, availablePickupDates, ...rest } = Astro.props;
 const featuredImage = product.images[0];
 
 const qtyInCart = cart.items
