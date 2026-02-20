@@ -1,6 +1,7 @@
 import { MailerSendAPI } from "@lib/api/MailerSendAPI";
-import { getCart, getCartTotal } from "@lib/cart";
+import { getCart, getCartTotal, setCart, EMPTY_CART } from "@lib/cart";
 import { getAvailablePickupDates } from "@lib/dateUtils";
+import { createOrderConfirmationToken } from "@lib/orderConfirmation";
 import { sanityAPI } from "@lib/sanityAPI";
 import { orderSnapshotSchema } from "@lib/schemas/OrderSnapshot";
 import { defineAction, ActionError } from "astro:actions";
@@ -9,11 +10,11 @@ import {
   MAILERSEND_API_KEY,
   ORDER_ADMIN_EMAIL,
   ORDER_ADMIN_PRINTER_EMAIL,
+  ORDER_CONFIRMATION_SECRET,
   PICKUP_DATE_MAX_OFFSET,
   PICKUP_DATE_MIN_OFFSET,
 } from "astro:env/server";
 import { z } from "astro:schema";
-import type { ActionSuccess } from "./types";
 
 export const checkout = defineAction({
   accept: "form",
@@ -24,10 +25,7 @@ export const checkout = defineAction({
     phone: z.string(),
     message: z.string().optional(),
   }),
-  handler: async (
-    input,
-    context,
-  ): Promise<ActionSuccess<{ orderId: string }>> => {
+  handler: async (input, context) => {
     const { pickupDate, name, email, phone, message } = input;
 
     const cart = getCart(context.cookies);
@@ -100,6 +98,15 @@ export const checkout = defineAction({
     });
     const order = await sanityAPI.createOrder(orderSnapshot);
 
+    const secret = ORDER_CONFIRMATION_SECRET;
+    if (!secret) {
+      throw new ActionError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "ORDER_CONFIRMATION_SECRET is not configured",
+      });
+    }
+    const token = createOrderConfirmationToken(order.orderNumber, secret);
+
     const mailerSend = new MailerSendAPI({
       snapshot: orderSnapshot,
       createdAt: order._createdAt,
@@ -120,9 +127,11 @@ export const checkout = defineAction({
       });
     }
 
+    // setCart(context.cookies, EMPTY_CART);
+
     return {
       success: true,
-      payload: { orderId: order.orderNumber },
+      payload: { orderId: order.orderNumber, token },
     };
   },
 });

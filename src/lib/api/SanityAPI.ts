@@ -52,7 +52,7 @@ export class SanityAPI {
 
   public async getOrderTerms(): Promise<OrderTerms> {
     const groqJson = await this.client.fetch(
-      `*[_type == "orderTerms"]{title, content, sortOrder} | order(sortOrder asc) `
+      `*[_type == "orderTerms"]{title, content, sortOrder} | order(sortOrder asc) `,
     );
     const orderTerms = OrderTermsSchema.parse(groqJson);
     return orderTerms;
@@ -60,7 +60,7 @@ export class SanityAPI {
 
   public async getFaq(): Promise<Faq> {
     const groqJson = await this.client.fetch(
-      `*[_type == "faq"] {question, answer}`
+      `*[_type == "faq"] {question, answer}`,
     );
     const faq = FaqSchema.parse(groqJson);
     return faq;
@@ -73,7 +73,7 @@ export class SanityAPI {
 
   public async getOpeningHours(): Promise<OpeningHours> {
     const groqJson = await this.client.fetch(
-      `*[_type == "opening-hours" && setId.current == "default"]{title, irregular, days}`
+      `*[_type == "opening-hours" && setId.current == "default"]{title, irregular, days}`,
     );
     const openingHours = OpeningHoursSchema.parse(groqJson);
     // Filter out any irregular opening hours that are in the past
@@ -165,5 +165,43 @@ export class SanityAPI {
     });
 
     return order;
+  };
+
+  /**
+   * Fetch order by order number for the thank-you page. Returns null if not found.
+   */
+  public getOrderByOrderNumber = async (
+    orderNumber: string,
+  ): Promise<{
+    orderNumber: string;
+    customer: OrderSnapshot["customer"];
+    pickupDate: string;
+    items: OrderSnapshot["items"];
+    totals: OrderSnapshot["totals"];
+  } | null> => {
+    const result = await this.client.fetch<{
+      orderNumber: string;
+      customer: OrderSnapshot["customer"];
+      pickupDate: string;
+      items: OrderSnapshot["items"];
+      totals: OrderSnapshot["totals"];
+    } | null>(
+      `*[_type == "order" && orderNumber == $orderNumber][0]{
+        orderNumber,
+        customer,
+        pickupDate,
+        "items": items[]{
+          productTitle,
+          variantId,
+          variantDescription,
+          unitPrice,
+          quantity,
+          lineTotal
+        },
+        totals
+      }`,
+      { orderNumber },
+    );
+    return result ?? null;
   };
 }
