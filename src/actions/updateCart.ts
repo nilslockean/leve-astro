@@ -1,11 +1,8 @@
-import {
-  getCart,
-  setCart,
-  updateCart as updateCartInStore,
-} from "@lib/cart";
+import { getCart, setCart, updateCart as updateCartInStore } from "@lib/cart";
 import { defineAction, ActionError } from "astro:actions";
 import { getEntry } from "astro:content";
 import { z } from "astro:schema";
+import type { ActionSuccess } from "./types";
 
 export const updateCart = defineAction({
   accept: "form",
@@ -14,7 +11,7 @@ export const updateCart = defineAction({
     price: z.number(),
     qty: z.number(),
   }),
-  handler: async (input, context) => {
+  handler: async (input, context): Promise<ActionSuccess> => {
     const { productId, price, qty } = input;
     const entry = await getEntry("products", productId);
 
@@ -36,7 +33,7 @@ export const updateCart = defineAction({
         price,
         qty,
       },
-      maxQuantityPerOrder
+      maxQuantityPerOrder,
     );
     setCart(context.cookies, cart);
 

@@ -1,6 +1,7 @@
 import { getCart, setCart, updateCart } from "@lib/cart";
 import { defineAction } from "astro:actions";
 import { z } from "astro:schema";
+import type { ActionSuccess } from "./types";
 
 export const removeFromCart = defineAction({
   accept: "form",
@@ -8,7 +9,7 @@ export const removeFromCart = defineAction({
     productId: z.string(),
     price: z.number(),
   }),
-  handler: async (input, context) => {
+  handler: async (input, context): Promise<ActionSuccess> => {
     const { productId, price } = input;
     const currentCart = getCart(context.cookies);
     const cart = updateCart(currentCart, {
@@ -19,6 +20,6 @@ export const removeFromCart = defineAction({
 
     setCart(context.cookies, cart);
 
-    return cart;
+    return { success: true };
   },
 });

@@ -2,6 +2,7 @@ import { addToCart as addToCartInStore, getCart, setCart } from "@lib/cart";
 import { defineAction, ActionError } from "astro:actions";
 import { getEntry } from "astro:content";
 import { z } from "astro:schema";
+import type { ActionSuccess } from "./types";
 
 export const addToCart = defineAction({
   accept: "form",
@@ -10,7 +11,10 @@ export const addToCart = defineAction({
     price: z.number(),
     qty: z.number(),
   }),
-  handler: async (input, context) => {
+  handler: async (
+    input,
+    context,
+  ): Promise<ActionSuccess<{ productTitle: string }>> => {
     const { productId, price, qty } = input;
 
     const entry = await getEntry("products", productId);
@@ -64,7 +68,7 @@ export const addToCart = defineAction({
 
     return {
       success: true,
-      productTitle: product.title,
+      payload: { productTitle: product.title },
     };
   },
 });
