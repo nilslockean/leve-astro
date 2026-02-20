@@ -1,0 +1,28 @@
+# On every push to main, merge main into preview so Netlify redeploys preview.bagerileve.se with latest code.
+name: Sync main to preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Merge main into preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge main into preview and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout preview
+          git merge origin/main -m "chore: sync main into preview"
+          git push origin preview

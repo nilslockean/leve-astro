@@ -9,8 +9,10 @@ import {
 } from "astro:env/server";
 import { getAvailablePickupDates } from "@lib/dateUtils";
 import { getCart, getCartTotal } from "@lib/cart";
+import { composeThankYouUrl } from "@lib/orderConfirmation";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 import { getCartUrl } from "@config/site";
+import { actions } from "astro:actions";
 
 export const prerender = false;
 
@@ -43,6 +45,16 @@ const availablePickupDates = await getAvailablePickupDates(
   sanityAPI.getOpenDaysInRange.bind(sanityAPI),
   cartContents.map((item) => item.product),
 );
+
+const actionResult = Astro.getActionResult(actions.checkout);
+const orderId = actionResult?.data?.payload?.orderId;
+const token = actionResult?.data?.payload?.token;
+
+// Redirect to thank-you page if checkout was successful
+if (actionResult?.data?.success && orderId && token) {
+  const thankYouUrl = composeThankYouUrl(orderId, token);
+  return Astro.redirect(thankYouUrl);
+}
 ---
 
 <Layout

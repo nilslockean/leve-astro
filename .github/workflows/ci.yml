@@ -6,6 +6,10 @@
 #   FIENTA_API_KEY — Fienta API key
 #   MAILERSEND_API_KEY — Mailersend API key
 
+# Playwright shop test settings (e2e/shop/shop.spec.ts):
+#   PLAYWRIGHT_SHOP_BASE — base URL for shop tests (default: /bestall)
+#   ENABLE_STOREFRONT — enable storefront so e2e shop tests (e2e/shop/shop.spec.ts) run (default: false)
+
 # Branch protection (Settings → Branches → rule for main): require status check "Lint & test", require PR (0 approvals OK).
 name: Lint & test
 
@@ -20,6 +24,7 @@ jobs:
     env:
       CI: true
       SANITY_DATASET: preview
+      ENABLE_STOREFRONT: true
       SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
       FIENTA_API_KEY: ${{ secrets.FIENTA_API_KEY }}
       MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}

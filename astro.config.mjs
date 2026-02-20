@@ -135,6 +135,12 @@ export default defineConfig({
         optional: true,
         default: "cbty732mccw842@hpeprint.com",
       }),
+      ORDER_CONFIRMATION_SECRET: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+        default: "order-confirmation-secret",
+      }),
     },
   },
 
