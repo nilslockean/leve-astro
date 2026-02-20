@@ -1,5 +1,4 @@
 import config from "@config/site";
-import { formatDay } from "@lib/openingHoursUtils";
 import type { OrderSnapshot } from "@lib/schemas/OrderSnapshot";
 import { formatPrice, toLocaleDateString } from "@lib/stringUtils";
 import { EmailParams, MailerSend, Recipient, Sender } from "mailersend";
@@ -68,13 +67,6 @@ export class MailerSendAPI {
           orderNr,
           adminEmail,
           hostname,
-          // customer: this.snapshot.customer,
-          // order_customer_email: this.snapshot.customer.email,
-          // order_number: this.orderNr,
-          // support_phone: config.contact.phone,
-          // support_email: config.contact.email,
-          // order_pickup_date: this.snapshot.pickupDate,
-          // created_at: this.createdAt,
         },
       },
     ];

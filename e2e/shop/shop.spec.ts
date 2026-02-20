@@ -4,6 +4,7 @@ import { test, expect } from "@playwright/test";
 const SHOP_BASE = "/bestall";
 const CART_PATH = "/kundvagn";
 const CHECKOUT_PATH = "/kassa";
+const THANK_YOU_PATH = "/bestall/tack";
 
 test.describe("Shop (storefront)", () => {
   test.describe("Product overview", () => {
@@ -245,10 +246,87 @@ test.describe("Shop (storefront)", () => {
       await page.getByLabel("E-post").fill("e2e@example.com");
       await page.getByLabel("Telefon").fill("0701234567");
       await page.getByRole("button", { name: "Slutför beställning" }).click();
-      await expect(page).toHaveURL(CHECKOUT_PATH);
-      const successBox = page.locator(".bg-green-200, [class*='green']");
-      const errorBox = page.locator(".bg-red-200, [class*='red']");
-      await expect(successBox.or(errorBox)).toBeVisible({ timeout: 10000 });
+      // Success: redirect to thank-you page; error: stay on checkout with error box
+      await page.waitForURL(
+        (url) =>
+          url.pathname === THANK_YOU_PATH || url.pathname === CHECKOUT_PATH,
+        { timeout: 15000 },
+      );
+      const onThankYou = page.url().includes("/tack");
+      if (onThankYou) {
+        await expect(page.getByRole("heading", { name: "Tack" })).toBeVisible();
+      } else {
+        await expect(
+          page.locator(".bg-red-200, [class*='red']"),
+        ).toBeVisible();
+      }
+    });
+
+    test("thank-you page without valid token redirects to shop", async ({
+      page,
+    }) => {
+      await page.goto(THANK_YOU_PATH);
+      await expect(page).toHaveURL(/\/bestall\/?$/);
+      await page.goto(`${THANK_YOU_PATH}?orderId=123&token=invalid`);
+      await expect(page).toHaveURL(/\/bestall\/?$/);
+    });
+
+    test("on successful checkout redirects to Tack, shows order breakdown and email message, cart is empty", async ({
+      page,
+    }) => {
+      await page.goto(SHOP_BASE);
+      const firstProductLink = page
+        .locator("a[href^='" + SHOP_BASE + "/']")
+        .first();
+      await firstProductLink.click();
+      const submitBtn = page.getByRole("button", { name: /Beställ/ });
+      if (!(await submitBtn.isVisible())) {
+        test.skip(true, "No in-stock product");
+      }
+      await submitBtn.click();
+      await page.getByRole("link", { name: "Visa kundvagn" }).click();
+      await page.getByRole("link", { name: "Gå till kassan" }).click();
+      const pickupSelect = page.getByLabel("Upphämtningsdatum");
+      const firstDateOption = await pickupSelect
+        .locator("option")
+        .filter({ hasNotText: /Välj datum|Inga datum/ })
+        .first()
+        .getAttribute("value");
+      if (!firstDateOption) {
+        test.skip(true, "No pickup dates available");
+      }
+      await pickupSelect.selectOption(firstDateOption!);
+      await page.getByLabel("Namn").fill("E2E Test");
+      await page.getByLabel("E-post").fill("e2e@example.com");
+      await page.getByLabel("Telefon").fill("0701234567");
+      await page.getByRole("button", { name: "Slutför beställning" }).click();
+
+      // Wait for redirect to thank-you page (if checkout succeeded)
+      const thankYou = page.getByRole("heading", { name: "Tack" });
+      const stayedOnCheckout = page.getByRole("heading", { name: "Kassa" });
+      await expect(thankYou.or(stayedOnCheckout)).toBeVisible({
+        timeout: 15000,
+      });
+      if (!(await thankYou.isVisible())) {
+        test.skip(true, "Checkout did not succeed (e.g. mail or Sanity unavailable)");
+      }
+
+      await expect(page).toHaveURL(/\/bestall\/tack\?orderId=.+&token=.+/);
+      await expect(
+        page.getByText(/orderbekräftelse till|Kolla din e-post/i),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Orderöversikt" }),
+      ).toBeVisible();
+      await expect(page.getByText(/Ordernummer:/)).toBeVisible();
+      await expect(page.getByText(/e2e@example\.com/)).toBeVisible();
+
+      // Cart should be empty: go to cart and verify
+      await page.goto(CART_PATH);
+      await expect(
+        page.getByRole("heading", { name: "Kundvagn" }),
+      ).toBeVisible();
+      await expect(page.getByText("Kundvagnen är tom.")).toBeVisible();
     });
   });
 
