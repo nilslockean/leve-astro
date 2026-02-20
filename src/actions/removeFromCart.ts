@@ -1,6 +1,6 @@
 import { getCart, setCart, updateCart } from "@lib/cart";
 import { defineAction } from "astro:actions";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 import type { ActionSuccess } from "./types";
 
 export const removeFromCart = defineAction({

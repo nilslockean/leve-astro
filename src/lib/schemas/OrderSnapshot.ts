@@ -1,13 +1,13 @@
-import z from "zod";
+import { z } from "astro/zod";
 
 export const orderSnapshotSchema = z.object({
   customer: z.object({
     name: z.string(),
-    email: z.email(),
+    email: z.string().email(),
     phone: z.string(),
     message: z.string().optional(),
   }),
-  pickupDate: z.iso.date(),
+  pickupDate: z.string().date(),
   items: z.array(
     z.object({
       productTitle: z.string(),
@@ -16,7 +16,7 @@ export const orderSnapshotSchema = z.object({
       unitPrice: z.number(),
       quantity: z.number(),
       lineTotal: z.number(),
-    })
+    }),
   ),
   totals: z.object({
     tax: z.number(),

@@ -1,4 +1,4 @@
-import { z as zod } from "zod";
+import { z as zod } from "astro/zod";
 
 // Turns a Date object into a YYYY-MM-DD string
 export function getDateString(date: Date) {
@@ -7,8 +7,11 @@ export function getDateString(date: Date) {
 
 // Returns all dates starting and ending with the provided dates
 // in YYYY-MM-DD format
+const isoDateString = (z: typeof zod) =>
+  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (expected YYYY-MM-DD)");
+
 export function getDatesInRange(start: string, end: string, z = zod) {
-  const schema = z.tuple([z.iso.date(), z.iso.date()]);
+  const schema = z.tuple([isoDateString(z), isoDateString(z)]);
   const [startDateStr, endDateStr] = schema.parse([start, end]);
   const startDate = new Date(startDateStr);
   const endDate = new Date(endDateStr);

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "astro/zod";
 import { CourseSchema } from "./Course";
 
 export const CourseErrorSchema = z.object({
