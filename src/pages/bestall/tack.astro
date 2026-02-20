@@ -1,0 +1,97 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Section from "@components/Section.astro";
+import { getShopUrl } from "@config/site";
+import { verifyOrderConfirmationToken } from "@lib/orderConfirmation";
+import { sanityAPI } from "@lib/sanityAPI";
+import { formatPrice, toLocaleDateString } from "@lib/stringUtils";
+import { ENABLE_STOREFRONT, ORDER_CONFIRMATION_SECRET } from "astro:env/server";
+
+export const prerender = false;
+
+if (!ENABLE_STOREFRONT) {
+  return Astro.redirect("/404");
+}
+
+const orderId = Astro.url.searchParams.get("orderId");
+const token = Astro.url.searchParams.get("token");
+const secret = ORDER_CONFIRMATION_SECRET;
+
+if (
+  !orderId ||
+  !token ||
+  !secret ||
+  !verifyOrderConfirmationToken(orderId, token, secret)
+) {
+  return Astro.redirect(getShopUrl());
+}
+
+const order = await sanityAPI.getOrderByOrderNumber(orderId);
+if (!order) {
+  return Astro.redirect(getShopUrl());
+}
+
+const pickupDateFormatted = toLocaleDateString(new Date(order.pickupDate));
+---
+
+<Layout
+  title="Tack för din beställning"
+  metaDescription="Din beställning är mottagen."
+>
+  <Section>
+    <h1 class="mt-8 mb-8">Tack för din beställning!</h1>
+
+    <p class="mb-8 text-lg">
+      Ditt ordernummer är <strong>{order.orderNumber}</strong>.
+    </p>
+
+    <p class="mb-12 max-w-prose">
+      Vi har skickat en orderbekräftelse till <strong
+        >{order.customer.email}</strong
+      >. Meddela oss om den inte har kommit fram.
+    </p>
+
+    <section class="mb-12" aria-labelledby="order-summary-heading">
+      <h2 id="order-summary-heading" class="text-xl mb-4">Orderöversikt</h2>
+      <p class="mb-4 max-w-prose">
+        Upphämtning: <strong>{pickupDateFormatted}</strong>. Beställningen
+        kommer vara redo när vi öppnar för dagen.
+      </p>
+      <table class="table-auto w-full max-w-xl">
+        <thead>
+          <tr class="border-b border-current">
+            <th class="text-left py-2">Produkt</th>
+            <th class="text-right py-2">Antal</th>
+            <th class="text-right py-2">Summa</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            order.items.map((item) => (
+              <tr class="border-b border-current/50 last:border-none align-top">
+                <td class="py-2">
+                  <p class="mb-0">{item.productTitle}</p>
+                  {item.variantDescription && (
+                    <p class="text-sm">{item.variantDescription}</p>
+                  )}
+                </td>
+                <td class="text-right py-2">{item.quantity} st.</td>
+                <td class="text-right py-2 whitespace-nowrap">
+                  {formatPrice([item.lineTotal])}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <p class="mt-4 text-lg">
+        Totalt: <strong>{formatPrice([order.totals.total])}</strong> (inkl.{" "}
+        {formatPrice([order.totals.tax])} moms)
+      </p>
+    </section>
+
+    <p>
+      <a href={getShopUrl()} class="underline">Tillbaka till beställning</a>
+    </p>
+  </Section>
+</Layout>
