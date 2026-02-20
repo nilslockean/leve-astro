@@ -1,9 +1,11 @@
 # Runs on PRs targeting main: lint + unit + E2E tests. Merge only when this passes (branch protection).
 # Netlify builds and deploys on push to main (i.e. when the PR is merged).
 #
-# Required GitHub secret (Settings → Secrets and variables → Actions):
-#   SANITY_TOKEN — Sanity API token (used by build and E2E)
-#
+# Required GitHub secret used by CI workflow (Settings → Secrets and variables → Actions):
+#   SANITY_TOKEN — Sanity API token
+#   FIENTA_API_KEY — Fienta API key
+#   MAILERSEND_API_KEY — Mailersend API key
+
 # Branch protection (Settings → Branches → rule for main): require status check "Lint & test", require PR (0 approvals OK).
 name: Lint & test
 
@@ -19,6 +21,8 @@ jobs:
       CI: true
       SANITY_DATASET: preview
       SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
+      FIENTA_API_KEY: ${{ secrets.FIENTA_API_KEY }}
+      MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

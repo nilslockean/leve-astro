@@ -14,14 +14,7 @@ interface Props extends HTMLAttributes<"li"> {
   product: Product;
 }
 
-const {
-  productId,
-  price,
-  qty,
-  product,
-  class: className,
-  ...rest
-} = Astro.props;
+const { productId, price, qty, product, ...rest } = Astro.props;
 
 const priceOptionDesc = product.variants.find(
   (option) => option.price === price,

@@ -7,7 +7,7 @@ interface Props extends HTMLAttributes<"fieldset"> {
   qtyInCart: number;
 }
 
-const { max, qtyInCart, class: className, ...rest } = Astro.props;
+const { max, qtyInCart, ...rest } = Astro.props;
 const isUnlimited = max === null;
 console.log({ max, qtyInCart, isUnlimited });
 ---

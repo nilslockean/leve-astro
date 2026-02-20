@@ -12,14 +12,7 @@ interface Props extends HTMLAttributes<"section"> {
   center?: boolean;
 }
 
-const {
-  video,
-  videoPoster,
-  class: className,
-  image,
-  center,
-  ...rest
-} = Astro.props;
+const { video, videoPoster, image, center, ...rest } = Astro.props;
 const style = image ? `background-image:url('${image}');` : null;
 ---
 
@@ -54,7 +47,7 @@ const style = image ? `background-image:url('${image}');` : null;
       "z-30 flex flex-col items-start p-6 w-full max-w-screen-xl mx-auto text-orange-50",
       {
         "text-center items-center": center,
-      }
+      },
     )}
   >
     <slot />
