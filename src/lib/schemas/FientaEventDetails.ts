@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "astro/zod";
 
 export const FientaEventDetailsSchema = z.object({
   id: z.number(),
@@ -15,8 +15,8 @@ export const FientaEventDetailsSchema = z.object({
     })
     .optional(),
   // accent_color: z.string(),
-  url: z.url(),
-  buy_tickets_url: z.url(),
+  url: z.string().url(),
+  buy_tickets_url: z.string().url(),
   translations: z.object({
     sv: z.object({
       title: z.string(),

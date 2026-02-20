@@ -1,5 +1,5 @@
 import { type AstroCookies } from "astro";
-import { z } from "zod";
+import { z } from "astro/zod";
 
 const cartItemSchema = z.object({
   productId: z.string(),

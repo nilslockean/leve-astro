@@ -14,7 +14,7 @@ import {
   PICKUP_DATE_MAX_OFFSET,
   PICKUP_DATE_MIN_OFFSET,
 } from "astro:env/server";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 
 export const checkout = defineAction({
   accept: "form",
