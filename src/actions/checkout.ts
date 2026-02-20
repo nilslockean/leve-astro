@@ -127,7 +127,7 @@ export const checkout = defineAction({
       });
     }
 
-    // setCart(context.cookies, EMPTY_CART);
+    setCart(context.cookies, EMPTY_CART);
 
     return {
       success: true,
