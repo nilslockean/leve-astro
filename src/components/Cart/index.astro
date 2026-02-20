@@ -19,7 +19,7 @@ interface Props extends HTMLAttributes<"section"> {
   }[];
 }
 
-const { total, contents, class: className, ...rest } = Astro.props;
+const { total, contents, ...rest } = Astro.props;
 
 const isEmpty = contents.length === 0;
 ---

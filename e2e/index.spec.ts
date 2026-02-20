@@ -1,4 +1,4 @@
 import { assertA11y } from "./a11y";
 
 // Homepage
-assertA11y("/404");
+assertA11y("/");
