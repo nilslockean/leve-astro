@@ -118,8 +118,28 @@ const errorMessage = result?.error?.message;
         <p class="text-sm">Inkl. {formatPrice([total.tax])} moms</p>
       </fieldset>
       <fieldset>
-        <!-- <legend>Ordertotal</legend> -->
-        <Button type="submit" variant="primary" class="w-full text-center">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            name="acceptTerms"
+            id="acceptTerms"
+            value="1"
+            required
+            class="mt-0.5"
+          />
+          <span class="text-sm">
+            Jag godkänner{" "}
+            <a
+              href="/kopvillkor"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline hover:no-underline"
+            >
+              köpvillkoren
+            </a>
+          </span>
+        </label>
+        <Button type="submit" variant="primary" class="w-full text-center mt-4">
           Slutför beställning
         </Button>
       </fieldset>

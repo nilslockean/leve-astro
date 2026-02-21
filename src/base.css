@@ -95,6 +95,16 @@
   input[type="radio"] {
     @apply h-5 w-5 accent-blue-400 focus:ring-orange-200;
   }
+  input[type="checkbox"] {
+    @apply h-5 w-5 shrink-0 rounded-none border-4 border-orange-100 bg-transparent
+           appearance-none cursor-pointer transition-colors
+           focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-blue-950
+           bg-no-repeat bg-center bg-size-[0.6em_0.6em];
+  }
+  input[type="checkbox"]:checked {
+    @apply bg-orange-100;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230c1929' stroke-width='3' stroke-linecap='square'%3E%3Cpath d='M5 12l5 5 9-14'/%3E%3C/svg%3E");
+  }
   input[type="number"] {
     @apply w-24 border-4 border-orange-100 bg-blue-900 p-3 text-orange-100 focus:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-300;
   }

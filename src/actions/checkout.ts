@@ -24,6 +24,7 @@ export const checkout = defineAction({
     email: z.string().email(),
     phone: z.string(),
     message: z.string().optional(),
+    acceptTerms: z.literal("1"),
   }),
   handler: async (input, context) => {
     const { pickupDate, name, email, phone, message } = input;
