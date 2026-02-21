@@ -41,8 +41,6 @@ const isOutOfStock = max === 0;
 const disabled =
   isOutOfStock || availablePickupDates.length === 0 || isCartFull;
 
-console.log({ pm: product.maxQuantityPerOrder, max, isCartFull });
-
 const buttonActionDescription = disabled ? "Ej tillgänlig" : "Beställ";
 const buttonLabel =
   product.variants.length === 1
