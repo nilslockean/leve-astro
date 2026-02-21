@@ -101,7 +101,7 @@ test.describe("Shop (storefront)", () => {
       const submitBtn = page.getByRole("button", { name: /Beställ/ });
       if (await submitBtn.isVisible()) {
         await submitBtn.click();
-        await expect(page.getByText(/lades till i din varukorg/i)).toBeVisible({
+        await expect(page.getByText(/lades till i din kundvagn/i)).toBeVisible({
           timeout: 5000,
         });
         await page.getByRole("link", { name: "Visa kundvagn" }).click();
@@ -256,9 +256,7 @@ test.describe("Shop (storefront)", () => {
       if (onThankYou) {
         await expect(page.getByRole("heading", { name: "Tack" })).toBeVisible();
       } else {
-        await expect(
-          page.locator(".bg-red-200, [class*='red']"),
-        ).toBeVisible();
+        await expect(page.locator(".bg-red-200, [class*='red']")).toBeVisible();
       }
     });
 
@@ -308,7 +306,10 @@ test.describe("Shop (storefront)", () => {
         timeout: 15000,
       });
       if (!(await thankYou.isVisible())) {
-        test.skip(true, "Checkout did not succeed (e.g. mail or Sanity unavailable)");
+        test.skip(
+          true,
+          "Checkout did not succeed (e.g. mail or Sanity unavailable)",
+        );
       }
 
       await expect(page).toHaveURL(/\/bestall\/tack\?orderId=.+&token=.+/);

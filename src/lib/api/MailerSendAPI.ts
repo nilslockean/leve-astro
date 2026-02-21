@@ -73,7 +73,6 @@ export class MailerSendAPI {
   }
 
   public sendOrderConfirmation() {
-    console.log("sending order confirmation...");
     const sentFrom = new Sender(this.adminEmail, config.siteTitle);
 
     const recipient = new Recipient(
@@ -95,7 +94,6 @@ export class MailerSendAPI {
   }
 
   public sendAdminNotification(email = this.adminEmail) {
-    console.log("sending admin nptification to", email);
     const sentFrom = new Sender(this.adminEmail, config.siteTitle);
     const recipient = new Recipient(email);
     const recipients = [recipient];
