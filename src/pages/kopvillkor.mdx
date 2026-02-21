@@ -1,0 +1,80 @@
+---
+title: Köpvillkor
+metaDescription: Köpvillkor för beställning hos Leve. Betalning sker vid upphämtning i butik.
+edited: "2026-02-21"
+---
+
+import Section from "../components/Section.astro";
+import Layout from "../layouts/Layout.astro";
+import config from "@config/site";
+
+export const { contact } = config;
+
+<Layout title={frontmatter.title} metaDescription={frontmatter.metaDescription}>
+<Section>
+<article class="max-w-prose">
+
+# { frontmatter.title }
+
+## 1. Allmänt
+
+Dessa köpvillkor gäller vid beställning av produkter från {contact.legalName} via vår webbplats eller annan överenskommen beställningskanal.
+
+Genom att genomföra en beställning godkänner du dessa villkor.
+
+## 2. Beställning
+
+Beställning ska göras med minst två (2) dagars framförhållning före önskat upphämtningsdatum.
+
+En beställning är bindande när den har genomförts.
+
+Vi förbehåller oss rätten att neka en beställning vid exempelvis fullbokning eller om råvaror inte finns tillgängliga.
+
+## 3. Betalning
+
+Betalning sker i butik vid upphämtning.
+
+Vi accepterar de betalningsmetoder som anges i butiken.
+
+## 4. Upphämtning
+
+Beställningen ska hämtas på överenskommen dag i vår butik.
+
+Om beställningen inte hämtas ut på avtalad tid förbehåller vi oss rätten att debitera hela beloppet, då produkterna är färska och tillverkade specifikt för beställaren.
+
+## 5. Avbokning
+
+Avbokning ska ske senast två (2) dagar före överenskommen upphämtning.
+
+Vid senare avbokning eller utebliven upphämtning debiteras hela beställningsbeloppet.
+
+## 6. Personuppgifter
+
+Vid beställning registrerar vi namn, e-postadress och telefonnummer.
+
+Uppgifterna används för att:
+
+- hantera din beställning
+- kontakta dig vid behov
+
+Vi behandlar personuppgifter i enlighet med <a href="/integritetspolicy">vår integritetspolicy</a> och lämnar inte ut uppgifterna till tredje part utan rättslig grund.
+
+## 7. Reklamation
+
+Om något i din beställning inte motsvarar det som avtalats ber vi dig kontakta oss snarast möjligt, helst i samband med upphämtning.
+
+Vi följer tillämplig konsumentlagstiftning.
+
+## 8. Kontaktuppgifter
+
+{contact.legalName} <br />
+{contact.orgNumber} <br />
+{contact.address.street} <br />
+{contact.address.zip}{' '}
+{contact.address.city} <br />
+{contact.phone} <br />
+{contact.email} <br />
+
+</article>
+</Section>
+</Layout>
