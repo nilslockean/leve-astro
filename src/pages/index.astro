@@ -8,7 +8,7 @@ import breadImage from "@lib/assets/brod.jpg";
 import IntroText from "@components/IntroText.astro";
 import MediaBlock from "@components/MediaBlock.astro";
 import { BEHOLD_FEED_ID } from "astro:env/server";
-import Video, { VideoName } from "@components/Video.astro";
+import Video from "@components/Video.astro";
 import { getImage } from "astro:assets";
 import heroVideoPoster from "@lib/assets/BrodTrim-poster.jpg";
 import footerVideoPoster from "@lib/assets/Kanelbulle-poster.jpg";
@@ -16,6 +16,7 @@ import Hero from "@components/Hero.astro";
 import { sanityAPI } from "@lib/sanityAPI";
 import GartnerFilm from "@components/GartnerFilm.astro";
 import CourseCollection from "@components/CourseCollection.astro";
+import { ENABLE_STOREFRONT } from "astro:env/server";
 
 const optimizedHeroVideoPoster = await getImage({
   src: heroVideoPoster,
@@ -36,14 +37,16 @@ const instagramFeedId = BEHOLD_FEED_ID;
   metaDescription="Bageri Leve på Östra Rönneholmsvägen 6 i Malmö. Vi vill revolutionera bageribranschen och satsa på nybakat bröd till kvällen istället för på morgonen. Med bästa ekologiska ingredienserna som finns gör vi bröd på traditionellt sätt, utan att tillsätta modern bagerijäst."
   fullwidth
 >
-  <Hero video={VideoName.BrodTrim} videoPoster={optimizedHeroVideoPoster.src}>
-    <h1>Ett hantverksbageri i hjärtat av Malmö</h1>
+  <Hero video="BrodTrim" videoPoster={optimizedHeroVideoPoster.src}>
+    <h1>Hantverksbageri i hjärtat av Malmö</h1>
     <IntroText>
       Surdegsbröd ur ugnen på eftermiddagen och allt vi bakar är växtbaserat.
     </IntroText>
     <div>
       <ButtonLink href="/bestall" variant="primary" data-cta="primary"
-        >Beställ fredagsmunk</ButtonLink
+        >{
+          ENABLE_STOREFRONT ? "Beställ online" : "Beställ fredagsmunk"
+        }</ButtonLink
       >
       <ButtonLink
         href="#oppettider"
@@ -132,7 +135,7 @@ const instagramFeedId = BEHOLD_FEED_ID;
     <Video
       id="footer-video"
       class="w-full"
-      name={VideoName.Kanelbulle}
+      name="Kanelbulle"
       poster={optimizedFooterVideoPoster.src}
       controls
     />
