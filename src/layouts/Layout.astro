@@ -15,7 +15,6 @@ import {
   ENABLE_WEGLOT,
   ENABLE_VIEW_TRANSITIONS,
   ENABLE_POSTHOG,
-  POSTHOG_PROJECT_API_KEY,
   WEGLOT_API_KEY,
 } from "astro:env/server";
 import WeGlotScript from "@components/WeGlotScript.astro";
@@ -113,7 +112,7 @@ const optimizedOgImage = await getImage({
       )
     }
     {ENABLE_VIEW_TRANSITIONS && <ClientRouter />}
-    {ENABLE_POSTHOG && <Posthog projectApiKey={POSTHOG_PROJECT_API_KEY} />}
+    {ENABLE_POSTHOG && <Posthog />}
 
     <slot name="head" />
   </head>
