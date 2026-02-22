@@ -5,7 +5,7 @@ import Layout from "src/layouts/Layout.astro";
 import Accordion from "@components/Accordion.astro";
 import { PortableText } from "astro-portabletext";
 import IntroText from "@components/IntroText.astro";
-import Video, { VideoName } from "@components/Video.astro";
+import Video from "@components/Video.astro";
 import { getImage } from "astro:assets";
 import videoPoster from "@lib/assets/Munk-4-poster.jpg";
 import { sanityAPI } from "@lib/sanityAPI";
@@ -39,7 +39,7 @@ const orderTerms = await sanityAPI.getOrderTerms();
     <div class="grid lg:grid-cols-2 gap-8">
       <div>
         <Video
-          name={VideoName.Munk4}
+          name="Munk4"
           class="w-full"
           controls
           poster={optimizedVideoPoster.src}
