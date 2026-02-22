@@ -10,12 +10,19 @@ import { getProductUrl } from "@config/site";
 
 interface Props extends HTMLAttributes<"a"> {
   product: Product;
+  availablePickupDates: string[];
 }
 
-const { product, ...rest } = Astro.props;
+const { product, availablePickupDates, ...rest } = Astro.props;
 const featuredImage = product.images[0];
 const prices = product.variants.map(({ price }) => price);
 const outOfStock = product.maxQuantityPerOrder === 0;
+const noPickupDatesAvailable = availablePickupDates.length === 0;
+const buttonLabel = outOfStock
+  ? "Slut i lager"
+  : noPickupDatesAvailable
+    ? "Ej tillgänglig"
+    : "Beställ";
 ---
 
 <a {...rest} href={getProductUrl(product.id)} class="max-w-prose">
@@ -30,6 +37,6 @@ const outOfStock = product.maxQuantityPerOrder === 0;
   </h3>
   <p>{formatPrice(prices)}</p>
   <span class={cn(buttonStyles("default", "small"), "mt-0")}
-    >{outOfStock ? "Slut i lager" : "Beställ"}</span
+    >{buttonLabel}</span
   >
 </a>

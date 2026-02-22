@@ -5,7 +5,7 @@ import type { HTMLAttributes } from "astro/types";
 import ProductOverviewSingle from "./ProductOverviewSingle.astro";
 
 interface Props extends HTMLAttributes<"div"> {
-  products: Product[];
+  products: Array<{ product: Product; availablePickupDates: string[] }>;
 }
 
 const { products, class: className, ...rest } = Astro.props;
@@ -15,5 +15,7 @@ const { products, class: className, ...rest } = Astro.props;
   {...rest}
   class={cn("grid md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-16", className)}
 >
-  {products.map((product) => <ProductOverviewSingle product={product} />)}
+  {products.map(({ product, availablePickupDates }) => (
+    <ProductOverviewSingle product={product} {availablePickupDates} />
+  ))}
 </div>
