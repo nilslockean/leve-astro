@@ -51,6 +51,8 @@ const errorMessage = result?.error?.message;
     action={actions.checkout}
     class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12"
   >
+    <input type="hidden" name="posthog_distinct_id" value="" />
+
     <!-- Image and description -->
     <div class="lg:col-span-2">
       <PickupDateSelector {availablePickupDates} legend="1. Upphämtning" />
@@ -148,7 +150,18 @@ const errorMessage = result?.error?.message;
 </Section>
 
 <script>
+  import posthog from "posthog-js";
+
   const STORAGE_KEY = "checkout-form";
+
+  // Distinct ID is set by Posthog in the client.
+  // Will be undefined if Posthog is not initialized.
+  const distinctId: string | undefined = posthog.get_distinct_id();
+  const distinctIdInput = document.querySelector<HTMLInputElement>(
+    'input[name="posthog_distinct_id"]',
+  );
+
+  console.log({ distinctId, distinctIdInput });
 
   const fields = ["name", "email", "tel", "message", "pickupDate"];
 
@@ -174,6 +187,11 @@ const errorMessage = result?.error?.message;
   }
 
   function load() {
+    // Set the PostHog distinct ID input field if it exists.
+    if (distinctId && distinctIdInput) {
+      distinctIdInput.value = distinctId;
+    }
+
     const saved = getLocalStorageItem(STORAGE_KEY);
     if (!saved) return;
 
