@@ -25,6 +25,8 @@
     "astro-portabletext": "^0.13.0",
     "clsx": "^2.1.1",
     "mailersend": "^2.6.0",
+    "posthog-js": "^1.352.0",
+    "posthog-node": "^5.24.17",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.0"
   },

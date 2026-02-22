@@ -97,10 +97,10 @@ export default defineConfig({
         default: true,
       }),
       POSTHOG_PROJECT_API_KEY: envField.string({
-        context: "server",
+        context: "client",
         access: "public",
         optional: true,
-        default: "phc_FpOtrZTQsFj3URscXo70ak6KyVRM1kAe5t8zqmS0r9r",
+        default: "phc_ueebAQwInPcjah4s2QNDDU679mxLn7u3dfcp1eIXDyt",
       }),
       PICKUP_DATE_MIN_OFFSET: envField.number({
         context: "server",
