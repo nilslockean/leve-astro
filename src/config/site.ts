@@ -9,13 +9,11 @@ export enum SiteLanguage {
 
 export enum Slug {
   HOME = "home",
-  // ASSORTMENT = "sortiment",
   COURSES = "kurser",
   ORDER = "bestallning",
-  // ABOUT = "om",
   CONTACT = "kontakt",
   PRIVACY_POLICY = "gdpr",
-  // BOOKING_TERMS = "villkor",
+  ORDER_TERMS = "kopvillkor",
   ADMIN = "admin",
   CART = "kundvagn",
   CHECKOUT = "kassa",
@@ -42,20 +40,18 @@ type SiteConfig = {
 };
 
 export const PageMap: Record<Slug, NavLink> = Object.freeze({
-  // [Slug.ASSORTMENT]: { label: "Sortiment", path: "/sortiment" },
   [Slug.HOME]: { label: "Hem", path: "/", className: "hidden lg:inline" },
   [Slug.COURSES]: { label: "Kurser", path: "/kurser" },
   [Slug.ORDER]: { label: "Beställning", path: "/bestall" },
-  // [Slug.ABOUT]: { label: "Om", path: "/om" },
   [Slug.CONTACT]: { label: "Kontakt", path: "/kontakt" },
   [Slug.PRIVACY_POLICY]: {
     label: "Integritetspolicy",
     path: "/integritetspolicy",
   },
-  // [Slug.BOOKING_TERMS]: {
-  //   label: "Bokningsvillkor",
-  //   path: "/bokningsvillkor",
-  // },
+  [Slug.ORDER_TERMS]: {
+    label: "Köpvillkor",
+    path: "/kopvillkor",
+  },
   [Slug.ADMIN]: {
     label: "Logga in",
     path: "https://leve.sanity.studio/production",
@@ -81,6 +77,7 @@ const config: SiteConfig = {
     { link: PageMap[Slug.ORDER], areas: [NavArea.HEADER, NavArea.FOOTER] },
     { link: PageMap[Slug.CONTACT], areas: [NavArea.HEADER, NavArea.FOOTER] },
     { link: PageMap[Slug.PRIVACY_POLICY], areas: [NavArea.COLOPHON] },
+    { link: PageMap[Slug.ORDER_TERMS], areas: [NavArea.COLOPHON] },
     { link: PageMap[Slug.ADMIN], areas: [NavArea.COLOPHON] },
   ],
   siteUrl: "https://bagerileve.se",
