@@ -16,6 +16,7 @@ import Hero from "@components/Hero.astro";
 import { sanityAPI } from "@lib/sanityAPI";
 import GartnerFilm from "@components/GartnerFilm.astro";
 import CourseCollection from "@components/CourseCollection.astro";
+import { ENABLE_STOREFRONT } from "astro:env/server";
 
 const optimizedHeroVideoPoster = await getImage({
   src: heroVideoPoster,
@@ -37,13 +38,15 @@ const instagramFeedId = BEHOLD_FEED_ID;
   fullwidth
 >
   <Hero video="BrodTrim" videoPoster={optimizedHeroVideoPoster.src}>
-    <h1>Ett hantverksbageri i hjärtat av Malmö</h1>
+    <h1>Hantverksbageri i hjärtat av Malmö</h1>
     <IntroText>
       Surdegsbröd ur ugnen på eftermiddagen och allt vi bakar är växtbaserat.
     </IntroText>
     <div>
       <ButtonLink href="/bestall" variant="primary" data-cta="primary"
-        >Beställ fredagsmunk</ButtonLink
+        >{
+          ENABLE_STOREFRONT ? "Beställ online" : "Beställ fredagsmunk"
+        }</ButtonLink
       >
       <ButtonLink
         href="#oppettider"
