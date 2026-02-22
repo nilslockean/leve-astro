@@ -1,18 +1,17 @@
 ---
 import Section from "@components/Section.astro";
 import { PortableText } from "astro-portabletext";
-import Button from "@components/Button.astro";
 import { getCartUrl, getShopUrl } from "@config/site";
 import type { HTMLAttributes } from "astro/types";
 import type { Product } from "@lib/schemas/Product";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { urlFor } from "@lib/sanityAPI";
 import { Image } from "astro:assets";
-import { formatPrice } from "@lib/stringUtils";
 import ProductPickupDate from "./PickupDate.astro";
 import ProductOutOfStock from "./OutOfStock.astro";
 import ProductVariantSelector from "./VariantSelector.astro";
 import ProductQtySelector from "./QtySelector.astro";
+import AddToCartButton from "./AddToCartButton.astro";
 import { actions } from "astro:actions";
 import ButtonLink from "@components/ButtonLink.astro";
 import { getCart } from "@lib/cart";
@@ -36,16 +35,9 @@ const qtyInCart = cart.items
   .reduce((a, b) => a + b, 0);
 
 const max = product.maxQuantityPerOrder;
-const isCartFull = max === qtyInCart;
 const isOutOfStock = max === 0;
 const disabled =
-  isOutOfStock || availablePickupDates.length === 0 || isCartFull;
-
-const buttonActionDescription = disabled ? "Ej tillgänlig" : "Beställ";
-const buttonLabel =
-  product.variants.length === 1
-    ? `${formatPrice([product.variants[0].price])} - ${buttonActionDescription}`
-    : buttonActionDescription;
+  isOutOfStock || availablePickupDates.length === 0 || max === qtyInCart;
 ---
 
 <Section {...rest}>
@@ -115,27 +107,11 @@ const buttonLabel =
 
         {!disabled && <ProductQtySelector max={max} qtyInCart={qtyInCart} />}
 
-        <fieldset>
-          {
-            isCartFull ? (
-              <ButtonLink
-                href={getCartUrl()}
-                variant="primary"
-                class="w-full text-center"
-              >
-                Visa kundvagn
-              </ButtonLink>
-            ) : disabled ? (
-              <Button type="button" variant="outline" class="w-full" disabled>
-                {buttonLabel}
-              </Button>
-            ) : (
-              <Button type="submit" variant="primary" class="w-full">
-                {buttonLabel}
-              </Button>
-            )
-          }
-        </fieldset>
+        <AddToCartButton
+          {product}
+          {availablePickupDates}
+          {qtyInCart}
+        />
       </form>
     </div>
   </div>

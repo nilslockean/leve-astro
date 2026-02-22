@@ -33,6 +33,51 @@ test.describe("Shop (storefront)", () => {
     });
   });
 
+  test.describe("Disabled product states", () => {
+    test("out-of-stock product: overview shows Slut i lager, detail shows disabled button (no Visa kundvagn in form)", async ({
+      page,
+    }) => {
+      await page.goto(SHOP_BASE);
+      const outOfStockCard = page
+        .locator("a[href^='" + SHOP_BASE + "/']")
+        .filter({ has: page.getByText("Slut i lager") })
+        .first();
+      if (!(await outOfStockCard.isVisible())) {
+        test.skip(true, "No out-of-stock product in store");
+      }
+      await outOfStockCard.click();
+      await expect(page).toHaveURL(new RegExp(`${SHOP_BASE}/[^/]+$`));
+      const form = page.getByRole("main").locator("form").first();
+      await expect(form).toBeVisible();
+      await expect(
+        form.getByRole("button", { name: /Slut i lager/ }),
+      ).toBeDisabled();
+      await expect(
+        form.getByRole("link", { name: "Visa kundvagn" }),
+      ).toHaveCount(0);
+    });
+
+    test("no pickup dates product: overview shows Ej tillgänglig, detail shows disabled Ej tillgänglig", async ({
+      page,
+    }) => {
+      await page.goto(SHOP_BASE);
+      const noDatesCard = page
+        .locator("a[href^='" + SHOP_BASE + "/']")
+        .filter({ has: page.getByText("Ej tillgänglig") })
+        .first();
+      if (!(await noDatesCard.isVisible())) {
+        test.skip(true, "No product with only past pickup dates in store");
+      }
+      await noDatesCard.click();
+      await expect(page).toHaveURL(new RegExp(`${SHOP_BASE}/[^/]+$`));
+      const form = page.getByRole("main").locator("form").first();
+      await expect(form).toBeVisible();
+      await expect(
+        form.getByRole("button", { name: /Ej tillgänglig/ }),
+      ).toBeDisabled();
+    });
+  });
+
   test.describe("Product detail", () => {
     test("opens from overview and shows product content", async ({ page }) => {
       await page.goto(SHOP_BASE);

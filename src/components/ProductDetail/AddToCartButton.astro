@@ -1,0 +1,56 @@
+---
+import Button from "@components/Button.astro";
+import ButtonLink from "@components/ButtonLink.astro";
+import { getCartUrl } from "@config/site";
+import type { Product } from "@lib/schemas/Product";
+import { formatPrice } from "@lib/stringUtils";
+
+interface Props {
+  product: Product;
+  availablePickupDates: string[];
+  qtyInCart: number;
+}
+
+const { product, availablePickupDates, qtyInCart } = Astro.props;
+
+const max = product.maxQuantityPerOrder;
+const isCartFull = max === qtyInCart;
+const isOutOfStock = max === 0;
+const disabled =
+  isOutOfStock || availablePickupDates.length === 0 || isCartFull;
+const noPickupDatesAvailable =
+  !isOutOfStock && availablePickupDates.length === 0;
+
+const actionLabel = isOutOfStock
+  ? "Slut i lager"
+  : noPickupDatesAvailable
+    ? "Ej tillgänglig"
+    : "Beställ";
+const buttonLabel =
+  product.variants.length === 1
+    ? `${formatPrice([product.variants[0].price])} - ${actionLabel}`
+    : actionLabel;
+const showViewCartLink = isCartFull && !isOutOfStock;
+---
+
+<fieldset>
+  {
+    showViewCartLink ? (
+      <ButtonLink
+        href={getCartUrl()}
+        variant="primary"
+        class="w-full text-center"
+      >
+        Visa kundvagn
+      </ButtonLink>
+    ) : disabled ? (
+      <Button type="button" variant="outline" class="w-full" disabled>
+        {buttonLabel}
+      </Button>
+    ) : (
+      <Button type="submit" variant="primary" class="w-full">
+        {buttonLabel}
+      </Button>
+    )
+  }
+</fieldset>
