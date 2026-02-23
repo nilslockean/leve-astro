@@ -2,7 +2,8 @@
 
 @theme {
   --font-futura: "Futura Heavy", sans-serif;
-  --font-sans: "Gothic725 Bd BT", sans-serif;
+  --font-sans: "DM Sans Variable", sans-serif;
+  --font-display: "Gothic725 Bd BT", sans-serif;
 }
 
 @layer base {
@@ -25,18 +26,22 @@
     font-display: swap;
   }
 
+  body {
+    @apply font-medium;
+  }
+
   /* Headings */
   h1,
   .h1 {
-    @apply text-4xl lg:text-5xl xl:text-6xl leading-tight -mx-1 mb-8;
+    @apply text-4xl lg:text-5xl xl:text-6xl leading-tight -mx-1 mb-8 font-display;
   }
   h2,
   .h2 {
-    @apply text-3xl lg:text-4xl mb-4;
+    @apply text-3xl lg:text-4xl mb-4 font-display;
   }
   h3,
   .h3 {
-    @apply text-2xl lg:text-3xl tracking-wider;
+    @apply text-2xl lg:text-3xl tracking-wider font-display;
   }
   h4,
   .h4 {
@@ -75,7 +80,7 @@
     @apply mb-6;
   }
   legend {
-    @apply uppercase tracking-widest mb-3;
+    @apply uppercase tracking-widest mb-3 font-display;
   }
   label {
     @apply block mb-2;

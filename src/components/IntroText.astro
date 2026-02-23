@@ -7,6 +7,11 @@ interface Props extends HTMLAttributes<"p"> {}
 const { class: className } = Astro.props;
 ---
 
-<p class={cn("text-xl lg:text-2xl leading-relaxed max-w-prose", className)}>
+<p
+  class={cn(
+    "text-xl lg:text-2xl leading-relaxed max-w-prose font-semibold",
+    className,
+  )}
+>
   <slot />
 </p>
