@@ -10,9 +10,10 @@ interface Props extends HTMLAttributes<"fieldset"> {
 
 const { prices, class: className, ...rest } = Astro.props;
 
-// This component is only visible if there are multiple pricing options.
-// It should always be rendered in the DOM in order to simplify backend logic.
-const isHidden = prices.length === 1;
+// This component is hidden if there is only one pricing option and
+// the id is "standard". It is always rendered in the DOM in order
+// to simplify backend logic.
+const isHidden = prices.length === 1 && prices[0].id === "standard";
 ---
 
 <fieldset
@@ -21,7 +22,7 @@ const isHidden = prices.length === 1;
     {
       hidden: isHidden,
     },
-    className
+    className,
   )}
   hidden={isHidden}
 >
