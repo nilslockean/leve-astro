@@ -43,11 +43,27 @@ const instagramFeedId = BEHOLD_FEED_ID;
       Surdegsbröd ur ugnen på eftermiddagen och allt vi bakar är växtbaserat.
     </IntroText>
     <div>
-      <ButtonLink href="/bestall" variant="primary" data-cta="primary"
-        >{
-          ENABLE_STOREFRONT ? "Beställ online" : "Beställ fredagsmunk"
-        }</ButtonLink
-      >
+      {
+        ENABLE_STOREFRONT ? (
+          <>
+            <ButtonLink href="/bestall" variant="primary" data-cta="primary">
+              Beställ tårta
+            </ButtonLink>
+            <ButtonLink
+              href="/bestall/fredagsmunk"
+              data-cta="secondary"
+              variant="outline-light"
+            >
+              Beställ fredagsmunk
+            </ButtonLink>
+          </>
+        ) : (
+          <ButtonLink href="/bestall" variant="primary" data-cta="primary">
+            Beställ fredagsmunk
+          </ButtonLink>
+        )
+      }
+
       <ButtonLink
         href="#oppettider"
         variant="outline-light"
