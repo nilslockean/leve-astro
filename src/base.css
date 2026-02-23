@@ -80,7 +80,7 @@
     @apply mb-6;
   }
   legend {
-    @apply uppercase tracking-widest mb-3;
+    @apply uppercase tracking-widest mb-3 font-display;
   }
   label {
     @apply block mb-2;
