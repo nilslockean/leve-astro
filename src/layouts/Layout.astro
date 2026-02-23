@@ -29,6 +29,7 @@ import { IconName } from "@lib/enums/IconName";
 import MobileHeader from "@components/MobileHeader.astro";
 import ButtonLink from "@components/ButtonLink.astro";
 import type { ImageMetadata } from "astro";
+import "@fontsource-variable/dm-sans";
 
 interface Props {
   title: string;
@@ -127,7 +128,7 @@ const optimizedOgImage = await getImage({
         class="flex lg:text-lg gap-x-3 gap-y-1 flex-wrap justify-end items-center"
         aria-label="Huvudmeny"
       >
-        <NavLinks links={_getNavLinks(NavArea.HEADER)} />
+        <NavLinks links={_getNavLinks(NavArea.HEADER)} class="font-display" />
         {
           ENABLE_STOREFRONT && (
             <ButtonLink
