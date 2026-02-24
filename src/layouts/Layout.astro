@@ -1,5 +1,6 @@
 ---
 import "../base.css";
+import "../styles/global.css";
 import Logo from "@components/Logo.astro";
 import { NavArea } from "@lib/enums/NavArea";
 import config, { getCartUrl, SiteLanguage } from "@config/site";
@@ -27,7 +28,6 @@ import { ENABLE_STOREFRONT } from "astro:env/server";
 import Icon from "@components/Icon.astro";
 import { IconName } from "@lib/enums/IconName";
 import MobileHeader from "@components/MobileHeader.astro";
-import ButtonLink from "@components/ButtonLink.astro";
 import type { ImageMetadata } from "astro";
 import "@fontsource-variable/dm-sans";
 
@@ -63,10 +63,7 @@ const optimizedOgImage = await getImage({
 ---
 
 <!doctype html>
-<html
-  lang={SiteLanguage.SV}
-  class="bg-blue-900 text-orange-100 lg:text-lg leading-normal min-h-screen antialiased"
->
+<html lang={SiteLanguage.SV}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -131,14 +128,16 @@ const optimizedOgImage = await getImage({
         <NavLinks links={_getNavLinks(NavArea.HEADER)} class="font-display" />
         {
           ENABLE_STOREFRONT && (
-            <ButtonLink
+            <a
               href={getCartUrl()}
-              variant="outline"
-              class="flex gap-2 items-center text-sm m-0 ml-4 py-2 px-3 border-2"
+              class="btn btn--outline btn--small"
               title="Visa kundvagn"
+              style={{
+                marginLeft: "1rem",
+              }}
             >
               <Icon name={IconName.CART} />
-            </ButtonLink>
+            </a>
           )
         }
       </nav>

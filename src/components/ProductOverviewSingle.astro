@@ -1,11 +1,9 @@
 ---
-import { cn } from "@lib/cn";
 import type { Product } from "@lib/schemas/Product";
 import type { HTMLAttributes } from "astro/types";
 import { Image } from "astro:assets";
 import { urlFor } from "@lib/sanityAPI";
 import { formatPrice } from "@lib/stringUtils";
-import { buttonStyles } from "@lib/buttonStyles";
 import { getProductUrl } from "@config/site";
 
 interface Props extends HTMLAttributes<"a"> {
@@ -36,7 +34,5 @@ const buttonLabel = outOfStock
     {product.title}
   </h3>
   <p>{formatPrice(prices)}</p>
-  <span class={cn(buttonStyles("default", "small"), "mt-0")}
-    >{buttonLabel}</span
-  >
+  <span class="btn btn--small">{buttonLabel}</span>
 </a>

@@ -2,7 +2,6 @@
 import { cn } from "@lib/cn";
 import type { ButtonVariant } from "@lib/types/ButtonVariant";
 import type { HTMLAttributes } from "astro/types";
-import { buttonStyles } from "@lib/buttonStyles";
 
 interface Props extends HTMLAttributes<"a"> {
   variant?: ButtonVariant;
@@ -11,6 +10,18 @@ interface Props extends HTMLAttributes<"a"> {
 const { href, variant = "default", class: className, ...rest } = Astro.props;
 ---
 
-<a {href} {...rest} class={cn(buttonStyles(variant), className)}>
+<a
+  {...rest}
+  {href}
+  class={cn(
+    "btn",
+    {
+      "btn--primary": variant === "primary",
+      "btn--outline": variant === "outline",
+      "btn--outline-light": variant === "outline-light",
+    },
+    className,
+  )}
+>
   <slot />
 </a>
