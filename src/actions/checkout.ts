@@ -38,7 +38,10 @@ export const checkout = defineAction({
       posthog_distinct_id: distinctId,
     } = input;
 
-    const cart = getCart(context.cookies);
+    const products = await getCollection("products");
+    const productIds = products.map((product) => product.id);
+    const cart = getCart(context.cookies, productIds);
+
     if (cart.items.length === 0) {
       throw new ActionError({
         code: "BAD_REQUEST",
@@ -46,7 +49,6 @@ export const checkout = defineAction({
       });
     }
 
-    const products = await getCollection("products");
     const cartItems = cart.items.map((item) => {
       const collectionEntry = products.find(({ id }) => id === item.productId);
       if (!collectionEntry) {

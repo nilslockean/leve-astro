@@ -5,6 +5,7 @@ const SHOP_BASE = "/bestall";
 const CART_PATH = "/kundvagn";
 const CHECKOUT_PATH = "/kassa";
 const THANK_YOU_PATH = "/bestall/tack";
+const PRODUCT_OVERVIEW_LINK_TESTID = "product-overview-link";
 
 test.describe("Shop (storefront)", () => {
   test.describe("Product overview", () => {
@@ -26,7 +27,9 @@ test.describe("Shop (storefront)", () => {
 
     test("product links point to product detail pages", async ({ page }) => {
       await page.goto(SHOP_BASE);
-      const productLink = page.locator(`a[href^="${SHOP_BASE}/"]`).first();
+      const productLink = page
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
+        .first();
       await expect(productLink).toBeVisible();
       const href = await productLink.getAttribute("href");
       expect(href).toMatch(new RegExp(`^${SHOP_BASE}/[^/]+$`));
@@ -39,7 +42,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const outOfStockCard = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .filter({ has: page.getByText("Slut i lager") })
         .first();
       if (!(await outOfStockCard.isVisible())) {
@@ -62,7 +65,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const noDatesCard = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .filter({ has: page.getByText("Ej tillgänglig") })
         .first();
       if (!(await noDatesCard.isVisible())) {
@@ -82,7 +85,7 @@ test.describe("Shop (storefront)", () => {
     test("opens from overview and shows product content", async ({ page }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await expect(firstProductLink).toBeVisible();
       await firstProductLink.click();
@@ -96,7 +99,7 @@ test.describe("Shop (storefront)", () => {
     test("breadcrumbs show Hem > Beställ > product title", async ({ page }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb" });
@@ -112,7 +115,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -140,7 +143,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const submitBtn = page.getByRole("button", { name: /Beställ/ });
@@ -166,7 +169,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const submitBtn = page.getByRole("button", { name: /Beställ/ });
@@ -194,7 +197,7 @@ test.describe("Shop (storefront)", () => {
     test("can update quantity and remove item", async ({ page }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const submitBtn = page.getByRole("button", { name: /Beställ/ });
@@ -235,7 +238,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const submitBtn = page.getByRole("button", { name: /Beställ/ });
@@ -267,7 +270,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const submitBtn = page.getByRole("button", { name: /Beställ/ });
@@ -319,7 +322,7 @@ test.describe("Shop (storefront)", () => {
     }) => {
       await page.goto(SHOP_BASE);
       const firstProductLink = page
-        .locator("a[href^='" + SHOP_BASE + "/']")
+        .getByTestId(PRODUCT_OVERVIEW_LINK_TESTID)
         .first();
       await firstProductLink.click();
       const submitBtn = page.getByRole("button", { name: /Beställ/ });

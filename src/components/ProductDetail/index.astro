@@ -13,7 +13,6 @@ import ProductVariantSelector from "./VariantSelector.astro";
 import ProductQtySelector from "./QtySelector.astro";
 import AddToCartButton from "./AddToCartButton.astro";
 import { actions } from "astro:actions";
-import ButtonLink from "@components/ButtonLink.astro";
 import { getCart } from "@lib/cart";
 
 const cart = getCart(Astro.cookies);
@@ -57,13 +56,12 @@ const disabled =
         <p class="m-0">
           <strong>{product.title}</strong> lades till i din kundvagn
         </p>
-        <ButtonLink
+        <a
           href={getCartUrl()}
-          variant="outline"
-          class="text-current m-0"
+          class="btn btn--outline text-current m-0"
         >
           Visa kundvagn
-        </ButtonLink>
+        </a>
       </div>
     )
   }

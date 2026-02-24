@@ -1,5 +1,7 @@
 import { type AstroCookies } from "astro";
 import { z } from "astro/zod";
+import type { CollectionEntry } from "astro:content";
+import type { Product } from "./schemas/Product";
 
 const cartItemSchema = z.object({
   productId: z.string(),
@@ -23,26 +25,33 @@ const TAX_PERCENTAGE = 0.12;
 const CART_COOKIE = "cart";
 export const EMPTY_CART = Object.freeze({ items: [] }) satisfies Cart;
 
-export function getCart(cookies: AstroCookies): Cart {
+export function getCart(cookies: AstroCookies, productIds?: string[]): Cart {
   const cookie = cookies.get(CART_COOKIE);
   if (!cookie) return EMPTY_CART;
 
   // Validate cookie against schema
   const parsedCookie = cartSchema.safeParse(cookie.json());
-  if (parsedCookie.success) {
-    return parsedCookie.data;
-  }
 
   // Clear cookie contents if they are invalid
-  cookies.delete(CART_COOKIE);
+  if (!parsedCookie.success) {
+    cookies.delete(CART_COOKIE);
+    return EMPTY_CART;
+  }
 
-  return EMPTY_CART;
+  // Filter items if product IDs are provided
+  if (productIds) {
+    parsedCookie.data.items = parsedCookie.data.items.filter((item) =>
+      productIds.includes(item.productId),
+    );
+  }
+
+  return parsedCookie.data;
 }
 
 export function addToCart(
   cart: Cart,
   item: CartItem,
-  maxQty: number | null = null
+  maxQty: number | null = null,
 ): Cart {
   // const cart = Object.create(currentCart);
   const nextCart = structuredClone(cart);
@@ -63,7 +72,7 @@ export function addToCart(
 
   // Find items in cart with same id and price option
   const existing = nextCart.items.find(
-    (i) => i.productId === item.productId && i.price === item.price
+    (i) => i.productId === item.productId && i.price === item.price,
   );
 
   if (existing) {
@@ -81,12 +90,12 @@ export function addToCart(
 export function updateCart(
   cart: Cart,
   item: CartItem,
-  maxQty: number | null = null
+  maxQty: number | null = null,
 ) {
   const nextCart = structuredClone(cart);
   const nextItemIndex = nextCart.items.findIndex(
     ({ productId, price }) =>
-      productId === item.productId && price === item.price
+      productId === item.productId && price === item.price,
   );
   const nextItem = nextCart.items[nextItemIndex];
 
@@ -110,7 +119,7 @@ export function updateCart(
   const qtyInCart = nextCart.items
     .filter(
       ({ productId, price }) =>
-        productId === item.productId && price !== item.price
+        productId === item.productId && price !== item.price,
     )
     .reduce((sum, { qty }) => sum + qty, 0);
 
@@ -138,7 +147,7 @@ export function getCartTotal(cart: Cart): CartTotal {
 
   const total = cart.items.reduce(
     (acc, { qty, price }) => acc + price * qty,
-    0
+    0,
   );
 
   const tax = Math.round(total - total / (1 + TAX_PERCENTAGE));
@@ -147,4 +156,32 @@ export function getCartTotal(cart: Cart): CartTotal {
     total,
     tax,
   };
+}
+
+// Returns the cart contents with the product data from the collection and
+// filters out items that are not in the collection (ID's might change in the CMS)
+// This is useful for pages that need to display the cart contents with the product data
+interface DecoratedCartItem extends CartItem {
+  product: Product;
+}
+export function getCartContents(
+  cart: Cart,
+  products: CollectionEntry<"products">[],
+): DecoratedCartItem[] {
+  const productIds = products.map((product) => product.id);
+
+  return cart.items
+    .filter((item) => productIds.includes(item.productId))
+    .map((item) => {
+      // Get the product data from the collection
+      // We know the product ID is valid, so we can use ! to assert it's not undefined
+      const product = products.find(
+        (product) => product.id === item.productId,
+      )!.data;
+
+      return {
+        ...item,
+        product,
+      };
+    });
 }

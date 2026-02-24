@@ -5,8 +5,6 @@ import { getImage } from "astro:assets";
 import bakerImage from "@lib/assets/bagare.webp";
 import IntroText from "@components/IntroText.astro";
 import { FIENTA_API_KEY } from "astro:env/server";
-import ButtonLink from "@components/ButtonLink.astro";
-import Button from "@components/Button.astro";
 import Hero from "@components/Hero.astro";
 import { FientaAPI } from "@lib/api/FientaAPI";
 import { isProduction } from "@lib/envUtils";
@@ -46,15 +44,15 @@ const image =
     <div>
       {
         hasBooking ? (
-          <ButtonLink href={url} data-cta="primary">
+          <a href={url} class="btn" data-cta="primary">
             Boka nu
-          </ButtonLink>
+          </a>
         ) : (
-          <Button disabled>
+          <button class="btn" disabled>
             {salesEnded
               ? "Biljettförsäljningen har stängt"
-              : "Tyvärr, biljetterna är slutsålda"}
-          </Button>
+              : "Tyvärr, biljetterna är slutsålda"}
+          </button>
         )
       }
     </div>
@@ -62,6 +60,6 @@ const image =
 
   <Section class="my-16">
     <div class="max-w-prose text-lg" set:html={description} />
-    {hasBooking && <ButtonLink href={url}>Boka nu</ButtonLink>}
+    {hasBooking && <a href={url} class="btn">Boka nu</a>}
   </Section>
 </Layout>

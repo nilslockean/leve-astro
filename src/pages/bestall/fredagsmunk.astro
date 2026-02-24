@@ -1,5 +1,4 @@
 ---
-import ButtonLink from "@components/ButtonLink.astro";
 import Section from "@components/Section.astro";
 import Layout from "src/layouts/Layout.astro";
 import Accordion from "@components/Accordion.astro";
@@ -10,6 +9,8 @@ import { getImage } from "astro:assets";
 import videoPoster from "@lib/assets/Munk-4-poster.jpg";
 import { sanityAPI } from "@lib/sanityAPI";
 import GartnerFilm from "@components/GartnerFilm.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { getShopUrl } from "@config/site";
 
 const optimizedVideoPoster = await getImage({
   src: videoPoster,
@@ -24,6 +25,14 @@ const orderTerms = await sanityAPI.getOrderTerms();
   metaDescription="Beställ dina fredagsmunkar i förväg och hämta enkelt upp vid vald tid."
 >
   <Section>
+    <Breadcrumbs
+      trail={[
+        { label: "Hem", href: "/" },
+        { label: "Beställ", href: getShopUrl() },
+        { label: "Fredagsmunk" },
+      ]}
+    />
+
     <h1>Beställ dina fredagsmunkar</h1>
     <IntroText class="mb-8">
       Varje fredag gör vi en unik munk med extra allt som bara finns den dagen.
@@ -64,15 +73,15 @@ const orderTerms = await sanityAPI.getOrderTerms();
             självklart också bra!
           </p>
         </div>
-        <ButtonLink
-          variant="primary"
+        <a
           href="https://web.trueapp.se/bagerileve/store1/"
           target="_blank"
           rel="noreferrer"
+          class="btn btn--primary"
           data-cta="primary"
         >
           Till online-beställningen
-        </ButtonLink>
+        </a>
       </div>
     </div>
   </Section>
@@ -101,5 +110,9 @@ const orderTerms = await sanityAPI.getOrderTerms();
 
   p {
     @apply max-w-prose;
+  }
+
+  .btn {
+    margin-top: 1rem;
   }
 </style>

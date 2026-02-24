@@ -1,5 +1,4 @@
 ---
-import ButtonLink from "@components/ButtonLink.astro";
 import Section from "@components/Section.astro";
 import OpeningHours from "@components/OpeningHours.astro";
 import Layout from "../layouts/Layout.astro";
@@ -44,30 +43,30 @@ const instagramFeedId = BEHOLD_FEED_ID;
     </IntroText>
     <div>
       {
-        ENABLE_STOREFRONT ? (
-          <>
-            <ButtonLink href="/bestall" variant="primary" data-cta="primary">
-              Beställ tårta
-            </ButtonLink>
-            <ButtonLink
-              href="/bestall/fredagsmunk"
-              data-cta="secondary"
-              variant="outline-light"
-            >
-              Beställ fredagsmunk
-            </ButtonLink>
-          </>
-        ) : (
-          <ButtonLink href="/bestall" variant="primary" data-cta="primary">
-            Beställ fredagsmunk
-          </ButtonLink>
+        ENABLE_STOREFRONT && (
+          <a href="/bestall" class="btn btn--primary" data-cta="primary">
+            Beställ tårta
+          </a>
         )
       }
 
-      <ButtonLink
-        href="#oppettider"
-        variant="outline-light"
-        data-cta="secondary">Kolla öppettiderna</ButtonLink
+      <a
+        href="/bestall/fredagsmunk"
+        class="btn"
+        class:list={[
+          "btn",
+          {
+            "btn--outline-light": ENABLE_STOREFRONT,
+            "btn--primary": !ENABLE_STOREFRONT,
+          },
+        ]}
+        data-cta={`${ENABLE_STOREFRONT ? "secondary" : "primary"}`}
+      >
+        Beställ fredagsmunk
+      </a>
+
+      <a href="#oppettider" class="btn btn--outline-light" data-cta="secondary"
+        >Kolla öppettiderna</a
       >
     </div>
   </Hero>
@@ -81,9 +80,9 @@ const instagramFeedId = BEHOLD_FEED_ID;
         irregularLimit={0}
         consolidated
       >
-        <ButtonLink href="/kontakt#oppettider" slot="has-irregular">
+        <a href="/kontakt#oppettider" slot="has-irregular" class="btn">
           Se avvikande öppettider
-        </ButtonLink>
+        </a>
       </OpeningHours>
     </div>
     <div class="empty:hidden">
@@ -117,7 +116,7 @@ const instagramFeedId = BEHOLD_FEED_ID;
         grejerna vi kan hitta.
       </p>
 
-      <ButtonLink href="/kontakt">Kom hit</ButtonLink>
+      <a href="/kontakt" class="btn">Kom hit</a>
     </MediaBlock>
   </Section>
 
@@ -135,13 +134,14 @@ const instagramFeedId = BEHOLD_FEED_ID;
     typeof instagramFeedId === "string" && (
       <Section>
         <InstagramFeed feedId={instagramFeedId} />
-        <ButtonLink
+        <a
           href="https://www.instagram.com/bagerileve"
           target="_blank"
           rel="noreferrer"
+          class="btn"
         >
           Följ @bagerileve
-        </ButtonLink>
+        </a>
       </Section>
     )
   }
@@ -157,3 +157,10 @@ const instagramFeedId = BEHOLD_FEED_ID;
     />
   </Section>
 </Layout>
+
+<style>
+  .btn {
+    margin-top: 1rem;
+    margin-right: 1rem;
+  }
+</style>

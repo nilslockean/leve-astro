@@ -6,7 +6,6 @@ import { ENABLE_STOREFRONT } from "astro:env/server";
 import Icon from "./Icon.astro";
 import { IconName } from "@lib/enums/IconName";
 import { getCartUrl } from "@config/site";
-import ButtonLink from "./ButtonLink.astro";
 
 interface Props {
   links: NavLink[];
@@ -62,14 +61,13 @@ const { links } = Astro.props;
   <NavLinks links={links} class="no-underline text-4xl font-display" />
   {
     ENABLE_STOREFRONT && (
-      <ButtonLink
-        variant="outline"
+      <a
         href={getCartUrl()}
-        class="flex gap-2 items-center m-0 mt-8"
+        class="btn btn--outline flex gap-2 items-center m-0 mt-8"
       >
         <Icon name={IconName.CART} />
         <span>Kundvagn</span>
-      </ButtonLink>
+      </a>
     )
   }
 </nav>

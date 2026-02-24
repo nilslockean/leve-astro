@@ -1,6 +1,4 @@
 ---
-import Button from "@components/Button.astro";
-import ButtonLink from "@components/ButtonLink.astro";
 import { getCartUrl } from "@config/site";
 import type { Product } from "@lib/schemas/Product";
 import { formatPrice } from "@lib/stringUtils";
@@ -33,24 +31,20 @@ const buttonLabel =
 const showViewCartLink = isCartFull && !isOutOfStock;
 ---
 
-<fieldset>
+<fieldset class="mt-4">
   {
     showViewCartLink ? (
-      <ButtonLink
-        href={getCartUrl()}
-        variant="primary"
-        class="w-full text-center"
-      >
+      <a href={getCartUrl()} class="btn btn--primary w-full text-center">
         Visa kundvagn
-      </ButtonLink>
+      </a>
     ) : disabled ? (
-      <Button type="button" variant="outline" class="w-full" disabled>
+      <button type="button" class="btn btn--outline w-full" disabled>
         {buttonLabel}
-      </Button>
+      </button>
     ) : (
-      <Button type="submit" variant="primary" class="w-full">
+      <button type="submit" class="btn btn--primary w-full">
         {buttonLabel}
-      </Button>
+      </button>
     )
   }
 </fieldset>

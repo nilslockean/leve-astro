@@ -3,6 +3,8 @@ import { cn } from "@lib/cn";
 import type { Product } from "@lib/schemas/Product";
 import type { HTMLAttributes } from "astro/types";
 import ProductOverviewSingle from "./ProductOverviewSingle.astro";
+import { Image } from "astro:assets";
+import donutImage from "../images/fredagsmunk-rabarber.jpeg";
 
 interface Props extends HTMLAttributes<"div"> {
   products: Array<{ product: Product; availablePickupDates: string[] }>;
@@ -15,7 +17,21 @@ const { products, class: className, ...rest } = Astro.props;
   {...rest}
   class={cn("grid md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-16", className)}
 >
-  {products.map(({ product, availablePickupDates }) => (
-    <ProductOverviewSingle product={product} {availablePickupDates} />
-  ))}
+  {
+    products.map(({ product, availablePickupDates }) => (
+      <ProductOverviewSingle product={product} {availablePickupDates} />
+    ))
+  }
+  <a href="/bestall/fredagsmunk" class="max-w-prose">
+    <Image
+      src={donutImage}
+      alt="Fredagsmunk med rabarber"
+      width={770}
+      height={580}
+      class="border-4 mb-3 block"
+    />
+    <h3 class="h3 mb-2">Fredagsmunk</h3>
+    <p>Ny smak varje vecka</p>
+    <span class="btn btn--small">Läs mer</span>
+  </a>
 </div>

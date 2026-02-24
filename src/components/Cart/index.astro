@@ -6,7 +6,6 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { type CartTotal } from "@lib/cart";
 import type { Product } from "@lib/schemas/Product";
 import CartItem from "./CartItem.astro";
-import ButtonLink from "@components/ButtonLink.astro";
 import CartTotals from "./CartTotals.astro";
 
 interface Props extends HTMLAttributes<"section"> {
@@ -54,9 +53,9 @@ const isEmpty = contents.length === 0;
     <div class="flex flex-col bg-blue-950 p-8 gap-8 self-start sticky top-8">
       {
         isEmpty ? (
-          <ButtonLink href={getShopUrl()} variant="primary" class="m-0">
+          <a href={getShopUrl()} class="btn btn--primary m-0">
             Fortsätt handla
-          </ButtonLink>
+          </a>
         ) : (
           <CartTotals total={total} />
         )
