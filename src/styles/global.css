@@ -126,7 +126,10 @@ body {
    ------------------------------------------------------------------------- */
 
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   text-transform: uppercase;
   font-family: var(--font-display);
   font-size: var(--text-base);
@@ -139,8 +142,6 @@ body {
     border-color var(--default-transition-duration)
       var(--default-transition-timing-function);
   padding: 1rem 1.5rem;
-  margin-top: 1rem;
-  margin-right: 1rem;
   cursor: pointer;
 
   /* Default: surface-dark fill, text-on-dark */
@@ -206,7 +207,6 @@ body {
   font-size: var(--text-sm);
   padding: 0.5rem 1rem;
   border-width: 2px;
-  margin: 0;
 }
 
 /* Modifier: disabled */

@@ -1,6 +1,5 @@
 ---
 import Accordion from "@components/Accordion.astro";
-import ButtonLink from "@components/ButtonLink.astro";
 import IconList from "@components/IconList.astro";
 import IconListItem from "@components/IconListItem.astro";
 import IntroText from "@components/IntroText.astro";
@@ -58,15 +57,14 @@ const openingHours = await sanityAPI.getOpeningHours();
           >jobb@bagerileve.se</Link
         >när en tjänst dyker upp om du är intresserad.
       </p>
-      <ButtonLink
+      <a
         href="https://www.instagram.com/bagerileve"
         target="_blank"
         rel="noreferrer"
-        variant="outline"
-        class="border-4 text-current"
+        class="btn btn--outline border-4 text-current"
       >
         Följ @bagerileve
-      </ButtonLink>
+      </a>
     </div>
     <div>
       <h2>Kontaktuppgifter</h2>

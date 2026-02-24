@@ -12,7 +12,6 @@ import {
   PICKUP_DATE_MIN_OFFSET,
   PICKUP_DATE_MAX_OFFSET,
 } from "astro:env/server";
-import ButtonLink from "@components/ButtonLink.astro";
 
 if (!ENABLE_STOREFRONT) {
   return Astro.rewrite("/bestall/fredagsmunk");
@@ -58,13 +57,12 @@ const productsWithDates = productEntries.map(({ data }) => {
       <p class="m-0">
         <strong>Letar du efter fredagsmunkar?</strong> De beställs via ett annat system.
       </p>
-      <ButtonLink
+      <a
         href="/bestall/fredagsmunk"
-        variant="outline"
-        class="text-current m-0"
+        class="btn btn--outline text-current m-0"
       >
         Beställ fredagsmunk
-      </ButtonLink>
+      </a>
     </div>
   </Section>
 </Layout>

@@ -3,7 +3,6 @@ import type { HTMLAttributes } from "astro/types";
 import { type CartTotal } from "@lib/cart";
 import { formatPrice } from "@lib/stringUtils";
 import { cn } from "@lib/cn";
-import ButtonLink from "@components/ButtonLink.astro";
 import { getCheckoutUrl } from "@config/site";
 
 interface Props extends HTMLAttributes<"fieldset"> {
@@ -19,11 +18,10 @@ const { total, class: className, ...rest } = Astro.props;
   <p class="text-sm">Inkl. {formatPrice([total.tax])} moms</p>
   <hr class="my-6" />
   <p>Välj upphämtningsdatum i nästa steg.</p>
-  <ButtonLink
+  <a
     href={getCheckoutUrl()}
-    variant="primary"
-    class="w-full text-center"
+    class="btn btn--primary w-full text-center"
   >
     Gå till kassan
-  </ButtonLink>
+  </a>
 </fieldset>

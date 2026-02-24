@@ -1,5 +1,4 @@
 ---
-import ButtonLink from "@components/ButtonLink.astro";
 import Section from "@components/Section.astro";
 import Layout from "src/layouts/Layout.astro";
 import Accordion from "@components/Accordion.astro";
@@ -64,15 +63,15 @@ const orderTerms = await sanityAPI.getOrderTerms();
             självklart också bra!
           </p>
         </div>
-        <ButtonLink
-          variant="primary"
+        <a
           href="https://web.trueapp.se/bagerileve/store1/"
           target="_blank"
           rel="noreferrer"
+          class="btn btn--primary"
           data-cta="primary"
         >
           Till online-beställningen
-        </ButtonLink>
+        </a>
       </div>
     </div>
   </Section>
@@ -101,5 +100,9 @@ const orderTerms = await sanityAPI.getOrderTerms();
 
   p {
     @apply max-w-prose;
+  }
+
+  .btn {
+    margin-top: 1rem;
   }
 </style>

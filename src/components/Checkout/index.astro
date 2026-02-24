@@ -7,7 +7,6 @@ import { type CartTotal } from "@lib/cart";
 import type { Product } from "@lib/schemas/Product";
 import PickupDateSelector from "./PickupDateSelector.astro";
 import { formatPrice } from "@lib/stringUtils";
-import Button from "@components/Button.astro";
 import { actions } from "astro:actions";
 
 interface Props extends HTMLAttributes<"section"> {
@@ -141,9 +140,9 @@ const errorMessage = result?.error?.message;
             </a>
           </span>
         </label>
-        <Button type="submit" variant="primary" class="w-full text-center mt-4">
+        <button type="submit" class="btn btn--primary w-full text-center mt-4">
           Slutför beställning
-        </Button>
+        </button>
       </fieldset>
     </div>
   </form>
