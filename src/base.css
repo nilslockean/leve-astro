@@ -35,11 +35,11 @@
   }
   h4,
   .h4 {
-    @apply uppercase text-lg font-extrabold tracking-wider;
+    @apply uppercase text-lg font-display tracking-wider;
   }
   h5,
   .h5 {
-    @apply uppercase text-base font-extrabold tracking-wider;
+    @apply uppercase text-base font-display tracking-wider;
   }
 
   /* Paragraphs */
