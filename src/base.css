@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  --font-futura: "Futura Heavy", sans-serif;
   --font-sans: "DM Sans Variable", sans-serif;
   --font-display: "Gothic725 Bd BT", sans-serif;
 }
@@ -13,15 +12,6 @@
       url("/fonts/Gothic725BT-BoldA.woff2") format("woff2"),
       url("/fonts/Gothic725BT-BoldA.woff") format("woff");
     font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Futura Heavy";
-    src:
-      url("/fonts/Futura-Heavy.woff2") format("woff2"),
-      url("/fonts/Futura-Heavy.woff") format("woff");
-    font-weight: 900;
     font-style: normal;
     font-display: swap;
   }
@@ -45,11 +35,11 @@
   }
   h4,
   .h4 {
-    @apply uppercase text-lg font-futura tracking-wider;
+    @apply uppercase text-lg font-extrabold tracking-wider;
   }
   h5,
   .h5 {
-    @apply uppercase text-base font-futura tracking-wider;
+    @apply uppercase text-base font-extrabold tracking-wider;
   }
 
   /* Paragraphs */
