@@ -4,7 +4,6 @@ import "../styles/global.css";
 import Logo from "@components/Logo.astro";
 import { NavArea } from "@lib/enums/NavArea";
 import config, { getCartUrl, SiteLanguage } from "@config/site";
-import { LogoSize } from "@lib/enums/LogoSize";
 import NavLinks from "@components/NavLinks.astro";
 import OpeningHours from "@components/OpeningHours.astro";
 import { getNavLinks } from "@lib/navigation";
@@ -152,7 +151,7 @@ const optimizedOgImage = await getImage({
         class="grid gap-x-8 gap-y-8 md:grid-cols-2 md:gap-y-16 xl:grid-cols-4 xl:gap-x-16"
       >
         <div>
-          <Logo size={LogoSize.SMALL} />
+          <Logo size="small" />
         </div>
         <div>
           <p class="h4 mb-4">Öppettider</p>

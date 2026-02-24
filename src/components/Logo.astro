@@ -1,16 +1,18 @@
 ---
-import { cn } from "@lib/cn";
-import { LogoSize } from "@lib/enums/LogoSize";
-
 interface Props {
-  size?: LogoSize;
+  size?: "default" | "small";
 }
 
-const { size = LogoSize.DEFAULT } = Astro.props;
+const { size = "default" } = Astro.props;
 ---
 
 <svg
-  class={cn("w-auto", size)}
+  class:list={[
+    "logo",
+    {
+      "logo--small": size === "small",
+    },
+  ]}
   viewBox="0 0 112 44"
   xmlns="http://www.w3.org/2000/svg"
 >
@@ -27,3 +29,13 @@ const { size = LogoSize.DEFAULT } = Astro.props;
     d="M111.996 6.0949H95.8845V15.7514H111.527V21.4515H95.8845V34.8816H111.996V40.5818H89.8213V0.395164H111.996V6.0949Z"
     fill="currentColor"></path>
 </svg>
+
+<style>
+  .logo {
+    width: auto;
+    height: calc(var(--spacing) * 11);
+  }
+  .logo--small {
+    height: calc(var(--spacing) * 8);
+  }
+</style>
