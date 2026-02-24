@@ -4,7 +4,6 @@ import Layout from "src/layouts/Layout.astro";
 import IntroText from "@components/IntroText.astro";
 import { getCollection } from "astro:content";
 import ProductOverview from "@components/ProductOverview.astro";
-import Link from "@components/Link.astro";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 import { sanityAPI } from "@lib/sanityAPI";
 import { getDateString, addDays, isDateInFuture } from "@lib/dateUtils";
@@ -41,7 +40,7 @@ const productsWithDates = productEntries.map(({ data }) => {
     <h1>Beställ bakverk direkt från bageriet</h1>
     <IntroText class="mb-8">
       Beställ online och betala i butik. Välj upphämtningsdatum i kassan och
-      hämta i butiken under <Link href="/kontakt" label="våra öppettider" />.
+      hämta i butiken under <a href="/kontakt">våra öppettider</a>.
     </IntroText>
   </Section>
 

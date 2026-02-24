@@ -122,6 +122,35 @@ body {
 }
 
 /* -------------------------------------------------------------------------
+   Links
+   ------------------------------------------------------------------------- */
+main a:not(.btn),
+footer a:not(.btn),
+nav a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  &:visited {
+  }
+  &:hover {
+    text-decoration: none;
+  }
+  &:active {
+    text-decoration: none;
+  }
+  &:focus {
+    text-decoration: none;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+  }
+}
+
+a[aria-current="page"] {
+  text-decoration: none;
+}
+
+/* -------------------------------------------------------------------------
    Button (BEM)
    ------------------------------------------------------------------------- */
 

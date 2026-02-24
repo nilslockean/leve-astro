@@ -8,7 +8,6 @@ import { LogoSize } from "@lib/enums/LogoSize";
 import NavLinks from "@components/NavLinks.astro";
 import OpeningHours from "@components/OpeningHours.astro";
 import { getNavLinks } from "@lib/navigation";
-import Link from "@components/Link.astro";
 import defaultOgImage from "@lib/assets/og.png";
 import { getImage } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
@@ -159,7 +158,7 @@ const optimizedOgImage = await getImage({
           <p class="h4 mb-4">Öppettider</p>
           <OpeningHours data={openingHours} irregularLimit={0} consolidated>
             <p class="mt-4" slot="has-irregular">
-              <Link href="/kontakt#oppettider">Se avvikande öppettider </Link>
+              <a href="/kontakt#oppettider">Se avvikande öppettider </a>
             </p>
           </OpeningHours>
         </div>
@@ -171,11 +170,11 @@ const optimizedOgImage = await getImage({
         </div>
         <div>
           <p class="h4 mb-4">{config.siteTitle}</p>
-          <Link href={address.googleMaps} target="_blank" rel="noreferrer">
+          <a href={address.googleMaps} target="_blank" rel="noreferrer">
             {address.street}<br />
             {address.zip}{" "}
             {address.city}
-          </Link>
+          </a>
         </div>
       </div>
       <hr class="my-8" />

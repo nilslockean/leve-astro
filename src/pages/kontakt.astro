@@ -3,7 +3,6 @@ import Accordion from "@components/Accordion.astro";
 import IconList from "@components/IconList.astro";
 import IconListItem from "@components/IconListItem.astro";
 import IntroText from "@components/IntroText.astro";
-import Link from "@components/Link.astro";
 import OpeningHours from "@components/OpeningHours.astro";
 import Section from "@components/Section.astro";
 import { IconName } from "@lib/enums/IconName";
@@ -48,8 +47,8 @@ const openingHours = await sanityAPI.getOpeningHours();
       <h2>Söker du jobb?</h2>
       <p>
         Skulle det dyka upp lediga tjänster annonseras detta på Instagram.
-        Skicka in din ansökan till <Link href="mailto:jobb@bagerileve.se"
-          >jobb@bagerileve.se</Link
+        Skicka in din ansökan till <a href="mailto:jobb@bagerileve.se"
+          >jobb@bagerileve.se</a
         >när en tjänst dyker upp om du är intresserad.
       </p>
       <a
@@ -73,10 +72,10 @@ const openingHours = await sanityAPI.getOpeningHours();
       </p>
       <IconList>
         <IconListItem icon={IconName.PHONE}>
-          <Link href={phoneLink}> {contact.phone}</Link>
+          <a href={phoneLink}> {contact.phone}</a>
         </IconListItem>
         <IconListItem icon={IconName.ENVELOPE}>
-          <Link href={emailLink}>{contact.email}</Link>
+          <a href={emailLink}>{contact.email}</a>
         </IconListItem>
         <IconListItem icon={IconName.MAP_PIN}>
           <p>
@@ -87,9 +86,9 @@ const openingHours = await sanityAPI.getOpeningHours();
         </IconListItem>
       </IconList>
       <div class="flex flex-wrap gap-2 mt-4">
-        <Link href={contact.address.googleMaps}>Google Maps</Link>
+        <a href={contact.address.googleMaps}>Google Maps</a>
         <span>/</span>
-        <Link href={contact.address.appleMaps}>Apple Maps</Link>
+        <a href={contact.address.appleMaps}>Apple Maps</a>
       </div>
     </div>
   </Section>
