@@ -9,15 +9,10 @@ import Section from "@components/Section.astro";
 import { IconName } from "@lib/enums/IconName";
 import { sanityAPI } from "@lib/sanityAPI";
 import { PortableText } from "astro-portabletext";
-import config from "@config/site";
+import config, { phoneLink, emailLink } from "@config/site";
 import Layout from "../layouts/Layout.astro";
 
 const { contact } = config;
-const phoneLink = `tel:${contact.phone
-  .replace(/^0/, "+46")
-  .replace(/[\s-]/g, "")}`;
-const emailLink = `mailto:${contact.email}`;
-
 const faq = await sanityAPI.getFaq();
 const openingHours = await sanityAPI.getOpeningHours();
 ---

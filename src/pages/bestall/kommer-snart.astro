@@ -1,0 +1,23 @@
+---
+import Section from "@components/Section.astro";
+import Layout from "src/layouts/Layout.astro";
+import IntroText from "@components/IntroText.astro";
+import Link from "@components/Link.astro";
+import config, { phoneLink } from "@config/site";
+---
+
+<Layout
+  title="Beställ tårtor"
+  metaDescription="Beställ dina bakverk online och hämta upp i butik."
+>
+  <Section>
+    <h1>Beställ bakverk direkt från bageriet</h1>
+    <IntroText class="mb-8">
+      Här kommer du snart kunna beställa tårtor online. Titta tillbaka snart!
+    </IntroText>
+    <p>
+      Medan vi bygger färdigt webbshoppen kan du beställa som vanligt genom att
+      ringa till oss på <Link href={phoneLink}>{config.contact.phone}</Link>.
+    </p>
+  </Section>
+</Layout>

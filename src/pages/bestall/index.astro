@@ -14,7 +14,7 @@ import {
 } from "astro:env/server";
 
 if (!ENABLE_STOREFRONT) {
-  return Astro.rewrite("/bestall/fredagsmunk");
+  return Astro.rewrite("/bestall/kommer-snart");
 }
 
 const productEntries = await getCollection("products");
@@ -57,10 +57,7 @@ const productsWithDates = productEntries.map(({ data }) => {
       <p class="m-0">
         <strong>Letar du efter fredagsmunkar?</strong> De beställs via ett annat system.
       </p>
-      <a
-        href="/bestall/fredagsmunk"
-        class="btn btn--outline text-current m-0"
-      >
+      <a href="/bestall/fredagsmunk" class="btn btn--outline text-current m-0">
         Beställ fredagsmunk
       </a>
     </div>

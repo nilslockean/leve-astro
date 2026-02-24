@@ -11,6 +11,7 @@ export enum Slug {
   HOME = "home",
   COURSES = "kurser",
   ORDER = "bestallning",
+  ORDER_DONUT = "bestall-fredagsmunk",
   CONTACT = "kontakt",
   PRIVACY_POLICY = "gdpr",
   ORDER_TERMS = "kopvillkor",
@@ -42,7 +43,8 @@ type SiteConfig = {
 export const PageMap: Record<Slug, NavLink> = Object.freeze({
   [Slug.HOME]: { label: "Hem", path: "/", className: "hidden lg:inline" },
   [Slug.COURSES]: { label: "Kurser", path: "/kurser" },
-  [Slug.ORDER]: { label: "Beställning", path: "/bestall" },
+  [Slug.ORDER]: { label: "Tårtor", path: "/bestall" },
+  [Slug.ORDER_DONUT]: { label: "Fredagsmunkar", path: "/bestall/fredagsmunk" },
   [Slug.CONTACT]: { label: "Kontakt", path: "/kontakt" },
   [Slug.PRIVACY_POLICY]: {
     label: "Integritetspolicy",
@@ -73,8 +75,11 @@ const config: SiteConfig = {
       link: PageMap[Slug.HOME],
       areas: [NavArea.HEADER, NavArea.FOOTER],
     },
-    { link: PageMap[Slug.COURSES], areas: [NavArea.HEADER, NavArea.FOOTER] },
     { link: PageMap[Slug.ORDER], areas: [NavArea.HEADER, NavArea.FOOTER] },
+    {
+      link: PageMap[Slug.ORDER_DONUT],
+      areas: [NavArea.HEADER, NavArea.FOOTER],
+    },
     { link: PageMap[Slug.CONTACT], areas: [NavArea.HEADER, NavArea.FOOTER] },
     { link: PageMap[Slug.PRIVACY_POLICY], areas: [NavArea.COLOPHON] },
     { link: PageMap[Slug.ORDER_TERMS], areas: [NavArea.COLOPHON] },
@@ -97,6 +102,10 @@ const config: SiteConfig = {
     orgNumber: "559097-6030",
   },
 };
+export const phoneLink = `tel:${config.contact.phone
+  .replace(/^0/, "+46")
+  .replace(/[\s-]/g, "")}`;
+export const emailLink = `mailto:${config.contact.email}`;
 
 // Shop URL helper functions
 export const SHOP_BASE_PATH = PageMap.bestallning.path;
