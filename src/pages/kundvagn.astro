@@ -1,9 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getEntry } from "astro:content";
 import Cart from "@components/Cart/index.astro";
-import { getCart, getCartTotal } from "@lib/cart";
+import { getCart, getCartTotal, getCartContents } from "@lib/cart";
 import { ENABLE_STOREFRONT } from "astro:env/server";
+import { getCollection } from "astro:content";
 
 export const prerender = false;
 
@@ -12,19 +12,8 @@ if (!ENABLE_STOREFRONT) {
 }
 
 const cart = getCart(Astro.cookies);
-const cartContents = await Promise.all(
-  cart.items.map(async (item) => {
-    const entry = await getEntry("products", item.productId);
-    if (!entry) {
-      throw `Product ${item.productId} not found`;
-    }
-
-    return {
-      ...item,
-      product: entry.data,
-    };
-  })
-);
+const products = await getCollection("products");
+const cartContents = getCartContents(cart, products);
 const cartTotal = getCartTotal(cart);
 ---
 
