@@ -18,10 +18,7 @@ const { total, class: className, ...rest } = Astro.props;
   <p class="text-sm">Inkl. {formatPrice([total.tax])} moms</p>
   <hr class="my-6" />
   <p>Välj upphämtningsdatum i nästa steg.</p>
-  <a
-    href={getCheckoutUrl()}
-    class="btn btn--primary w-full text-center"
-  >
+  <a href={getCheckoutUrl()} class="btn btn--primary w-full text-center mt-4">
     Gå till kassan
   </a>
 </fieldset>
