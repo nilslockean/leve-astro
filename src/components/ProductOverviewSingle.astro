@@ -23,7 +23,12 @@ const buttonLabel = outOfStock
     : "Beställ";
 ---
 
-<a {...rest} href={getProductUrl(product.id)} class="max-w-prose">
+<a
+  {...rest}
+  href={getProductUrl(product.id)}
+  class="max-w-prose"
+  data-testid="product-overview-link"
+>
   <Image
     src={urlFor(featuredImage.asset).width(770).height(580).url()}
     alt={featuredImage.alt}
