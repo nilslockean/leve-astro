@@ -127,6 +127,7 @@ body {
 
 .btn {
   display: inline-flex;
+  justify-content: center;
   gap: 0.5rem;
   text-transform: uppercase;
   font-family: var(--font-display);
