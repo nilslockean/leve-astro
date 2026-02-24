@@ -9,6 +9,8 @@ import { getImage } from "astro:assets";
 import videoPoster from "@lib/assets/Munk-4-poster.jpg";
 import { sanityAPI } from "@lib/sanityAPI";
 import GartnerFilm from "@components/GartnerFilm.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { getShopUrl } from "@config/site";
 
 const optimizedVideoPoster = await getImage({
   src: videoPoster,
@@ -23,6 +25,14 @@ const orderTerms = await sanityAPI.getOrderTerms();
   metaDescription="Beställ dina fredagsmunkar i förväg och hämta enkelt upp vid vald tid."
 >
   <Section>
+    <Breadcrumbs
+      trail={[
+        { label: "Hem", href: "/" },
+        { label: "Beställ", href: getShopUrl() },
+        { label: "Fredagsmunk" },
+      ]}
+    />
+
     <h1>Beställ dina fredagsmunkar</h1>
     <IntroText class="mb-8">
       Varje fredag gör vi en unik munk med extra allt som bara finns den dagen.
