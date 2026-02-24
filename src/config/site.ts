@@ -43,7 +43,7 @@ type SiteConfig = {
 export const PageMap: Record<Slug, NavLink> = Object.freeze({
   [Slug.HOME]: { label: "Hem", path: "/", className: "hidden lg:inline" },
   [Slug.COURSES]: { label: "Kurser", path: "/kurser" },
-  [Slug.ORDER]: { label: "Tårtor", path: "/bestall" },
+  [Slug.ORDER]: { label: "Beställ", path: "/bestall" },
   [Slug.ORDER_DONUT]: { label: "Fredagsmunkar", path: "/bestall/fredagsmunk" },
   [Slug.CONTACT]: { label: "Kontakt", path: "/kontakt" },
   [Slug.PRIVACY_POLICY]: {
