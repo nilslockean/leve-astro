@@ -2,7 +2,6 @@
 import Section from "@components/Section.astro";
 import Layout from "src/layouts/Layout.astro";
 import IntroText from "@components/IntroText.astro";
-import Link from "@components/Link.astro";
 import config, { phoneLink } from "@config/site";
 ---
 
@@ -17,7 +16,7 @@ import config, { phoneLink } from "@config/site";
     </IntroText>
     <p>
       Medan vi bygger färdigt webbshoppen kan du beställa som vanligt genom att
-      ringa till oss på <Link href={phoneLink}>{config.contact.phone}</Link>.
+      ringa till oss på <a href={phoneLink}>{config.contact.phone}</a>.
     </p>
   </Section>
 </Layout>

@@ -1,9 +1,7 @@
 ---
 import { IconName } from "@lib/enums/IconName";
 import Icon from "./Icon.astro";
-import Link from "./Link.astro";
 import type { HTMLAttributes } from "astro/types";
-import { cn } from "@lib/cn";
 
 interface Props extends HTMLAttributes<"nav"> {
   trail: { label: string; href?: string }[];
@@ -14,10 +12,10 @@ const { trail, class: className, ...rest } = Astro.props;
 
 <nav
   {...rest}
-  class={cn(
+  class:list={[
     "text-sm opacity-75 hover:opacity-100 transition-opacity",
-    className
-  )}
+    className,
+  ]}
   aria-label="Breadcrumb"
 >
   <ol class="flex items-center space-x-2 list-none mx-0">
@@ -32,7 +30,7 @@ const { trail, class: className, ...rest } = Astro.props;
           )}
           {/* Breadcrumb */}
           <li class="inline-flex items-center">
-            {href ? <Link {href}>{label}</Link> : <span>{label}</span>}
+            {href ? <a {href}>{label}</a> : <span>{label}</span>}
           </li>
         </>
       ))
