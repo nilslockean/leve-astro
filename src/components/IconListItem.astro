@@ -8,7 +8,15 @@ type Props = {
 const { icon } = Astro.props;
 ---
 
-<li class="flex items-top gap-2">
+<li class="icon-list__item">
   <Icon name={icon} />
   <slot />
 </li>
+
+<style>
+  .icon-list__item {
+    display: flex;
+    align-items: start;
+    gap: calc(var(--spacing) * 2);
+  }
+</style>
