@@ -19,6 +19,7 @@
   ); /* raised cards, highlighted panels */
   --color-text: var(--color-orange-100); /* body text on surface */
   --color-text-on-dark: var(--color-orange-50); /* text on surface-dark */
+
   --color-accent: var(
     --color-orange-100
   ); /* accents, primary button fill, borders */
@@ -158,6 +159,11 @@ body {
   background-color: var(--color-surface);
 }
 
+small {
+  font-size: var(--text-sm);
+  opacity: 0.75;
+}
+
 /* -------------------------------------------------------------------------
    Links
    ------------------------------------------------------------------------- */
@@ -201,7 +207,7 @@ a[aria-current="page"] {
   font-size: var(--text-base);
   letter-spacing: var(--tracking-wider);
   border-width: var(--border-width);
-  border-style: solid;
+  border-style: var(--border-style);
   transition:
     background-color var(--default-transition-duration)
       var(--default-transition-timing-function),
@@ -272,6 +278,7 @@ a[aria-current="page"] {
 .btn--small {
   font-size: var(--text-sm);
   padding: 0.5rem 1rem;
+  border-width: var(--border-width-fine);
   border-width: var(--border-width-fine);
 }
 

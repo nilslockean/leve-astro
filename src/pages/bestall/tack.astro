@@ -57,28 +57,26 @@ const pickupDateFormatted = toLocaleDateString(new Date(order.pickupDate));
         Upphämtning: <strong>{pickupDateFormatted}</strong>. Beställningen
         kommer vara redo när vi öppnar för dagen.
       </p>
-      <table class="table-auto w-full max-w-xl">
+      <table>
         <thead>
-          <tr class="border-b border-current">
-            <th class="text-left py-2">Produkt</th>
-            <th class="text-right py-2">Antal</th>
-            <th class="text-right py-2">Summa</th>
+          <tr>
+            <th>Produkt</th>
+            <th>Antal</th>
+            <th>Summa</th>
           </tr>
         </thead>
         <tbody>
           {
             order.items.map((item) => (
-              <tr class="border-b border-current/50 last:border-none align-top">
-                <td class="py-2">
+              <tr>
+                <td>
                   <p class="mb-0">{item.productTitle}</p>
                   {item.variantDescription && (
-                    <p class="text-sm">{item.variantDescription}</p>
+                    <small>{item.variantDescription}</small>
                   )}
                 </td>
-                <td class="text-right py-2">{item.quantity} st.</td>
-                <td class="text-right py-2 whitespace-nowrap">
-                  {formatPrice([item.lineTotal])}
-                </td>
+                <td>{item.quantity} st.</td>
+                <td>{formatPrice([item.lineTotal])}</td>
               </tr>
             ))
           }
@@ -95,3 +93,9 @@ const pickupDateFormatted = toLocaleDateString(new Date(order.pickupDate));
     </p>
   </Section>
 </Layout>
+
+<style>
+  table {
+    max-width: var(--container-xl);
+  }
+</style>

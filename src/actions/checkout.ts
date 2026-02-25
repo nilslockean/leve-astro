@@ -131,7 +131,9 @@ export const checkout = defineAction({
     try {
       await mailerSend.sendOrderConfirmation();
       await mailerSend.sendAdminNotification();
-      await mailerSend.sendAdminNotification(ORDER_ADMIN_PRINTER_EMAIL);
+      if (ORDER_ADMIN_PRINTER_EMAIL) {
+        await mailerSend.sendAdminNotification(ORDER_ADMIN_PRINTER_EMAIL);
+      }
     } catch (error) {
       throw new ActionError({
         code: "SERVICE_UNAVAILABLE",
