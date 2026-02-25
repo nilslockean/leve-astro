@@ -16,6 +16,7 @@
   ); /* footer, cards, elevated panels */
   --color-text: var(--color-orange-100); /* body text on surface */
   --color-text-on-dark: var(--color-orange-50); /* text on surface-dark */
+
   --color-accent: var(
     --color-orange-100
   ); /* accents, primary button fill, borders */
@@ -93,6 +94,14 @@
      ------------------------------------------------------------------------- */
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* -------------------------------------------------------------------------
+    Borders
+    ------------------------------------------------------------------------- */
+  --border-width: 4px;
+  --border-width-fine: 2px;
+  --border-style: solid;
+  --border-color: currentColor;
 }
 
 /* -------------------------------------------------------------------------
@@ -119,6 +128,11 @@ html {
 
 body {
   background-color: var(--color-surface);
+}
+
+small {
+  font-size: var(--text-sm);
+  opacity: 0.75;
 }
 
 /* -------------------------------------------------------------------------
@@ -162,8 +176,8 @@ a[aria-current="page"] {
   font-family: var(--font-display);
   font-size: var(--text-base);
   letter-spacing: var(--tracking-wider);
-  border-width: 4px;
-  border-style: solid;
+  border-width: var(--border-width);
+  border-style: var(--border-style);
   transition:
     background-color var(--default-transition-duration)
       var(--default-transition-timing-function),
@@ -234,10 +248,47 @@ a[aria-current="page"] {
 .btn--small {
   font-size: var(--text-sm);
   padding: 0.5rem 1rem;
-  border-width: 2px;
+  border-width: var(--border-width-fine);
 }
 
 /* Modifier: disabled */
 .btn--disabled {
   cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------------------
+   Tables
+   ------------------------------------------------------------------------- */
+
+table {
+  table-layout: auto;
+  width: 100%;
+}
+
+thead {
+  border-bottom: var(--border-width) var(--border-style) currentColor;
+}
+
+tr {
+  border-bottom: var(--border-width-fine) var(--border-style) currentColor;
+  vertical-align: top;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+td,
+th {
+  text-align: left;
+  padding-block: calc(var(--spacing) * 2);
+}
+
+td + td,
+th + th {
+  text-align: right;
+  white-space: nowrap;
+}
+
+td p {
+  margin-bottom: 0;
 }
