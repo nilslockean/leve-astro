@@ -56,6 +56,26 @@ export default defineConfig({
     ],
   },
 
+  redirects: {
+    "/om": "/",
+    "/kurs": "/kurser",
+    "/admin": "https://leve.sanity.studio/production",
+    "/kurser/39175": "/kurser",
+    "/kurser/51110": "/kurser",
+    "/kurser/60615": "/kurser",
+    "/kurser/68689": "/kurser",
+    "/kurser/68682": "/kurser",
+    "/kurser/79645": "/kurser",
+    "/kurser/85502": "/kurser",
+    "/kurser/96676": "/kurser",
+    "/kurser/96677": "/kurser",
+    "/kurser/105416": "/kurser",
+    "/kurser/112120": "/kurser",
+    "/kurser/112165": "/kurser",
+    "/kurser/114564": "/kurser",
+    "/kurser/114565": "/kurser",
+  },
+
   env: {
     schema: {
       EXAMPLE_ENV_VARIABLE: envField.string({
@@ -67,10 +87,6 @@ export default defineConfig({
         context: "server",
         access: "public",
         optional: true,
-      }),
-      FIENTA_API_KEY: envField.string({
-        context: "server",
-        access: "secret",
       }),
       ENABLE_WEGLOT: envField.boolean({
         context: "server",

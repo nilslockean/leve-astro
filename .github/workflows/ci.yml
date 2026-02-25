@@ -3,7 +3,6 @@
 #
 # Required GitHub secret used by CI workflow (Settings → Secrets and variables → Actions):
 #   SANITY_TOKEN — Sanity API token
-#   FIENTA_API_KEY — Fienta API key
 #   MAILERSEND_API_KEY — Mailersend API key
 
 # Playwright shop test settings (e2e/shop/shop.spec.ts):
@@ -26,7 +25,6 @@ jobs:
       SANITY_DATASET: preview
       ENABLE_STOREFRONT: true
       SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
-      FIENTA_API_KEY: ${{ secrets.FIENTA_API_KEY }}
       MAILERSEND_API_KEY: ${{ secrets.MAILERSEND_API_KEY }}
     steps:
       - name: Checkout

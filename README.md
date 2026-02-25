@@ -6,14 +6,13 @@ Website for artisan bakery [Leve](https://bagerileve.se) in Malmö, Sweden. Buil
 
 Before you can run the site locally or deploy, you need access to the following. Ask the project maintainer (see [Contact](#contact)) if you don’t have access yet.
 
-| Service | What it’s for | What you need |
-| -------- | -------------- | -------------- |
-| **GitHub** | Repo (this site) | Clone access; push access if you’ll deploy. |
-| **Netlify** | Hosting, deploys, env vars | Team/site access. Easiest way to get production env vars for your local `.env`. |
-| **Sanity** | CMS (content, media) | Access to the project; create a read token for `SANITY_TOKEN`. Sanity project lives in [a separate repo](https://github.com/your-org/leve-sanity). |
-| **MailerSend** | Order/contact emails | API key for `MAILERSEND_API_KEY` if you work on forms or checkout. |
-| **PostHog** | Analytics | Optional; defaults exist for dev. For production keys, use PostHog project access. |
-| **Fienta** | Event/order forms (if used) | API key for `FIENTA_API_KEY` if you work on Fienta integrations. |
+| Service        | What it’s for              | What you need                                                                                                                                      |
+| -------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **GitHub**     | Repo (this site)           | Clone access; push access if you’ll deploy.                                                                                                        |
+| **Netlify**    | Hosting, deploys, env vars | Team/site access. Easiest way to get production env vars for your local `.env`.                                                                    |
+| **Sanity**     | CMS (content, media)       | Access to the project; create a read token for `SANITY_TOKEN`. Sanity project lives in [a separate repo](https://github.com/your-org/leve-sanity). |
+| **MailerSend** | Order/contact emails       | API key for `MAILERSEND_API_KEY` if you work on forms or checkout.                                                                                 |
+| **PostHog**    | Analytics                  | Optional; defaults exist for dev. For production keys, use PostHog project access.                                                                 |
 
 **Getting env vars for local dev:** Copy them from **Netlify** (Site settings → Environment variables) or ask for a shared `.env.example` / secure list. Never commit `.env` or real secrets to the repo.
 
@@ -51,7 +50,7 @@ After you have [access](#getting-access) to the repo and at least Netlify or San
    | `SANITY_TOKEN`   | Sanity API token (read access)              |
    | `SANITY_DATASET` | Sanity dataset name (default: `production`) |
 
-   Additional variables are defined in `astro.config.mjs` under `env.schema`. They include optional feature flags and secrets for Fienta, MailerSend, PostHog, Weglot, and order/checkout. Set only what you need for local development or the environment you’re deploying to.
+   Additional variables are defined in `astro.config.mjs` under `env.schema`. They include optional feature flags and secrets for MailerSend, PostHog, Weglot, and order/checkout. Set only what you need for local development or the environment you’re deploying to.
 
 3. **Run locally**
 
