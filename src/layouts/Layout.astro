@@ -17,7 +17,6 @@ import {
   WEGLOT_API_KEY,
 } from "astro:env/server";
 import WeGlotScript from "@components/WeGlotScript.astro";
-import FientaEmbedScript from "@components/FientaEmbedScript.astro";
 import { getCanonicalUrl } from "@lib/canonicalUrl";
 import { sanityAPI } from "@lib/sanityAPI";
 import Posthog from "@components/Posthog.astro";
@@ -101,7 +100,6 @@ const optimizedOgImage = await getImage({
 
     {!isProduction() && <meta name="robots" content="noindex,nofollow" />}
 
-    <FientaEmbedScript />
     {
       ENABLE_WEGLOT && WEGLOT_API_KEY && (
         <WeGlotScript apiKey={WEGLOT_API_KEY} />
