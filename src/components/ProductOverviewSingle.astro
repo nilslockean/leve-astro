@@ -30,8 +30,11 @@ const buttonLabel = outOfStock
     inferSize
     slot="image"
   />
-  <a href={getProductUrl(product.id)} slot="actions" class="btn btn--small"
-    >{buttonLabel}</a
+  <a
+    href={getProductUrl(product.id)}
+    slot="actions"
+    class="btn btn--small"
+    data-testid="product-overview-link">{buttonLabel}</a
   >
 </Card>
 
