@@ -279,7 +279,6 @@ a[aria-current="page"] {
   font-size: var(--text-sm);
   padding: 0.5rem 1rem;
   border-width: var(--border-width-fine);
-  border-width: var(--border-width-fine);
 }
 
 /* Modifier: disabled */
