@@ -10,10 +10,13 @@
      Theme (semantic)
      Use these in components. Raw palette below is for defining the theme.
      ------------------------------------------------------------------------- */
-  --color-surface: var(--color-blue-900); /* main page background, brand */
+  --color-surface: var(--color-blue); /* main page background, brand */
   --color-surface-dark: var(
-    --color-blue-950
+    --color-blue-dark
   ); /* footer, cards, elevated panels */
+  --color-surface-light: var(
+    --color-blue-light
+  ); /* raised cards, highlighted panels */
   --color-text: var(--color-orange-100); /* body text on surface */
   --color-text-on-dark: var(--color-orange-50); /* text on surface-dark */
   --color-accent: var(
@@ -27,6 +30,20 @@
   /* -------------------------------------------------------------------------
      Palette (raw)
      ------------------------------------------------------------------------- */
+  /* LEVE Blue */
+  --hue: 226;
+  --color-blue: hsl(var(--hue), 67%, 33%);
+  --color-blue-dark: hsl(var(--hue), 59%, 21%);
+  --color-blue-light: hsl(var(--hue), 49%, 41%);
+
+  --color-brand: hsl(var(--hue), 100%, 50%);
+  --color-brand-dark: hsl(var(--hue), 100%, 42%);
+  --color-brand-darker: hsl(var(--hue), 100%, 37%);
+  --color-brand-darkest: hsl(var(--hue), 100%, 25%);
+  --color-brand-light: hsl(var(--hue), 100%, 63%);
+  --color-brand-lighter: hsl(var(--hue), 100%, 75%);
+  --color-brand-lightest: hsl(var(--hue), 100%, 87%);
+
   --color-red-200: oklch(88.5% 0.062 18.334);
   --color-red-400: oklch(70.4% 0.191 22.216);
   --color-red-900: oklch(39.6% 0.141 25.723);
@@ -80,6 +97,8 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
 
+  --prose: 65ch;
+
   /* -------------------------------------------------------------------------
      Spacing & layout
      ------------------------------------------------------------------------- */
@@ -93,6 +112,24 @@
      ------------------------------------------------------------------------- */
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* -------------------------------------------------------------------------
+     Elevation (shadows)
+     ------------------------------------------------------------------------- */
+  --shadow-card:
+    0 4px 6px -1px rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-card-hover:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-card-active:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* -------------------------------------------------------------------------
+    Borders
+    ------------------------------------------------------------------------- */
+  --border-width: 4px;
+  --border-width-fine: 2px;
+  --border-style: solid;
+  --border-color: currentColor;
 }
 
 /* -------------------------------------------------------------------------
@@ -157,12 +194,13 @@ a[aria-current="page"] {
 .btn {
   display: inline-flex;
   justify-content: center;
+  align-items: center;
   gap: 0.5rem;
   text-transform: uppercase;
   font-family: var(--font-display);
   font-size: var(--text-base);
   letter-spacing: var(--tracking-wider);
-  border-width: 4px;
+  border-width: var(--border-width);
   border-style: solid;
   transition:
     background-color var(--default-transition-duration)
@@ -234,10 +272,175 @@ a[aria-current="page"] {
 .btn--small {
   font-size: var(--text-sm);
   padding: 0.5rem 1rem;
-  border-width: 2px;
+  border-width: var(--border-width-fine);
 }
 
 /* Modifier: disabled */
 .btn--disabled {
   cursor: not-allowed;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: calc(var(--spacing) * 4);
+  flex-wrap: wrap;
+
+  &.btn-group--fullwidth .btn {
+    flex-grow: 1;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Sections
+   ------------------------------------------------------------------------- */
+section:not(.section--fullwidth) {
+  padding: calc(var(--spacing) * 6);
+  max-width: var(--container-7xl);
+  margin-inline: auto;
+}
+
+hr {
+  border-top-width: var(--border-width-fine);
+  margin-block: calc(var(--spacing) * 8);
+}
+
+/* -------------------------------------------------------------------------
+   Tables
+   ------------------------------------------------------------------------- */
+
+table {
+  table-layout: auto;
+  width: 100%;
+}
+
+thead {
+  border-bottom: var(--border-width) var(--border-style) currentColor;
+}
+
+tr {
+  border-bottom: var(--border-width-fine) var(--border-style) currentColor;
+  vertical-align: top;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+td,
+th {
+  text-align: left;
+  padding-block: calc(var(--spacing) * 2);
+}
+
+td + td,
+th + th {
+  text-align: right;
+  white-space: nowrap;
+}
+
+td p {
+  margin-bottom: 0;
+}
+
+/* -------------------------------------------------------------------------
+    Cards
+    ------------------------------------------------------------------------- */
+.card {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 4);
+}
+
+/* TODO: Make big cards have a row layout
+@container (min-width: 400px) {
+  .card {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: calc(var(--spacing) * 8);
+  }
+} */
+
+.card--linked {
+  cursor: pointer;
+}
+
+.card--linked.card--raised:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.card--linked.card--raised:active {
+  box-shadow: var(--shadow-card-active);
+}
+
+/* In a grid, card stretches so .card__action can sit at the bottom */
+/* :global(.grid) .card {
+      min-height: 100%;
+    } */
+
+/* .card:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    } */
+
+/* Modifier: transparent (default) */
+.card--transparent {
+  background: transparent;
+}
+
+/* Modifier: raised */
+.card--raised {
+  background-color: var(--color-surface-light);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  transition: box-shadow var(--default-transition-duration)
+    var(--default-transition-timing-function);
+}
+
+.card img {
+  width: 100%;
+  max-width: var(--container-lg);
+}
+
+.card--transparent img {
+  filter: none;
+  border: var(--border-width) var(--border-style);
+}
+
+.card__body {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+  row-gap: calc(var(--spacing) * 8);
+  flex-grow: 1;
+}
+
+.card--stacked .card__body {
+  flex-direction: column;
+  align-items: start;
+}
+
+.card__content {
+  max-width: 45ch;
+}
+
+.card__eyebrow {
+  font-size: var(--text-sm);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
+.card__title {
+  margin-bottom: calc(var(--spacing) * 4);
+}
+
+/* Sticks to bottom when card is in a grid */
+.card__action {
+  margin-top: auto;
 }

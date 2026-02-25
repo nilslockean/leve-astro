@@ -47,11 +47,6 @@
     @apply mb-4 last:mb-0;
   }
 
-  /* Horizontal Rule */
-  hr {
-    @apply border-t-4;
-  }
-
   /* Lists */
   ul {
     @apply list-disc ml-6 mb-4;

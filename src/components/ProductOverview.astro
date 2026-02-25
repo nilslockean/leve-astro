@@ -5,6 +5,7 @@ import type { HTMLAttributes } from "astro/types";
 import ProductOverviewSingle from "./ProductOverviewSingle.astro";
 import { Image } from "astro:assets";
 import donutImage from "@lib/assets/fredagsmunk-rabarber.jpeg";
+import Card from "./Card.astro";
 
 interface Props extends HTMLAttributes<"div"> {
   products: Array<{ product: Product; availablePickupDates: string[] }>;
@@ -22,16 +23,17 @@ const { products, class: className, ...rest } = Astro.props;
       <ProductOverviewSingle product={product} {availablePickupDates} />
     ))
   }
-  <a href="/bestall/fredagsmunk" class="max-w-prose">
+
+  <Card linked title="Fredagsmunk" description="Ny smak varje vecka" stacked>
     <Image
       src={donutImage}
       alt="Fredagsmunk med rabarber"
       width={770}
       height={580}
-      class="border-4 mb-3 block"
+      slot="image"
     />
-    <h3 class="h3 mb-2">Fredagsmunk</h3>
-    <p>Ny smak varje vecka</p>
-    <span class="btn btn--small">Läs mer</span>
-  </a>
+    <a href="/bestall/fredagsmunk" slot="actions" class="btn btn--small"
+      >Läs mer</a
+    >
+  </Card>
 </div>
