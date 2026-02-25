@@ -4,6 +4,7 @@ metaDescription: Köpvillkor för beställning hos Leve. Betalning sker vid upph
 edited: "2026-02-21"
 ---
 
+import { PICKUP_DATE_MIN_OFFSET } from "astro:env/server";
 import Section from "../components/Section.astro";
 import Layout from "../layouts/Layout.astro";
 import config from "@config/site";
@@ -24,7 +25,7 @@ Genom att genomföra en beställning godkänner du dessa villkor.
 
 ## 2. Beställning
 
-Beställning ska göras med minst två (2) dagars framförhållning före önskat upphämtningsdatum.
+Beställning ska göras med minst {PICKUP_DATE_MIN_OFFSET} dagars framförhållning före önskat upphämtningsdatum.
 
 En beställning är bindande när den har genomförts.
 
@@ -44,7 +45,7 @@ Om beställningen inte hämtas ut på avtalad tid förbehåller vi oss rätten a
 
 ## 5. Avbokning
 
-Avbokning ska ske senast två (2) dagar före överenskommen upphämtning.
+Avbokning ska ske senast 24 timmar före överenskommen upphämtning.
 
 Vid senare avbokning eller utebliven upphämtning debiteras hela beställningsbeloppet.
 
