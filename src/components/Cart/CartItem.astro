@@ -21,9 +21,9 @@ const priceOptionDesc = product.variants.find(
 )?.description;
 
 const title =
-  product.variants.length > 1 && priceOptionDesc
-    ? `${product.title} - ${priceOptionDesc}`
-    : product.title;
+  product.variants.length === 1 && priceOptionDesc === "Standard"
+    ? product.title
+    : `${product.title} - ${priceOptionDesc}`;
 
 const thumbnail = product.images[0];
 ---

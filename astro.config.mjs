@@ -143,13 +143,12 @@ export default defineConfig({
       ORDER_ADMIN_EMAIL: envField.string({
         context: "server",
         access: "public",
-        default: "order@bagerileve.se",
+        default: "nils@bagerileve.se",
       }),
       ORDER_ADMIN_PRINTER_EMAIL: envField.string({
         context: "server",
         access: "public",
         optional: true,
-        default: "cbty732mccw842@hpeprint.com",
       }),
       ORDER_CONFIRMATION_SECRET: envField.string({
         context: "server",

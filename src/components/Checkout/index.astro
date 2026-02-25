@@ -8,6 +8,7 @@ import type { Product } from "@lib/schemas/Product";
 import PickupDateSelector from "./PickupDateSelector.astro";
 import { formatPrice } from "@lib/stringUtils";
 import { actions } from "astro:actions";
+import BreakdownRow from "./BreakdownRow.astro";
 
 interface Props extends HTMLAttributes<"section"> {
   availablePickupDates: string[];
@@ -87,30 +88,14 @@ const errorMessage = result?.error?.message;
     <div class="flex flex-col bg-blue-950 p-8 gap-8 self-start sticky top-8">
       <fieldset>
         <legend>Din beställning</legend>
-        <table class="table-auto w-full">
-          {
-            contents.map((row) => (
-              <tr class="border-b border-current last:border-none align-top">
-                <td class="py-2">
-                  <p class="mb-0">
-                    {row.qty} x {row.product.title}
-                  </p>
-                  {row.product.variants.length > 1 && (
-                    <p class="text-sm">
-                      {
-                        row.product.variants.find(
-                          ({ price }) => price === row.price,
-                        )?.description
-                      }
-                    </p>
-                  )}
-                </td>
-                <td class="text-right py-2 whitespace-nowrap">
-                  <p>{formatPrice([row.qty * row.price])}</p>
-                </td>
-              </tr>
-            ))
-          }
+        <table>
+          <tbody>
+            {
+              contents.map(({ product, price, qty }) => (
+                <BreakdownRow {product} {price} {qty} />
+              ))
+            }
+          </tbody>
         </table>
         <hr class="my-6" />
 
