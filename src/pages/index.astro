@@ -14,7 +14,6 @@ import footerVideoPoster from "@lib/assets/Kanelbulle-poster.jpg";
 import Hero from "@components/Hero.astro";
 import { sanityAPI } from "@lib/sanityAPI";
 import GartnerFilm from "@components/GartnerFilm.astro";
-import CourseCollection from "@components/CourseCollection.astro";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 
 const optimizedHeroVideoPoster = await getImage({
@@ -84,16 +83,6 @@ const instagramFeedId = BEHOLD_FEED_ID;
           Se avvikande öppettider
         </a>
       </OpeningHours>
-    </div>
-    <div class="empty:hidden">
-      <CourseCollection
-        server:defer
-        showEmpty={false}
-        scope="upcoming"
-        title="Kommande kurser"
-      >
-        <p slot="fallback">Hämtar kommande kurser...</p>
-      </CourseCollection>
     </div>
   </Section>
 
