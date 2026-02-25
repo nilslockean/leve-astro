@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { formatPrice } from "@lib/stringUtils";
+import type { Product } from "@lib/schemas/Product";
+
+interface Props extends HTMLAttributes<"tr"> {
+  price: number;
+  qty: number;
+  product: Product;
+}
+
+const { price, qty, product, class: className, ...rest } = Astro.props;
+const title = `${qty} x ${product.title}`;
+const variantDescription = product.variants.find(
+  ({ price }) => price === price,
+)?.description;
+const description =
+  variantDescription === "Standard" ? undefined : variantDescription;
+
+const forattedTotal = formatPrice([qty * price]);
+---
+
+<tr {...rest} class={className}>
+  <td>
+    <p>
+      {title}
+    </p>
+    {description && <small>{description}</small>}
+  </td>
+  <td>
+    <p>{forattedTotal}</p>
+  </td>
+</tr>
