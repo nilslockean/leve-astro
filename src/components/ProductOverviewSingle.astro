@@ -1,17 +1,17 @@
 ---
 import type { Product } from "@lib/schemas/Product";
-import type { HTMLAttributes } from "astro/types";
 import { Image } from "astro:assets";
 import { urlFor } from "@lib/sanityAPI";
 import { formatPrice } from "@lib/stringUtils";
 import { getProductUrl } from "@config/site";
+import Card from "./Card.astro";
 
-interface Props extends HTMLAttributes<"a"> {
+interface Props {
   product: Product;
   availablePickupDates: string[];
 }
 
-const { product, availablePickupDates, ...rest } = Astro.props;
+const { product, availablePickupDates } = Astro.props;
 const featuredImage = product.images[0];
 const prices = product.variants.map(({ price }) => price);
 const outOfStock = product.maxQuantityPerOrder === 0;
@@ -23,21 +23,27 @@ const buttonLabel = outOfStock
     : "Beställ";
 ---
 
-<a
-  {...rest}
-  href={getProductUrl(product.id)}
-  class="max-w-prose"
-  data-testid="product-overview-link"
->
+<Card linked title={product.title} description={formatPrice(prices)} stacked>
   <Image
     src={urlFor(featuredImage.asset).width(770).height(580).url()}
     alt={featuredImage.alt}
     inferSize
-    class="border-4 mb-3 block"
+    slot="image"
   />
-  <h3 class="h3 mb-2">
-    {product.title}
-  </h3>
-  <p>{formatPrice(prices)}</p>
-  <span class="btn btn--small">{buttonLabel}</span>
-</a>
+  <a
+    href={getProductUrl(product.id)}
+    slot="actions"
+    class="btn btn--small"
+    data-testid="product-overview-link">{buttonLabel}</a
+  >
+</Card>
+
+<style>
+  :global(.card__body) {
+    row-gap: calc(var(--spacing) * 4);
+  }
+
+  :global(.card__title) {
+    margin-bottom: calc(var(--spacing) * 1);
+  }
+</style>

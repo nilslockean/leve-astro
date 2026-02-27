@@ -10,6 +10,7 @@ import { sanityAPI } from "@lib/sanityAPI";
 import { PortableText } from "astro-portabletext";
 import config, { phoneLink, emailLink } from "@config/site";
 import Layout from "../layouts/Layout.astro";
+import Card from "@components/Card.astro";
 
 const { contact } = config;
 const faq = await sanityAPI.getFaq();
@@ -43,23 +44,24 @@ const openingHours = await sanityAPI.getOpeningHours();
   </Section>
 
   <Section class="lg:mt-8 grid lg:grid-cols-2 gap-8">
-    <div class="bg-white/10 shadow-xl max-w-prose p-6 lg:p-12">
-      <h2>Söker du jobb?</h2>
+    <Card variant="raised" title="Söker du jobb?">
       <p>
         Skulle det dyka upp lediga tjänster annonseras detta på Instagram.
         Skicka in din ansökan till <a href="mailto:jobb@bagerileve.se"
           >jobb@bagerileve.se</a
-        >när en tjänst dyker upp om du är intresserad.
+        > när en tjänst dyker upp om du är intresserad.
       </p>
       <a
         href="https://www.instagram.com/bagerileve"
         target="_blank"
         rel="noreferrer"
         class="btn btn--outline"
+        slot="actions"
       >
         Följ @bagerileve
       </a>
-    </div>
+    </Card>
+
     <div>
       <h2>Kontaktuppgifter</h2>
       <p class="mb-4">

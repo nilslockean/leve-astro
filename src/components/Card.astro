@@ -1,0 +1,85 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type CardVariant = "transparent" | "raised";
+
+interface Props extends HTMLAttributes<"article"> {
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  variant?: CardVariant;
+  stacked?: boolean;
+  linked?: boolean;
+}
+
+const {
+  title,
+  description,
+  eyebrow,
+  headingLevel = 3,
+  variant = "transparent",
+  stacked = false,
+  linked = false,
+  class: className,
+} = Astro.props;
+
+const HeadingTag = `h${headingLevel}` as "h2" | "h3" | "h4" | "h5" | "h6";
+---
+
+<article
+  class:list={[
+    "card",
+    `card--${variant}`,
+    {
+      "card--stacked": stacked,
+      "card--linked": linked,
+    },
+    className,
+  ]}
+  data-linked={linked}
+>
+  <slot name="image" />
+  <div class="card__body">
+    <div class="card__content">
+      {eyebrow && <div class="card__eyebrow">{eyebrow}</div>}
+      {title && <HeadingTag class="card__title">{title}</HeadingTag>}
+      <slot>
+        <p class="card__description">{description}</p>
+      </slot>
+    </div>
+    <div class="card__actions btn-group">
+      <slot name="actions" />
+    </div>
+  </div>
+</article>
+
+<script>
+  // https://css-tricks.com/block-links-the-search-for-a-perfect-solution/#aa-method-4-sprinkle-javascript-on-the-second-method
+  const linkedCards = document.querySelectorAll('.card[data-linked="true"]');
+
+  for (const card of linkedCards) {
+    createBlockLink(card);
+  }
+
+  function createBlockLink(card: Element) {
+    const firstLink = card.querySelector<HTMLAnchorElement>(
+      ".card__actions a:first-of-type",
+    );
+
+    if (!firstLink) {
+      console.warn("No link found in linked card:", card);
+      return;
+    }
+
+    card.addEventListener("click", () => {
+      const selectedText = getSelection()?.toString() || "";
+
+      if (selectedText) {
+        return;
+      }
+
+      firstLink.click();
+    });
+  }
+</script>

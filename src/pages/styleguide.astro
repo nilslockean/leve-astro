@@ -1,0 +1,196 @@
+---
+import Card from "@components/Card.astro";
+import Icon from "@components/Icon.astro";
+import { IconName } from "@lib/enums/IconName";
+import Layout from "src/layouts/Layout.astro";
+import { Image } from "astro:assets";
+import donutImage from "@lib/assets/fredagsmunk-vattenfarg.png";
+import { isProduction } from "@lib/envUtils";
+
+export const prerender = false;
+
+if (isProduction()) {
+  Astro.rewrite("/404");
+}
+---
+
+<Layout title="Styleguide" metaDescription="Styleguide for the website">
+  <section>
+    <h1>Styleguide</h1>
+    <p class="intro">This is the styleguide for the website.</p>
+  </section>
+
+  <section>
+    <h2>Buttons</h2>
+    <div class="btn-group">
+      <button class="btn btn--primary">Primary Button</button>
+      <button class="btn btn--secondary">Secondary Button</button>
+      <button class="btn btn--outline">Outline Button</button>
+    </div>
+    <hr />
+    <h3>Fullwidth button group</h3>
+    <div class="btn-group btn-group--fullwidth">
+      <button class="btn btn--primary"
+        ><Icon name={IconName.PLUS} /> Primary Button
+      </button>
+      <button class="btn btn--secondary">
+        <Icon name={IconName.CHEVRON} />
+        Secondary Button</button
+      >
+      <button class="btn btn--outline">
+        <Icon name={IconName.PHONE} />
+        Outline Button</button
+      >
+    </div>
+    <hr />
+    <div class="btn-group">
+      <button class="btn btn--primary btn--small">Small Primary Button</button>
+      <button class="btn btn--secondary btn--small"
+        >Small Secondary Button</button
+      >
+      <button class="btn btn--outline btn--small">Small Outline Button</button>
+    </div>
+    <hr />
+    <div class="btn-group">
+      <button class="btn btn--primary btn--small"
+        ><Icon name={IconName.PLUS} /> Primary Button
+      </button>
+      <button class="btn btn--secondary btn--small">
+        <Icon name={IconName.CHEVRON} />
+        Secondary Button</button
+      >
+      <button class="btn btn--outline btn--small">
+        <Icon name={IconName.PHONE} />
+        Outline Button</button
+      >
+    </div>
+  </section>
+
+  <section>
+    <h2>Cards</h2>
+
+    <h3>Default full width cards</h3>
+    <Card
+      description="Raised card with string description and no title"
+      variant="raised"
+    >
+      <button class="btn" slot="actions">Button</button>
+      <button class="btn btn--outline" slot="actions">Secondary button</button>
+    </Card>
+
+    <hr />
+
+    <Card
+      description="Raised card with string description and no title"
+      variant="raised"
+    >
+      <p><strong>Raised card</strong> with slot description and no title</p>
+      <button class="btn btn--primary" slot="actions">Primary Button</button>
+    </Card>
+
+    <hr />
+
+    <Card
+      title="Raised card with eyebrow, title and description"
+      eyebrow="Eyebrow"
+      description="Description provided as string prop, no actions"
+      variant="raised"
+    />
+
+    <hr />
+
+    <Card
+      variant="raised"
+      linked
+      title="Raised block link card"
+      description="Card description"
+    >
+      <a class="btn" href="#block-link" slot="actions">Link</a>
+    </Card>
+
+    <hr />
+
+    <Card
+      linked
+      stacked
+      title="Stacked raised card with normal link button"
+      variant="raised"
+      description="Card description"
+    >
+      <a class="btn" href="#stcked-link" slot="actions">Link</a>
+    </Card>
+
+    <hr />
+
+    <Card
+      stacked
+      linked
+      title="Stacked raised card with image block link button"
+      variant="raised"
+      description="Card description"
+    >
+      <Image src={donutImage} alt="Placeholder" slot="image" />
+      <a class="btn" href="#" slot="actions">Link</a>
+    </Card>
+
+    <hr />
+
+    <Card
+      stacked
+      title="Stacked linked card with image and normal link button"
+      description="Card description"
+    >
+      <Image src={donutImage} alt="Placeholder" slot="image" />
+      <p class="intro">This is some intro text for the card.</p>
+      <p>And some more text to fill the card.</p>
+      <a class="btn btn--small" href="#small-block-link" slot="actions"
+        >Small block link</a
+      >
+    </Card>
+
+    <hr />
+
+    <h3>Cards in grid</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <Card title="Card in grid" description="Card description">
+        <slot name="actions">
+          <button class="btn">Primary Button</button>
+        </slot>
+      </Card>
+      <Card title="Card in grid" description="Card description">
+        <slot name="actions">
+          <button class="btn">Primary Button</button>
+        </slot>
+      </Card>
+      <Card title="Card in grid" description="Card description">
+        <slot name="actions">
+          <button class="btn">Primary Button</button>
+        </slot>
+      </Card>
+    </div>
+  </section>
+
+  <section class="section--fullwidth">
+    <h2>Fullwidth section</h2>
+    <p>This is a fullwidth section.</p>
+  </section>
+</Layout>
+
+<style>
+  .intro {
+    font-size: var(--text-xl);
+    line-height: var(--leading-relaxed);
+    max-width: var(--prose);
+    font-family: var(--font-display);
+    @media (--breakpoint-lg) {
+      font-size: var(--text-2xl);
+    }
+  }
+
+  h2 {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+  h3 {
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+</style>
