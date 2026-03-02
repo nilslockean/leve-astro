@@ -14,7 +14,7 @@ export function getVariantDescription(
     throw new Error(`No variant found with price: ${price}`);
   }
 
-  if (variant.id === "standard") {
+  if (product.variants.length === 1 && variant.id === "standard") {
     return undefined;
   }
 
