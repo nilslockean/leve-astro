@@ -23,7 +23,15 @@ const buttonLabel = outOfStock
     : "Beställ";
 ---
 
-<Card linked title={product.title} description={formatPrice(prices)} stacked>
+<Card
+  linked
+  title={product.title}
+  description={formatPrice(prices)}
+  stacked
+  data-variants-count={product.variants.length}
+  data-available={!outOfStock && availablePickupDates.length > 0}
+  data-product-id={product.id}
+>
   <Image
     src={urlFor(featuredImage.asset).width(770).height(580).url()}
     alt={featuredImage.alt}

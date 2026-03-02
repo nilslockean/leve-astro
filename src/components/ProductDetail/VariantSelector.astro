@@ -37,6 +37,7 @@ const isHidden = prices.length === 1 && prices[0].id === "standard";
             id={`price_option_${i}`}
             value={price}
             checked={i === 0}
+            data-testid="variant-selector-radio"
           />
           <span>
             {description} - {formatPrice([price])}
