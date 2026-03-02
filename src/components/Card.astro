@@ -22,12 +22,14 @@ const {
   stacked = false,
   linked = false,
   class: className,
+  ...rest
 } = Astro.props;
 
 const HeadingTag = `h${headingLevel}` as "h2" | "h3" | "h4" | "h5" | "h6";
 ---
 
 <article
+  {...rest}
   class:list={[
     "card",
     `card--${variant}`,
