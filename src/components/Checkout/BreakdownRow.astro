@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import { formatPrice } from "@lib/stringUtils";
 import type { Product } from "@lib/schemas/Product";
+import { getVariantDescription } from "@lib/variantDescription";
 
 interface Props extends HTMLAttributes<"tr"> {
   price: number;
@@ -11,9 +12,7 @@ interface Props extends HTMLAttributes<"tr"> {
 
 const { price, qty, product, class: className, ...rest } = Astro.props;
 const title = `${qty} x ${product.title}`;
-const variantDescription = product.variants.find(
-  ({ price }) => price === price,
-)?.description;
+const variantDescription = getVariantDescription(price, product);
 const description =
   variantDescription === "Standard" ? undefined : variantDescription;
 
