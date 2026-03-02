@@ -99,9 +99,13 @@ const errorMessage = result?.error?.message;
         </table>
         <hr class="my-6" />
 
-        <p class="text-4xl mb-1">{formatPrice([total.total])}</p>
+        <p class="text-4xl mb-1" data-translate="never">
+          {formatPrice([total.total])}
+        </p>
 
-        <p class="text-sm">Inkl. {formatPrice([total.tax])} moms</p>
+        <p class="text-sm">
+          Inkl. <span data-translate="never">{formatPrice([total.tax])}</span> moms
+        </p>
       </fieldset>
       <fieldset>
         <label class="flex items-start gap-3 cursor-pointer">

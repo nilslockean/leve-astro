@@ -44,11 +44,11 @@ const thumbnail = product.images[0];
           {title}
         </a>
       </h2>
-      <p class="whitespace-nowrap">
+      <p class="whitespace-nowrap" data-translate="never">
         {formatPrice([price * qty])}
       </p>
     </div>
-    <p class="text-sm">{formatPrice([price])}</p>
+    <p class="text-sm" data-translate="never">{formatPrice([price])}</p>
     {
       product.pickupDates?.length && (
         <p class="text-sm">

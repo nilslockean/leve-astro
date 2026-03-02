@@ -26,12 +26,12 @@ const buttonLabel = outOfStock
 <Card
   linked
   title={product.title}
-  description={formatPrice(prices)}
   stacked
   data-variants-count={product.variants.length}
   data-available={!outOfStock && availablePickupDates.length > 0}
   data-product-id={product.id}
 >
+  <p data-translate="never">{formatPrice(prices)}</p>
   <Image
     src={urlFor(featuredImage.asset).width(770).height(580).url()}
     alt={featuredImage.alt}
