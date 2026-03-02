@@ -40,7 +40,8 @@ const isHidden = prices.length === 1 && prices[0].id === "standard";
             data-testid="variant-selector-radio"
           />
           <span>
-            {description} - {formatPrice([price])}
+            {description} -{" "}
+            <span data-translate="never">{formatPrice([price])}</span>
           </span>
         </label>
       </p>

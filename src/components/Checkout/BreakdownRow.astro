@@ -16,7 +16,7 @@ const variantDescription = getVariantDescription(price, product);
 const description =
   variantDescription === "Standard" ? undefined : variantDescription;
 
-const forattedTotal = formatPrice([qty * price]);
+const formattedTotal = formatPrice([qty * price]);
 ---
 
 <tr {...rest} class={className}>
@@ -27,6 +27,6 @@ const forattedTotal = formatPrice([qty * price]);
     {description && <small>{description}</small>}
   </td>
   <td>
-    <p>{forattedTotal}</p>
+    <p data-translate="never">{formattedTotal}</p>
   </td>
 </tr>
