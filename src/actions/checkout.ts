@@ -26,17 +26,9 @@ export const checkout = defineAction({
     phone: z.string(),
     message: z.string().optional(),
     acceptTerms: z.literal("1"),
-    posthog_distinct_id: z.string().optional(),
   }),
   handler: async (input, context) => {
-    const {
-      pickupDate,
-      name,
-      email,
-      phone,
-      message,
-      posthog_distinct_id: distinctId,
-    } = input;
+    const { pickupDate, name, email, phone, message } = input;
 
     const products = await getCollection("products");
     const productIds = products.map((product) => product.id);
