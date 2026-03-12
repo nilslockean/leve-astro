@@ -168,6 +168,23 @@ export class SanityAPI {
   };
 
   /**
+   * Fetch all orders.
+   */
+  public getOrders = async (): Promise<OrderSnapshot[]> => {
+    const orders = await this.client.fetch<OrderSnapshot[]>(
+      `*[_type == "order"]{
+        orderNumber,
+        customer,
+        pickupDate,
+        totals,
+        items
+      }`,
+    );
+
+    return orders;
+  };
+
+  /**
    * Fetch order by order number for the thank-you page. Returns null if not found.
    */
   public getOrderByOrderNumber = async (
