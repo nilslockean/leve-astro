@@ -4,6 +4,8 @@ import Cart from "@components/Cart/index.astro";
 import { getCart, getCartTotal, getCartContents } from "@lib/cart";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 import { getCollection } from "astro:content";
+import { captureEvent } from "@lib/posthogServer";
+import { getVariantDescription } from "@lib/variantDescription";
 
 export const prerender = false;
 
@@ -15,6 +17,16 @@ const cart = getCart(Astro.cookies);
 const products = await getCollection("products");
 const cartContents = getCartContents(cart, products);
 const cartTotal = getCartTotal(cart);
+
+await captureEvent("Cart Viewed", Astro.cookies, {
+  products: cartContents.map((item) => ({
+    product_id: item.product.id,
+    name: item.product.title,
+    variant: getVariantDescription(item.price, item.product),
+    quantity: item.qty,
+    price: item.price,
+  })),
+});
 ---
 
 <Layout

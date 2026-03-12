@@ -2,7 +2,7 @@ import { MailerSendAPI } from "@lib/api/MailerSendAPI";
 import { getCart, getCartTotal, setCart, EMPTY_CART } from "@lib/cart";
 import { getAvailablePickupDates } from "@lib/dateUtils";
 import { createOrderConfirmationToken } from "@lib/orderConfirmation";
-import { capture as posthogCapture } from "@lib/posthogServer";
+import { captureEvent } from "@lib/posthogServer";
 import { sanityAPI } from "@lib/sanityAPI";
 import { orderSnapshotSchema } from "@lib/schemas/OrderSnapshot";
 import { defineAction, ActionError } from "astro:actions";
@@ -141,22 +141,20 @@ export const checkout = defineAction({
       });
     }
 
-    if (distinctId) {
-      await posthogCapture(distinctId, "Order Completed", {
-        order_id: order.orderNumber,
-        total: totals.total,
-        revenue: totals.total - totals.tax,
-        tax: totals.tax,
-        currency: "SEK",
-        products: orderSnapshot.items.map((item) => ({
-          product_id: item.variantId,
-          name: item.productTitle,
-          variant: item.variantDescription,
-          price: item.unitPrice,
-          quantity: item.quantity,
-        })),
-      });
-    }
+    await captureEvent("Order Completed", context.cookies, {
+      order_id: order.orderNumber,
+      total: totals.total,
+      revenue: totals.total - totals.tax,
+      tax: totals.tax,
+      currency: "SEK",
+      products: orderSnapshot.items.map((item) => ({
+        product_id: item.variantId,
+        name: item.productTitle,
+        variant: item.variantDescription,
+        price: item.unitPrice,
+        quantity: item.quantity,
+      })),
+    });
 
     setCart(context.cookies, EMPTY_CART);
 
