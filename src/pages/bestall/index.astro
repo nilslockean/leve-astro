@@ -57,3 +57,9 @@ const productsWithDates = productEntries.map(({ data }) => {
     @apply max-w-prose;
   }
 </style>
+
+<script>
+  import { capture } from "@lib/posthogClient";
+
+  capture("Product List Viewed");
+</script>

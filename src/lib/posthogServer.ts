@@ -3,8 +3,8 @@
  * distinct_id must be passed from the client (e.g. checkout form field).
  */
 import { PostHog } from "posthog-node";
-import { ENABLE_POSTHOG } from "astro:env/server";
-import { POSTHOG_PROJECT_API_KEY } from "astro:env/client";
+import { ENABLE_POSTHOG, POSTHOG_PROJECT_API_KEY } from "astro:env/client";
+import type { AstroCookies } from "astro";
 
 const POSTHOG_HOST = "https://eu.i.posthog.com";
 
@@ -19,21 +19,23 @@ function getClient(): PostHog | null {
 }
 
 /**
- * Capture an event server-side. No-op if PostHog is disabled or distinctId is missing.
+ * Capture an event server-side. No-op if PostHog is disabled or distinctId cookie is missing.
  */
-export async function capture(
-  distinctId: string | undefined,
+export async function captureEvent(
   event: string,
-  properties: Record<string, unknown>,
+  cookies: AstroCookies,
+  properties?: Record<string, unknown>,
 ): Promise<void> {
+  const distinctId = cookies.get("ph_distinct_id")?.value;
   if (!distinctId) return;
-  const c = getClient();
-  if (!c) return;
 
-  c.capture({
+  const client = getClient();
+  if (!client) return;
+
+  client.capture({
     distinctId,
     event,
     properties,
   });
-  await c.flush();
+  await client.flush();
 }

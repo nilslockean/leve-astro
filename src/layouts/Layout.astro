@@ -13,9 +13,9 @@ import { ClientRouter } from "astro:transitions";
 import {
   ENABLE_WEGLOT,
   ENABLE_VIEW_TRANSITIONS,
-  ENABLE_POSTHOG,
   WEGLOT_API_KEY,
 } from "astro:env/server";
+import { ENABLE_POSTHOG } from "astro:env/client";
 import WeGlotScript from "@components/WeGlotScript.astro";
 import { getCanonicalUrl } from "@lib/canonicalUrl";
 import { sanityAPI } from "@lib/sanityAPI";

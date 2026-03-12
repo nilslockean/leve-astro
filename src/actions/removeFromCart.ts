@@ -2,6 +2,7 @@ import { getCart, setCart, updateCart } from "@lib/cart";
 import { defineAction } from "astro:actions";
 import { z } from "astro/zod";
 import type { ActionSuccess } from "./types";
+import { captureEvent } from "@lib/posthogServer";
 
 export const removeFromCart = defineAction({
   accept: "form",
@@ -19,6 +20,11 @@ export const removeFromCart = defineAction({
     });
 
     setCart(context.cookies, cart);
+
+    captureEvent("Product Removed", context.cookies, {
+      product_id: productId,
+      price,
+    });
 
     return { success: true };
   },

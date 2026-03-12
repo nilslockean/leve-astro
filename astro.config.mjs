@@ -107,7 +107,7 @@ export default defineConfig({
         default: false,
       }),
       ENABLE_POSTHOG: envField.boolean({
-        context: "server",
+        context: "client",
         access: "public",
         optional: true,
         default: true,
