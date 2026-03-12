@@ -6,4 +6,8 @@
     api_host: "https://eu.i.posthog.com",
     defaults: "2026-01-30",
   });
+
+  // Set Distinct ID in cookie so that the server can track the user across sessions
+  const distinctId = posthog.get_distinct_id();
+  document.cookie = `ph_distinct_id=${distinctId};`;
 </script>
