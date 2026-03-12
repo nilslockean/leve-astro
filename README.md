@@ -1,6 +1,8 @@
 # Bageri Leve
 
-Website for artisan bakery [Leve](https://bagerileve.se) in Malmö, Sweden. Built with Astro, deployed on Netlify. Content is managed in a separate Sanity project.
+Website for [Bageri Leve](https://bagerileve.se).
+
+Built with Astro, deployed on Netlify. Content is managed in [a separate Sanity project](https://github.com/nilslockean/leve-sanity).
 
 ## Getting access
 
