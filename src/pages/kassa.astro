@@ -13,6 +13,8 @@ import { composeThankYouUrl } from "@lib/orderConfirmation";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 import { getCartUrl } from "@config/site";
 import { actions } from "astro:actions";
+import { captureEvent } from "@lib/posthogServer";
+import { getVariantDescription } from "@lib/variantDescription";
 
 export const prerender = false;
 
@@ -44,6 +46,16 @@ const availablePickupDates = await getAvailablePickupDates(
   sanityAPI.getOpenDaysInRange.bind(sanityAPI),
   cartContents.map((item) => item.product),
 );
+
+await captureEvent("Checkout Started", Astro.cookies, {
+  currency: "SEK",
+  products: cartContents.map((item) => ({
+    name: item.product.title,
+    variant: getVariantDescription(item.price, item.product),
+    quantity: item.qty,
+    price: item.price,
+  })),
+});
 ---
 
 <Layout
