@@ -5,4 +5,5 @@ export enum IconName {
   MAP_PIN = "map-pin",
   CHEVRON = "chevron",
   CART = "cart",
+  LANGUAGE = "language",
 }

@@ -5,6 +5,7 @@ import Phone from "./Phone.svg?raw";
 import Plus from "./Plus.svg?raw";
 import Chevron from "./Chevron.svg?raw";
 import Cart from "./Cart.svg?raw";
+import Language from "./Language.svg?raw";
 
 const iconMap: Record<IconName, string> = {
   [IconName.PHONE]: Phone,
@@ -13,6 +14,7 @@ const iconMap: Record<IconName, string> = {
   [IconName.MAP_PIN]: MapPin,
   [IconName.CHEVRON]: Chevron,
   [IconName.CART]: Cart,
+  [IconName.LANGUAGE]: Language,
 };
 
 export { iconMap };
