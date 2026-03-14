@@ -189,8 +189,10 @@ nav a {
   }
 }
 
-a[aria-current="page"] {
-  text-decoration: none;
+nav a {
+  &:is(.weglot-link--active, [aria-current="page"]) {
+    text-decoration: none;
+  }
 }
 
 /* -------------------------------------------------------------------------

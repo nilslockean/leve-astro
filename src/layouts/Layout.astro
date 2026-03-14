@@ -175,10 +175,32 @@ const optimizedOgImage = await getImage({
         </div>
       </div>
       <hr class="my-8" />
-      <nav class="flex gap-3" aria-label="Juridisk information">
-        <NavLinks links={_getNavLinks(NavArea.COLOPHON)} />
-        <span class="hidden">{import.meta.env.MODE}</span>
-      </nav>
+      <div id="colophon">
+        <nav aria-label="Juridisk information">
+          <NavLinks links={_getNavLinks(NavArea.COLOPHON)} />
+        </nav>
+        <nav aria-label="Choose language">
+          <Icon name={IconName.LANGUAGE} />
+          <a href="#Weglot-sv">Svenska</a>
+          <a href="#Weglot-en">English</a>
+        </nav>
+      </div>
     </footer>
   </body>
 </html>
+
+<style>
+  #colophon {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: calc(var(--spacing) * 8);
+  }
+
+  #colophon nav {
+    display: flex;
+    gap: calc(var(--spacing) * 3);
+    align-items: center;
+  }
+</style>
