@@ -166,7 +166,13 @@ describe("getAvailablePickupDates", () => {
     );
 
   test("filters out closed days from available pickup dates when no special pickup dates are provided", async () => {
-    const entries = [{ pickupDates: null }];
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
     const pickupDates = await curry(entries);
     expect(pickupDates).toEqual([
       "2024-03-03",
@@ -178,27 +184,53 @@ describe("getAvailablePickupDates", () => {
   });
 
   test("returns special pickup dates when provided", async () => {
-    const entries = [{ pickupDates: ["2024-03-03", "2024-03-04"] }];
+    const entries = [
+      {
+        pickupDates: ["2024-03-03", "2024-03-04"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
     const pickupDates = await curry(entries);
     expect(pickupDates).toEqual(["2024-03-03", "2024-03-04"]);
   });
 
   test("filters out dates in the past", async () => {
-    const entries = [{ pickupDates: ["2024-02-22", "2024-03-04"] }];
+    const entries = [
+      {
+        pickupDates: ["2024-02-22", "2024-03-04"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
     const pickupDates = await curry(entries);
     expect(pickupDates).toEqual(["2024-03-04"]);
   });
 
   test("provided pickup dates override closed days", async () => {
-    const entries = [{ pickupDates: ["2024-03-05"] }];
+    const entries = [
+      {
+        pickupDates: ["2024-03-05"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
     const pickupDates = await curry(entries);
     expect(pickupDates).toEqual(["2024-03-05"]);
   });
 
   test("multiple entries return overlapping pickup dates", async () => {
     const entries = [
-      { pickupDates: ["2024-03-03", "2024-03-04"] },
-      { pickupDates: ["2024-03-04", "2024-03-05"] },
+      {
+        pickupDates: ["2024-03-03", "2024-03-04"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+      {
+        pickupDates: ["2024-03-04", "2024-03-05"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
     ];
     const pickupDates = await curry(entries);
     expect(pickupDates).toEqual(["2024-03-04"]);

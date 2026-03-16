@@ -8,7 +8,7 @@ export const ProductSchema = z.object({
       price: z.number().min(0),
       description: z.string(),
       id: z.string(),
-    })
+    }),
   ),
   images: z.array(
     z.object({
@@ -16,11 +16,13 @@ export const ProductSchema = z.object({
         _ref: z.string(),
       }),
       alt: z.string(),
-    })
+    }),
   ),
   content: z.array(z.any()), // Portable text
   maxQuantityPerOrder: z.number().min(0).nullable(),
   pickupDates: z.array(z.string().date()).nullable(),
+  pickupDateRangeStart: z.string().date().nullable().default(null),
+  pickupDateRangeEnd: z.string().date().nullable().default(null),
 });
 
 export type Product = z.infer<typeof ProductSchema>;

@@ -56,7 +56,12 @@ export function isDateInFuture(
   return timestamp > baseDate.getTime();
 }
 
-export type PickupDateEntry = { pickupDates: string[] | null };
+export type PickupDateEntry = {
+  pickupDates: string[] | null;
+  pickupDateRangeStart: string | null;
+  pickupDateRangeEnd: string | null;
+};
+
 export async function getAvailablePickupDates(
   minOffset: number,
   maxOffset: number,
