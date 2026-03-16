@@ -8,7 +8,9 @@ export function getDateString(date: Date) {
 // Returns all dates starting and ending with the provided dates
 // in YYYY-MM-DD format
 const isoDateString = (z: typeof zod) =>
-  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (expected YYYY-MM-DD)");
+  z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (expected YYYY-MM-DD)");
 
 export function getDatesInRange(start: string, end: string, z = zod) {
   const schema = z.tuple([isoDateString(z), isoDateString(z)]);
@@ -25,7 +27,7 @@ export function getDatesInRange(start: string, end: string, z = zod) {
 
   while (current <= endDate) {
     const dateStr = getDateString(
-      new Date(current.getTime() - current.getTimezoneOffset() * 60000)
+      new Date(current.getTime() - current.getTimezoneOffset() * 60000),
     );
     dates.push(dateStr);
     current.setDate(current.getDate() + 1);
@@ -42,7 +44,7 @@ export function addDays(offset: number, baseDate = new Date()) {
 
 export function isDateInFuture(
   input: string | Date,
-  baseDate = new Date()
+  baseDate = new Date(),
 ): boolean {
   const timestamp =
     typeof input === "string" ? Date.parse(input) : input.getTime();
@@ -54,31 +56,38 @@ export function isDateInFuture(
   return timestamp > baseDate.getTime();
 }
 
+export type PickupDateEntry = { pickupDates: string[] | null };
 export async function getAvailablePickupDates(
   minOffset: number,
   maxOffset: number,
   getDaysInRange: (min: string, max: string) => Promise<string[]>,
-  entries: { pickupDates: string[] | null }[]
+  entries: PickupDateEntry[],
+  baseDate = new Date(),
 ): Promise<string[]> {
-  const pickupDateMin = addDays(minOffset);
-  const pickupDateMax = addDays(maxOffset);
+  const pickupDateMin = addDays(minOffset, baseDate);
+  const pickupDateMax = addDays(maxOffset, baseDate);
 
   const defaultPickupDates = await getDaysInRange(
     getDateString(pickupDateMin),
-    getDateString(pickupDateMax)
+    getDateString(pickupDateMax),
   );
 
-  const firstEntryWithLimitedDates = entries.find(
-    ({ pickupDates }) => pickupDates !== null && pickupDates.length
+  const entriesWithLimitedDates = entries.filter(
+    ({ pickupDates }) => pickupDates !== null && pickupDates.length,
   );
 
-  if (!firstEntryWithLimitedDates) {
+  if (!entriesWithLimitedDates.length) {
     return defaultPickupDates;
   }
 
-  return (
-    firstEntryWithLimitedDates.pickupDates?.filter((dateStr) =>
-      isDateInFuture(dateStr)
-    ) || []
+  // Filter out dates in the past
+  const limitedFutureDates = entriesWithLimitedDates.map(
+    ({ pickupDates }) =>
+      pickupDates?.filter((dateStr) => isDateInFuture(dateStr, baseDate)) || [],
+  );
+
+  // Return overlapping dates (intersection)
+  return limitedFutureDates.reduce((acc, curr) =>
+    acc.filter((date) => curr.includes(date)),
   );
 }

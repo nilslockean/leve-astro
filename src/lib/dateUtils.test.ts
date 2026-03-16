@@ -1,9 +1,11 @@
 import { describe, test } from "vitest";
 import {
   addDays,
+  getAvailablePickupDates,
   getDatesInRange,
   getDateString,
   isDateInFuture,
+  type PickupDateEntry,
 } from "./dateUtils";
 import { expect } from "@playwright/test";
 
@@ -132,5 +134,73 @@ describe("isDateInFuture", () => {
     expect(() => isDateInFuture("not-a-date", base)).toThrow();
     // or, if you prefer:
     // expect(isDateInFuture("not-a-date", base)).toBe(false);
+  });
+});
+
+describe("getAvailablePickupDates", () => {
+  // The tests will worry about the date range 2-7 days
+  // after 2024-03-01, meaning dates from 2024-03-03 to 2024-03-08.
+  const BASE_DATE = new Date("2024-03-01");
+  const MIN_OFFSET = 2;
+  const MAX_OFFSET = 7;
+
+  // We will simulate closed days on the 5th of March.
+  const CLOSED_DAYS = ["2024-03-05"];
+
+  // Mock implementation of the Sanity API's getOpenDaysInRage
+  const _getDaysInRange = async (min: string, max: string) => {
+    return getDatesInRange(min, max).filter(
+      (date) => !CLOSED_DAYS.includes(date),
+    );
+  };
+
+  // Curry the getAvailablePickupDates function with the mock _getDaysInRange implementation and
+  // local constants
+  const curry = (entries: PickupDateEntry[]) =>
+    getAvailablePickupDates(
+      MIN_OFFSET,
+      MAX_OFFSET,
+      _getDaysInRange,
+      entries,
+      BASE_DATE,
+    );
+
+  test("filters out closed days from available pickup dates when no special pickup dates are provided", async () => {
+    const entries = [{ pickupDates: null }];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual([
+      "2024-03-03",
+      "2024-03-04",
+      "2024-03-06",
+      "2024-03-07",
+      "2024-03-08",
+    ]);
+  });
+
+  test("returns special pickup dates when provided", async () => {
+    const entries = [{ pickupDates: ["2024-03-03", "2024-03-04"] }];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual(["2024-03-03", "2024-03-04"]);
+  });
+
+  test("filters out dates in the past", async () => {
+    const entries = [{ pickupDates: ["2024-02-22", "2024-03-04"] }];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual(["2024-03-04"]);
+  });
+
+  test("provided pickup dates override closed days", async () => {
+    const entries = [{ pickupDates: ["2024-03-05"] }];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual(["2024-03-05"]);
+  });
+
+  test("multiple entries return overlapping pickup dates", async () => {
+    const entries = [
+      { pickupDates: ["2024-03-03", "2024-03-04"] },
+      { pickupDates: ["2024-03-04", "2024-03-05"] },
+    ];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual(["2024-03-04"]);
   });
 });
