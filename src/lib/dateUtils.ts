@@ -13,6 +13,18 @@ const isoDateString = (z: typeof zod) =>
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (expected YYYY-MM-DD)");
 
+export function formatDate(
+  dateStr: string,
+  capitalize?: (str: string) => string,
+) {
+  const dateFormatter = new Intl.DateTimeFormat("sv-SE", {
+    dateStyle: "full",
+  });
+
+  const formattedDate = dateFormatter.format(new Date(dateStr));
+  return capitalize ? capitalize(formattedDate) : formattedDate;
+}
+
 export function getDatesInRange(start: string, end: string, z = zod) {
   const schema = z.tuple([isoDateString(z), isoDateString(z)]);
   const [startDateStr, endDateStr] = schema.parse([start, end]);

@@ -1,6 +1,7 @@
 import { describe, test } from "vitest";
 import {
   addDays,
+  formatDate,
   getAvailablePickupDates,
   getDatesInRange,
   getDateString,
@@ -8,13 +9,27 @@ import {
   type PickupDateEntry,
 } from "./dateUtils";
 import { expect } from "@playwright/test";
-import type { C } from "node_modules/vitest/dist/chunks/reporters.d.CWXNI2jG";
+import { capitalize } from "./stringUtils";
 
 describe("getDateString", () => {
   test("should format date correctly", () => {
     const date = new Date("Thu Oct 23 2025 15:30:39 GMT+0200");
     const dateStr = getDateString(date);
     expect(dateStr).toStrictEqual("2025-10-23");
+  });
+});
+
+describe("formatDate", () => {
+  test("should format date correctly", () => {
+    const dateStr = "2025-05-01";
+    const formattedDate = formatDate(dateStr);
+    expect(formattedDate).toStrictEqual("torsdag 1 maj 2025");
+  });
+
+  test("should capitalize string if capitalize function is provided", () => {
+    const dateStr = "2025-05-01";
+    const formattedDate = formatDate(dateStr, capitalize);
+    expect(formattedDate).toStrictEqual("Torsdag 1 maj 2025");
   });
 });
 
