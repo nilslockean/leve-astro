@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import type { Product } from "@lib/schemas/Product";
 import { capitalize } from "@lib/stringUtils";
+import { formatDate } from "@lib/dateUtils";
 import {
   PICKUP_DATE_MIN_OFFSET,
   PICKUP_DATE_MAX_OFFSET,
@@ -12,13 +13,6 @@ interface Props extends HTMLAttributes<"fieldset"> {
 }
 
 const { product, ...rest } = Astro.props;
-const dateFormatter = new Intl.DateTimeFormat("sv-SE", {
-  dateStyle: "full",
-});
-function formatDate(dateStr: string) {
-  const formattedDate = dateFormatter.format(new Date(dateStr));
-  return capitalize(formattedDate);
-}
 ---
 
 <fieldset {...rest}>
@@ -29,20 +23,18 @@ function formatDate(dateStr: string) {
         <p>{product.title} går endast att hämta under specifika datum:</p>
         <ul>
           {product.pickupDates.map((date) => (
-            <li>{formatDate(date)}</li>
+            <li>{formatDate(date, capitalize)}</li>
           ))}
         </ul>
         <p>Välj upphämtningsdatum i kassan.</p>
       </>
     ) : (
-      <>
-        <p>
-          {product.title} går att hämta under våra öppettider med minst{" "}
-          {PICKUP_DATE_MIN_OFFSET}
-          dagars framförhållning, och max {PICKUP_DATE_MAX_OFFSET} dagar in i
-          framtiden.
-        </p>
-      </>
+      <p>
+        {product.title} går att hämta under våra öppettider med minst{" "}
+        {PICKUP_DATE_MIN_OFFSET}
+        dagars framförhållning, och max {PICKUP_DATE_MAX_OFFSET} dagar in i
+        framtiden.
+      </p>
     )
   }
 </fieldset>
