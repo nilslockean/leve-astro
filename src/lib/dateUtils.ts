@@ -32,7 +32,7 @@ export function getDatesInRange(start: string, end: string, z = zod) {
   const endDate = new Date(endDateStr);
 
   if (startDate > endDate) {
-    throw new Error("Start date must come before end date");
+    return [];
   }
 
   const dates: string[] = [];
@@ -178,18 +178,38 @@ export async function getAvailablePickupDates(
     getOpenDaysInRange,
   };
 
+  const defaultDates = await ctx.getOpenDaysInRange(
+    getDateString(ctx.pickupDateMin),
+    getDateString(ctx.pickupDateMax),
+  );
+
   const constrainedEntries = entries.filter(hasDateConstraints);
 
   if (constrainedEntries.length === 0) {
-    return ctx.getOpenDaysInRange(
-      getDateString(ctx.pickupDateMin),
-      getDateString(ctx.pickupDateMax),
-    );
+    return defaultDates;
   }
 
   const allowedDatesByEntry = await Promise.all(
     constrainedEntries.map((entry) => getAllowedDatesForEntry(entry, ctx)),
   );
 
-  return intersectDateArrays(allowedDatesByEntry);
+  const result = intersectDateArrays(allowedDatesByEntry);
+
+  // Handle empty results for single entry
+  if (result.length === 0 && constrainedEntries.length === 1) {
+    const entry = constrainedEntries[0];
+
+    // If end date is explicitly set and in the past, return empty (expired range)
+    if (
+      entry.pickupDateRangeEnd &&
+      !isDateInFuture(entry.pickupDateRangeEnd, ctx.baseDate)
+    ) {
+      return [];
+    }
+
+    // Otherwise fall back to defaults (e.g., start date in past with no end)
+    return defaultDates;
+  }
+
+  return result;
 }

@@ -34,10 +34,9 @@ describe("formatDate", () => {
 });
 
 describe("getDatesInRange", () => {
-  test("should throw if start date is after end date", () => {
-    expect(() => {
-      getDatesInRange("2025-01-02", "2025-01-01");
-    }).toThrow();
+  test("should return empty array if start date is after end date", () => {
+    const dates = getDatesInRange("2025-01-02", "2025-01-01");
+    expect(dates).toStrictEqual([]);
   });
 
   test("should throw on invalid date input", () => {
@@ -420,6 +419,50 @@ describe("getAvailablePickupDates", () => {
       },
     ];
     const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual([]);
+  });
+
+  test("returns default dates if range start is in the past", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-01-30",
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-03-01"),
+      minOffset: 2,
+      maxOffset: 7,
+      closedDays: ["2024-03-05"],
+    });
+
+    expect(pickupDates).toEqual([
+      "2024-03-03",
+      "2024-03-04",
+      "2024-03-06",
+      "2024-03-07",
+      "2024-03-08",
+    ]);
+  });
+
+  test("returns empty array if end date is in the past", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: "2024-02-28",
+      },
+      {
+        pickupDates: null,
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: "2024-01-05",
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-03-01"),
+    });
+
     expect(pickupDates).toEqual([]);
   });
 });
