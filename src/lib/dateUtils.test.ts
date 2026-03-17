@@ -356,4 +356,70 @@ describe("getAvailablePickupDates", () => {
       "2024-04-10",
     ]);
   });
+
+  test("returns intersection if multiple entries with date ranges are provided", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-01",
+        pickupDateRangeEnd: "2024-04-10",
+      },
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-05",
+        pickupDateRangeEnd: "2024-04-15",
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-04-01"),
+      minOffset: 2,
+      maxOffset: 5,
+      closedDays: ["2024-04-06"],
+    });
+    expect(pickupDates).toEqual([
+      "2024-04-05",
+      "2024-04-07",
+      "2024-04-08",
+      "2024-04-09",
+      "2024-04-10",
+    ]);
+  });
+
+  test("returns intersection if one entry has specific date and another has range", async () => {
+    const entries = [
+      {
+        pickupDates: ["2024-04-01", "2024-04-05"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-01",
+        pickupDateRangeEnd: "2024-04-10",
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-04-01"),
+      minOffset: 2,
+      maxOffset: 5,
+    });
+    expect(pickupDates).toEqual(["2024-04-05"]);
+  });
+
+  test("returns empty array if multiple entries have ranges with no intersection", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-01",
+        pickupDateRangeEnd: "2024-04-10",
+      },
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-11",
+        pickupDateRangeEnd: "2024-04-20",
+      },
+    ];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual([]);
+  });
 });
