@@ -1,4 +1,5 @@
 import { z as zod } from "astro/zod";
+import DateComparator from "./dateComparator";
 
 // Turns a Date object into a YYYY-MM-DD string
 export function getDateString(date: Date) {
@@ -46,14 +47,8 @@ export function isDateInFuture(
   input: string | Date,
   baseDate = new Date(),
 ): boolean {
-  const timestamp =
-    typeof input === "string" ? Date.parse(input) : input.getTime();
-
-  if (Number.isNaN(timestamp)) {
-    throw new Error(`Invalid input parameter: ${input}`);
-  }
-
-  return timestamp > baseDate.getTime();
+  const comparator = new DateComparator(baseDate);
+  return comparator.isFuture(input);
 }
 
 export type PickupDateEntry = {
@@ -62,37 +57,127 @@ export type PickupDateEntry = {
   pickupDateRangeEnd: string | null;
 };
 
+type PickupDateContext = {
+  minOffset: number;
+  maxOffset: number;
+  baseDate: Date;
+  pickupDateMin: Date;
+  pickupDateMax: Date;
+  getOpenDaysInRange: (min: string, max: string) => Promise<string[]>;
+};
+
+function hasDateConstraints(entry: PickupDateEntry): boolean {
+  return Boolean(
+    (entry.pickupDates && entry.pickupDates.length > 0) ||
+    entry.pickupDateRangeStart ||
+    entry.pickupDateRangeEnd,
+  );
+}
+
+function getFutureDates(dates: string[], baseDate: Date): string[] {
+  return dates.filter((dateStr) => isDateInFuture(dateStr, baseDate));
+}
+
+/**
+ * Calculates the date range based on provided start/end and fallback dates
+ * Returns [startDate, endDate] as ISO date strings
+ */
+function calculateDateRange(
+  rangeStart: string | null,
+  rangeEnd: string | null,
+  ctx: PickupDateContext,
+): [string, string] {
+  if (rangeStart && !rangeEnd) {
+    const startDate = new Date(rangeStart);
+    return [rangeStart, getDateString(addDays(ctx.maxOffset, startDate))];
+  }
+
+  if (!rangeStart && rangeEnd) {
+    return [getDateString(ctx.pickupDateMin), rangeEnd];
+  }
+
+  if (rangeStart && rangeEnd) {
+    return [rangeStart, rangeEnd];
+  }
+
+  return [getDateString(ctx.pickupDateMin), getDateString(ctx.pickupDateMax)];
+}
+
+async function getRangeDates(
+  rangeStart: string | null,
+  rangeEnd: string | null,
+  ctx: PickupDateContext,
+): Promise<string[]> {
+  const [start, end] = calculateDateRange(rangeStart, rangeEnd, ctx);
+  const dates = await ctx.getOpenDaysInRange(start, end);
+  const minAllowedDate = addDays(ctx.minOffset, ctx.baseDate);
+  const comparator = new DateComparator(minAllowedDate);
+
+  return dates.filter((dateStr) => comparator.isPresentOrFuture(dateStr));
+}
+
+async function getAllowedDatesForEntry(
+  entry: PickupDateEntry,
+  ctx: PickupDateContext,
+): Promise<string[]> {
+  const specificDates = getFutureDates(entry.pickupDates ?? [], ctx.baseDate);
+
+  const hasRange = Boolean(
+    entry.pickupDateRangeStart || entry.pickupDateRangeEnd,
+  );
+
+  if (!hasRange) {
+    return specificDates;
+  }
+
+  const rangeDates = await getRangeDates(
+    entry.pickupDateRangeStart,
+    entry.pickupDateRangeEnd,
+    ctx,
+  );
+
+  if (specificDates.length === 0) {
+    return rangeDates;
+  }
+
+  return specificDates.filter((date) => rangeDates.includes(date));
+}
+
+function intersectDateArrays(dateArrays: string[][]): string[] {
+  if (dateArrays.length === 0) return [];
+  return dateArrays.reduce((acc, curr) =>
+    acc.filter((date) => curr.includes(date)),
+  );
+}
+
 export async function getAvailablePickupDates(
   minOffset: number,
   maxOffset: number,
-  getDaysInRange: (min: string, max: string) => Promise<string[]>,
+  getOpenDaysInRange: (min: string, max: string) => Promise<string[]>,
   entries: PickupDateEntry[],
   baseDate = new Date(),
 ): Promise<string[]> {
-  const pickupDateMin = addDays(minOffset, baseDate);
-  const pickupDateMax = addDays(maxOffset, baseDate);
+  const ctx: PickupDateContext = {
+    minOffset,
+    maxOffset,
+    baseDate,
+    pickupDateMin: addDays(minOffset, baseDate),
+    pickupDateMax: addDays(maxOffset, baseDate),
+    getOpenDaysInRange,
+  };
 
-  const defaultPickupDates = await getDaysInRange(
-    getDateString(pickupDateMin),
-    getDateString(pickupDateMax),
-  );
+  const constrainedEntries = entries.filter(hasDateConstraints);
 
-  const entriesWithLimitedDates = entries.filter(
-    ({ pickupDates }) => pickupDates !== null && pickupDates.length,
-  );
-
-  if (!entriesWithLimitedDates.length) {
-    return defaultPickupDates;
+  if (constrainedEntries.length === 0) {
+    return ctx.getOpenDaysInRange(
+      getDateString(ctx.pickupDateMin),
+      getDateString(ctx.pickupDateMax),
+    );
   }
 
-  // Filter out dates in the past
-  const limitedFutureDates = entriesWithLimitedDates.map(
-    ({ pickupDates }) =>
-      pickupDates?.filter((dateStr) => isDateInFuture(dateStr, baseDate)) || [],
+  const allowedDatesByEntry = await Promise.all(
+    constrainedEntries.map((entry) => getAllowedDatesForEntry(entry, ctx)),
   );
 
-  // Return overlapping dates (intersection)
-  return limitedFutureDates.reduce((acc, curr) =>
-    acc.filter((date) => curr.includes(date)),
-  );
+  return intersectDateArrays(allowedDatesByEntry);
 }

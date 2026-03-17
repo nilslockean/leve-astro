@@ -8,6 +8,7 @@ import {
   type PickupDateEntry,
 } from "./dateUtils";
 import { expect } from "@playwright/test";
+import type { C } from "node_modules/vitest/dist/chunks/reporters.d.CWXNI2jG";
 
 describe("getDateString", () => {
   test("should format date correctly", () => {
@@ -140,30 +141,38 @@ describe("isDateInFuture", () => {
 describe("getAvailablePickupDates", () => {
   // The tests will worry about the date range 2-7 days
   // after 2024-03-01, meaning dates from 2024-03-03 to 2024-03-08.
-  const BASE_DATE = new Date("2024-03-01");
+  const BASE_DATE = new Date("2024-03-01"); // Defaults to today's date at runtime
   const MIN_OFFSET = 2;
   const MAX_OFFSET = 7;
 
   // We will simulate closed days on the 5th of March.
   const CLOSED_DAYS = ["2024-03-05"];
 
-  // Mock implementation of the Sanity API's getOpenDaysInRage
-  const _getDaysInRange = async (min: string, max: string) => {
-    return getDatesInRange(min, max).filter(
-      (date) => !CLOSED_DAYS.includes(date),
-    );
-  };
-
   // Curry the getAvailablePickupDates function with the mock _getDaysInRange implementation and
   // local constants
-  const curry = (entries: PickupDateEntry[]) =>
-    getAvailablePickupDates(
-      MIN_OFFSET,
-      MAX_OFFSET,
-      _getDaysInRange,
+  type CurryOptions = {
+    baseDate?: Date;
+    minOffset?: number;
+    maxOffset?: number;
+    closedDays?: string[];
+  };
+  const curry = (entries: PickupDateEntry[], options: CurryOptions = {}) => {
+    // Mock implementation of the Sanity API's getOpenDaysInRage
+    const closedDays = options.closedDays ?? CLOSED_DAYS;
+    const _getOpenDaysInRange = async (min: string, max: string) => {
+      return getDatesInRange(min, max).filter(
+        (date) => !closedDays.includes(date),
+      );
+    };
+
+    return getAvailablePickupDates(
+      options.minOffset ?? MIN_OFFSET,
+      options.maxOffset ?? MAX_OFFSET,
+      _getOpenDaysInRange,
       entries,
-      BASE_DATE,
+      options.baseDate ?? BASE_DATE,
     );
+  };
 
   test("filters out closed days from available pickup dates when no special pickup dates are provided", async () => {
     const entries = [
@@ -215,7 +224,7 @@ describe("getAvailablePickupDates", () => {
         pickupDateRangeEnd: null,
       },
     ];
-    const pickupDates = await curry(entries);
+    const pickupDates = await curry(entries, { closedDays: ["2024-03-05"] });
     expect(pickupDates).toEqual(["2024-03-05"]);
   });
 
@@ -234,5 +243,102 @@ describe("getAvailablePickupDates", () => {
     ];
     const pickupDates = await curry(entries);
     expect(pickupDates).toEqual(["2024-03-04"]);
+  });
+
+  test("returns dates within the range when provided and filters out closed days", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-03-03",
+        pickupDateRangeEnd: "2024-03-07",
+      },
+    ];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual([
+      "2024-03-03",
+      "2024-03-04",
+      "2024-03-06",
+      "2024-03-07",
+    ]);
+  });
+
+  test("returns only dates within the provided date range if both range and specific dates are provided", async () => {
+    const entries = [
+      {
+        pickupDates: ["2024-04-01", "2024-04-05", "2024-04-08"],
+        pickupDateRangeStart: "2024-04-03",
+        pickupDateRangeEnd: "2024-04-07",
+      },
+    ];
+    const pickupDates = await curry(entries);
+    expect(pickupDates).toEqual(["2024-04-05"]);
+  });
+
+  test("returns maxOffset days from start date and filters out closed days if only range start is provided", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-05-01",
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-04-01"),
+      minOffset: 2,
+      maxOffset: 5,
+    });
+    expect(pickupDates).toEqual([
+      "2024-05-01",
+      "2024-05-02",
+      "2024-05-03",
+      "2024-05-04",
+      "2024-05-05",
+      "2024-05-06",
+    ]);
+  });
+
+  test("returns maxOffset days from start date, strips minOffset days from base date, and filters out closed days if only range start is provided", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-01",
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-04-01"),
+      minOffset: 2,
+      maxOffset: 5,
+    });
+    expect(pickupDates).toEqual([
+      "2024-04-03",
+      "2024-04-04",
+      "2024-04-05",
+      "2024-04-06",
+    ]);
+  });
+
+  test("returns all days up to end date, strips minOffset days from base date, and filters out closed days if only range end is provided", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: "2024-04-10",
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-04-01"),
+      minOffset: 2,
+      maxOffset: 5,
+      closedDays: ["2024-04-05", "2024-04-06"],
+    });
+    expect(pickupDates).toEqual([
+      "2024-04-03",
+      "2024-04-04",
+      "2024-04-07",
+      "2024-04-08",
+      "2024-04-09",
+      "2024-04-10",
+    ]);
   });
 });
