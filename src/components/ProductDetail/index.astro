@@ -102,7 +102,7 @@ const disabled =
           isOutOfStock ? (
             <ProductOutOfStock {product} />
           ) : (
-            <ProductPickupDate {product} />
+            <ProductPickupDate {product} {availablePickupDates} />
           )
         }
 

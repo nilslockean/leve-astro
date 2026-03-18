@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import type { Product } from "@lib/schemas/Product";
 import { capitalize } from "@lib/stringUtils";
-import { formatDate } from "@lib/dateUtils";
+import { formatDate, getAvailablePickupDates } from "@lib/dateUtils";
 import {
   PICKUP_DATE_MIN_OFFSET,
   PICKUP_DATE_MAX_OFFSET,
@@ -10,24 +10,47 @@ import {
 
 interface Props extends HTMLAttributes<"fieldset"> {
   product: Product;
+  availablePickupDates: string[];
 }
 
-const { product, ...rest } = Astro.props;
+const { product, availablePickupDates, ...rest } = Astro.props;
+const { pickupDateRangeStart, pickupDateRangeEnd, pickupDates } = product;
 ---
 
 <fieldset {...rest}>
   <legend>Tillgänglighet</legend>
   {
-    product.pickupDates && product.pickupDates.length > 0 ? (
+    pickupDates && pickupDates.length > 0 ? (
       <>
-        <p>{product.title} går endast att hämta under specifika datum:</p>
-        <ul>
-          {product.pickupDates.map((date) => (
-            <li>{formatDate(date, capitalize)}</li>
-          ))}
-        </ul>
-        <p>Välj upphämtningsdatum i kassan.</p>
+        {availablePickupDates.length > 0 ? (
+          <>
+            <p>{product.title} går endast att hämta under specifika datum:</p>
+            <ul>
+              {availablePickupDates.map((date) => (
+                <li>{formatDate(date, capitalize)}</li>
+              ))}
+            </ul>
+            <p>Välj upphämtningsdatum i kassan.</p>
+          </>
+        ) : (
+          <p>Inga upphämtningsdatum är tillgängliga just nu.</p>
+        )}
       </>
+    ) : pickupDateRangeStart && pickupDateRangeEnd ? (
+      <p>
+        {product.title} går att hämta mellan {formatDate(pickupDateRangeStart)}{" "}
+        och {formatDate(pickupDateRangeEnd)}.
+      </p>
+    ) : pickupDateRangeStart ? (
+      <p>
+        {product.title} går att hämta tidigast{" "}
+        {formatDate(pickupDateRangeStart)}.
+      </p>
+    ) : pickupDateRangeEnd ? (
+      <p>
+        Sista upphämtningsdatum:
+        {formatDate(pickupDateRangeEnd)}.
+      </p>
     ) : (
       <p>
         {product.title} går att hämta under våra öppettider med minst{" "}
