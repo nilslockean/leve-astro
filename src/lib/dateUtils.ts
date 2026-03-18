@@ -207,6 +207,14 @@ export async function getAvailablePickupDates(
       return [];
     }
 
+    // If specific dates are set and in the past, return empty (expired range)
+    if (
+      entry.pickupDates &&
+      entry.pickupDates.every((date) => !isDateInFuture(date, ctx.baseDate))
+    ) {
+      return [];
+    }
+
     // Otherwise fall back to defaults (e.g., start date in past with no end)
     return defaultDates;
   }

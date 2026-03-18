@@ -465,4 +465,19 @@ describe("getAvailablePickupDates", () => {
 
     expect(pickupDates).toEqual([]);
   });
+
+  test("returns empty array if specific date is in the past", async () => {
+    const entries = [
+      {
+        pickupDates: ["2024-02-28"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-03-01"),
+    });
+
+    expect(pickupDates).toEqual([]);
+  });
 });
