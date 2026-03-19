@@ -76,8 +76,12 @@ export function getPickupDateDescription(
   maxOffset: number,
 ) {
   const { pickupDateRangeEnd, pickupDates, pickupDateRangeStart } = entry;
+  const hasSpecificPickupDates = pickupDates && pickupDates.length > 0;
+  const rangeIsSingleDate =
+    pickupDateRangeStart !== null &&
+    pickupDateRangeEnd === pickupDateRangeStart;
 
-  if (pickupDates && pickupDates.length > 0) {
+  if (hasSpecificPickupDates || rangeIsSingleDate) {
     return availablePickupDates.length > 0
       ? `Går att hämta ${joinDates(availablePickupDates)}.`
       : "Inga upphämtningsdatum är tillgängliga just nu.";

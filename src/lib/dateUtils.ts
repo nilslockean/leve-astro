@@ -26,12 +26,18 @@ export function formatDate(
 }
 
 export function joinDates(dates: string[]): string {
-  return dates.reduce((acc, curr, i, a) => {
+  const firstDate = formatDate(dates[0]);
+
+  if (dates.length === 1) {
+    return firstDate;
+  }
+
+  return dates.slice(1).reduce((acc, curr, i, a) => {
     const isLast = i === a.length - 1;
     const formattedCurr = formatDate(curr);
 
     return isLast ? `${acc} och ${formattedCurr}` : `${acc}, ${formattedCurr}`;
-  }, formatDate(dates[0]));
+  }, firstDate);
 }
 
 export function getDatesInRange(start: string, end: string, z = zod) {
@@ -187,6 +193,8 @@ export async function getAvailablePickupDates(
     getOpenDaysInRange,
   };
 
+  console.log("ctx", ctx);
+
   const defaultDates = await ctx.getOpenDaysInRange(
     getDateString(ctx.pickupDateMin),
     getDateString(ctx.pickupDateMax),
@@ -198,9 +206,13 @@ export async function getAvailablePickupDates(
     return defaultDates;
   }
 
+  console.log("constrainedEntries", constrainedEntries);
+
   const allowedDatesByEntry = await Promise.all(
     constrainedEntries.map((entry) => getAllowedDatesForEntry(entry, ctx)),
   );
+
+  console.log("allowedDatesByEntry", allowedDatesByEntry);
 
   const result = intersectDateArrays(allowedDatesByEntry);
 
@@ -222,6 +234,13 @@ export async function getAvailablePickupDates(
       entry.pickupDates.every((date) => !isDateInFuture(date, ctx.baseDate))
     ) {
       return [];
+    }
+
+    if (
+      entry.pickupDateRangeEnd !== null &&
+      entry.pickupDateRangeEnd === entry.pickupDateRangeStart
+    ) {
+      return [entry.pickupDateRangeStart];
     }
 
     // Otherwise fall back to defaults (e.g., start date in past with no end)
