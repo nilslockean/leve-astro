@@ -25,6 +25,15 @@ export function formatDate(
   return capitalize ? capitalize(formattedDate) : formattedDate;
 }
 
+export function joinDates(dates: string[]): string {
+  return dates.reduce((acc, curr, i, a) => {
+    const isLast = i === a.length - 1;
+    const formattedCurr = formatDate(curr);
+
+    return isLast ? `${acc} och ${formattedCurr}` : `${acc}, ${formattedCurr}`;
+  }, formatDate(dates[0]));
+}
+
 export function getDatesInRange(start: string, end: string, z = zod) {
   const schema = z.tuple([isoDateString(z), isoDateString(z)]);
   const [startDateStr, endDateStr] = schema.parse([start, end]);
@@ -78,7 +87,7 @@ type PickupDateContext = {
   getOpenDaysInRange: (min: string, max: string) => Promise<string[]>;
 };
 
-function hasDateConstraints(entry: PickupDateEntry): boolean {
+export function hasDateConstraints(entry: PickupDateEntry): boolean {
   return Boolean(
     (entry.pickupDates && entry.pickupDates.length > 0) ||
     entry.pickupDateRangeStart ||
