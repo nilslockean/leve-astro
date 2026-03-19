@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { getVariantDescription } from "./variantDescription";
+import { getProductName, getVariantDescription } from "./variantDescription";
 import type { Product } from "@lib/schemas/Product";
 
 const baseProduct: Product = {
@@ -10,6 +10,8 @@ const baseProduct: Product = {
   content: [],
   maxQuantityPerOrder: null,
   pickupDates: null,
+  pickupDateRangeEnd: null,
+  pickupDateRangeStart: null,
 };
 
 const productWithTwoVariants = {
@@ -68,5 +70,34 @@ describe("getVariantDescription", () => {
     expect(desc6).not.toBe(desc10);
     expect(desc6).toBe("6 bitar");
     expect(desc10).toBe("10 bitar");
+  });
+});
+
+describe("getProductName", () => {
+  test("returns the product name for a product with a single variant", () => {
+    expect(getProductName(productWithOnlyStandardVariant, 330)).toBe(
+      "Test product",
+    );
+  });
+
+  test("returns product name if price variant isn't found", () => {
+    expect(getProductName(productWithOnlyStandardVariant, 440)).toBe(
+      "Test product",
+    );
+  });
+
+  test("returns the product name with appended variant description for a product with multiple variants", () => {
+    expect(getProductName(productWithTwoVariants, 330)).toBe(
+      "Test product - 8 bitar",
+    );
+    expect(getProductName(productWithTwoVariants, 550)).toBe(
+      "Test product - 10 bitar",
+    );
+    expect(getProductName(productWithTwoVariantsAndStandardVariant, 330)).toBe(
+      "Test product - 6 bitar",
+    );
+    expect(getProductName(productWithTwoVariantsAndStandardVariant, 550)).toBe(
+      "Test product - 10 bitar",
+    );
   });
 });

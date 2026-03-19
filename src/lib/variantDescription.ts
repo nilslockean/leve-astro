@@ -20,3 +20,18 @@ export function getVariantDescription(
 
   return variant?.description;
 }
+
+export function getProductName(product: Product, price?: number): string {
+  const { variants, title } = product;
+  if (!price) {
+    return title;
+  }
+
+  const variant = variants.find((variant) => variant.price === price);
+  if (!variant || (variants.length === 1 && variant.id === "standard")) {
+    return title;
+  }
+
+  const description = getVariantDescription(price, product);
+  return `${title} - ${description}`;
+}
