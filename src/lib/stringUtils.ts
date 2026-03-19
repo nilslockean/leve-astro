@@ -1,6 +1,5 @@
 import { SiteLanguage } from "@config/site";
-import type { Product } from "./schemas/Product";
-import { formatDate, joinDates } from "./dateUtils";
+import { formatDate, joinDates, type PickupDateEntry } from "./dateUtils";
 
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -71,12 +70,12 @@ export function formatPrice(prices: number[]) {
 }
 
 export function getPickupDateDescription(
-  product: Product,
+  entry: PickupDateEntry,
   availablePickupDates: string[],
   minOffset: number,
   maxOffset: number,
 ) {
-  const { pickupDateRangeEnd, pickupDates, pickupDateRangeStart } = product;
+  const { pickupDateRangeEnd, pickupDates, pickupDateRangeStart } = entry;
 
   if (pickupDates && pickupDates.length > 0) {
     return availablePickupDates.length > 0
