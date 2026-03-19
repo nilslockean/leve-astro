@@ -6,6 +6,7 @@ import {
   getDatesInRange,
   getDateString,
   isDateInFuture,
+  joinDates,
   type PickupDateEntry,
 } from "./dateUtils";
 import { expect } from "@playwright/test";
@@ -316,6 +317,25 @@ describe("getAvailablePickupDates", () => {
     expect(pickupDates).toEqual(["2024-04-05"]);
   });
 
+  test("returns single date if range start is the same as range end", async () => {
+    const entries = [
+      {
+        pickupDates: null,
+        pickupDateRangeStart: "2024-04-05",
+        pickupDateRangeEnd: "2024-04-05",
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-04-04"),
+    });
+    expect(pickupDates).toEqual(["2024-04-05"]);
+
+    const pickupDatesPast = await curry(entries, {
+      baseDate: new Date("2024-04-06"),
+    });
+    expect(pickupDatesPast).toEqual([]);
+  });
+
   test("returns maxOffset days from start date and filters out closed days if only range start is provided", async () => {
     const entries = [
       {
@@ -507,5 +527,26 @@ describe("getAvailablePickupDates", () => {
     });
 
     expect(pickupDates).toEqual([]);
+  });
+});
+
+describe("joinDates", () => {
+  test("returns single date when only one date is provided", () => {
+    const date = "2024-03-01";
+    expect(joinDates([date])).toBe(formatDate(date));
+  });
+
+  test("returns two dates joined with 'och' when two dates are provided", () => {
+    const dates = ["2024-03-01", "2024-03-02"];
+    expect(joinDates(dates)).toBe(
+      `${formatDate("2024-03-01")} och ${formatDate("2024-03-02")}`,
+    );
+  });
+
+  test("returns three dates joined with commas and 'och' when three dates are provided", () => {
+    const dates = ["2024-03-01", "2024-03-02", "2024-03-03"];
+    expect(joinDates(dates)).toBe(
+      `${formatDate("2024-03-01")}, ${formatDate("2024-03-02")} och ${formatDate("2024-03-03")}`,
+    );
   });
 });
