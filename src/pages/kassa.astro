@@ -2,12 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import Checkout from "@components/Checkout/index.astro";
-import { sanityAPI } from "@lib/sanityAPI";
-import {
-  PICKUP_DATE_MIN_OFFSET,
-  PICKUP_DATE_MAX_OFFSET,
-} from "astro:env/server";
-import { getAvailablePickupDates } from "@lib/dateUtils";
+import { getPickupDatesForProducts } from "@lib/pickupDates";
 import { getCart, getCartContents, getCartTotal } from "@lib/cart";
 import { composeThankYouUrl } from "@lib/orderConfirmation";
 import { ENABLE_STOREFRONT } from "astro:env/server";
@@ -40,10 +35,7 @@ if (cart.items.length === 0) {
 const products = await getCollection("products");
 const cartContents = getCartContents(cart, products);
 const cartTotal = getCartTotal(cart);
-const availablePickupDates = await getAvailablePickupDates(
-  PICKUP_DATE_MIN_OFFSET,
-  PICKUP_DATE_MAX_OFFSET,
-  sanityAPI.getOpenDaysInRange.bind(sanityAPI),
+const availablePickupDates = await getPickupDatesForProducts(
   cartContents.map((item) => item.product),
 );
 

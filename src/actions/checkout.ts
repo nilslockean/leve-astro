@@ -1,6 +1,6 @@
 import { MailerSendAPI } from "@lib/api/MailerSendAPI";
 import { getCart, getCartTotal, setCart, EMPTY_CART } from "@lib/cart";
-import { getAvailablePickupDates } from "@lib/dateUtils";
+import { getPickupDatesForProducts } from "@lib/pickupDates";
 import { createOrderConfirmationToken } from "@lib/orderConfirmation";
 import { captureEvent } from "@lib/posthogServer";
 import { sanityAPI } from "@lib/sanityAPI";
@@ -12,8 +12,6 @@ import {
   ORDER_ADMIN_EMAIL,
   ORDER_ADMIN_PRINTER_EMAIL,
   ORDER_CONFIRMATION_SECRET,
-  PICKUP_DATE_MAX_OFFSET,
-  PICKUP_DATE_MIN_OFFSET,
 } from "astro:env/server";
 import { z } from "astro/zod";
 
@@ -68,10 +66,7 @@ export const checkout = defineAction({
       };
     });
 
-    const availablePickupDates = await getAvailablePickupDates(
-      PICKUP_DATE_MIN_OFFSET,
-      PICKUP_DATE_MAX_OFFSET,
-      sanityAPI.getOpenDaysInRange.bind(sanityAPI),
+    const availablePickupDates = await getPickupDatesForProducts(
       cartItems.map((item) => item.product),
     );
     if (!availablePickupDates.includes(pickupDate)) {
