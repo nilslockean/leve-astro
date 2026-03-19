@@ -218,6 +218,34 @@ describe("getAvailablePickupDates", () => {
     expect(pickupDates).toEqual(["2024-03-03", "2024-03-04"]);
   });
 
+  test("allows pickup tomorrow if special pickup date is tomorrow", async () => {
+    const entries = [
+      {
+        pickupDates: ["2024-03-03"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-03-02"),
+    });
+    expect(pickupDates).toEqual(["2024-03-03"]);
+  });
+
+  test("doeesnt allow pickup today if special pickup date is today", async () => {
+    const entries = [
+      {
+        pickupDates: ["2024-03-03"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-03-03"),
+    });
+    expect(pickupDates).toEqual([]);
+  });
+
   test("filters out dates in the past", async () => {
     const entries = [
       {
