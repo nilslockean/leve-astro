@@ -7,6 +7,7 @@ import { type CartTotal } from "@lib/cart";
 import type { Product } from "@lib/schemas/Product";
 import CartItem from "./CartItem.astro";
 import CartTotals from "./CartTotals.astro";
+import Card from "../Card.astro";
 
 interface Props extends HTMLAttributes<"section"> {
   total: CartTotal;
@@ -16,10 +17,10 @@ interface Props extends HTMLAttributes<"section"> {
     qty: number;
     product: Product;
   }[];
+  availablePickupDates: string[];
 }
 
-const { total, contents, ...rest } = Astro.props;
-
+const { total, contents, availablePickupDates, ...rest } = Astro.props;
 const isEmpty = contents.length === 0;
 ---
 
@@ -37,6 +38,15 @@ const isEmpty = contents.length === 0;
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12">
     <!-- Image and description -->
     <div class="lg:col-span-2">
+      {
+        availablePickupDates.length === 0 && (
+          <Card
+            variant="error"
+            description="Inga upphämtningsdatum tillgängliga. Vänligen ta bort produkter ur varukorgen och dela upp din beställning."
+            style="margin-bottom: calc(var(--spacing) * 12);"
+          />
+        )
+      }
       {
         isEmpty ? (
           <p>Kundvagnen är tom.</p>

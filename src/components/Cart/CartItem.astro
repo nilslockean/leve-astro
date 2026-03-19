@@ -3,9 +3,13 @@ import { getProductUrl } from "@config/site";
 import type { HTMLAttributes } from "astro/types";
 import { actions } from "astro:actions";
 import type { Product } from "@lib/schemas/Product";
-import { formatPrice } from "@lib/stringUtils";
+import { formatPrice, getPickupDateDescription } from "@lib/stringUtils";
 import { Image } from "astro:assets";
-import { urlFor } from "@lib/sanityAPI";
+import { sanityAPI, urlFor } from "@lib/sanityAPI";
+import { getProductName } from "@lib/variantDescription";
+import { getAvailablePickupDates, hasDateConstraints } from "@lib/dateUtils";
+import { PICKUP_DATE_MIN_OFFSET } from "astro:env/server";
+import { PICKUP_DATE_MAX_OFFSET } from "astro:env/server";
 
 interface Props extends HTMLAttributes<"li"> {
   productId: string;
@@ -15,17 +19,15 @@ interface Props extends HTMLAttributes<"li"> {
 }
 
 const { productId, price, qty, product, ...rest } = Astro.props;
-
-const priceOptionDesc = product.variants.find(
-  (option) => option.price === price,
-)?.description;
-
-const title =
-  product.variants.length === 1 && priceOptionDesc === "Standard"
-    ? product.title
-    : `${product.title} - ${priceOptionDesc}`;
-
+const title = getProductName(product, price);
+const hasLimitedPickupDates = hasDateConstraints(product);
 const thumbnail = product.images[0];
+const availablePickupDates = await getAvailablePickupDates(
+  PICKUP_DATE_MIN_OFFSET,
+  PICKUP_DATE_MAX_OFFSET,
+  sanityAPI.getOpenDaysInRange.bind(sanityAPI),
+  [product],
+);
 ---
 
 <li {...rest} class="flex gap-4 border-white/30 pb-6 border-b last:border-b-0">
@@ -48,11 +50,15 @@ const thumbnail = product.images[0];
         {formatPrice([price * qty])}
       </p>
     </div>
-    <p class="text-sm" data-translate="never">{formatPrice([price])}</p>
     {
-      product.pickupDates?.length && (
+      hasLimitedPickupDates && (
         <p class="text-sm">
-          Kan endast hämtas {product.pickupDates.join(", ")}
+          {getPickupDateDescription(
+            product,
+            availablePickupDates,
+            PICKUP_DATE_MIN_OFFSET,
+            PICKUP_DATE_MAX_OFFSET,
+          )}
         </p>
       )
     }

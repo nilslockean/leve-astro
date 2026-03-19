@@ -1,8 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import type { Product } from "@lib/schemas/Product";
-import { capitalize } from "@lib/stringUtils";
-import { formatDate, getAvailablePickupDates } from "@lib/dateUtils";
+import { getPickupDateDescription } from "@lib/stringUtils";
 import {
   PICKUP_DATE_MIN_OFFSET,
   PICKUP_DATE_MAX_OFFSET,
@@ -14,50 +13,18 @@ interface Props extends HTMLAttributes<"fieldset"> {
 }
 
 const { product, availablePickupDates, ...rest } = Astro.props;
-const { pickupDateRangeStart, pickupDateRangeEnd, pickupDates } = product;
 ---
 
 <fieldset {...rest}>
   <legend>Tillgänglighet</legend>
-  {
-    pickupDates && pickupDates.length > 0 ? (
-      <>
-        {availablePickupDates.length > 0 ? (
-          <>
-            <p>{product.title} går endast att hämta under specifika datum:</p>
-            <ul>
-              {availablePickupDates.map((date) => (
-                <li>{formatDate(date, capitalize)}</li>
-              ))}
-            </ul>
-            <p>Välj upphämtningsdatum i kassan.</p>
-          </>
-        ) : (
-          <p>Inga upphämtningsdatum är tillgängliga just nu.</p>
-        )}
-      </>
-    ) : pickupDateRangeStart && pickupDateRangeEnd ? (
-      <p>
-        {product.title} går att hämta mellan {formatDate(pickupDateRangeStart)}{" "}
-        och {formatDate(pickupDateRangeEnd)}.
-      </p>
-    ) : pickupDateRangeStart ? (
-      <p>
-        {product.title} går att hämta tidigast{" "}
-        {formatDate(pickupDateRangeStart)}.
-      </p>
-    ) : pickupDateRangeEnd ? (
-      <p>
-        Sista upphämtningsdatum:
-        {formatDate(pickupDateRangeEnd)}.
-      </p>
-    ) : (
-      <p>
-        {product.title} går att hämta under våra öppettider med minst{" "}
-        {PICKUP_DATE_MIN_OFFSET}
-        dagars framförhållning, och max {PICKUP_DATE_MAX_OFFSET} dagar in i
-        framtiden.
-      </p>
-    )
-  }
+  <p>
+    {
+      getPickupDateDescription(
+        product,
+        availablePickupDates,
+        PICKUP_DATE_MIN_OFFSET,
+        PICKUP_DATE_MAX_OFFSET,
+      )
+    }
+  </p>
 </fieldset>
