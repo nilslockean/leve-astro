@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
-type CardVariant = "transparent" | "raised";
+type CardVariant = "transparent" | "raised" | "error";
 
 interface Props extends HTMLAttributes<"article"> {
   title?: string;
@@ -74,14 +74,21 @@ const HeadingTag = `h${headingLevel}` as "h2" | "h3" | "h4" | "h5" | "h6";
       return;
     }
 
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (e) => {
       const selectedText = getSelection()?.toString() || "";
 
       if (selectedText) {
         return;
       }
 
-      firstLink.click();
+      // Is user holding down the meta key to open link in new tab?
+      const metaKey = "metaKey" in e ? (e.metaKey as boolean) : false;
+
+      const clickEvent = new MouseEvent("click", {
+        ...e,
+        metaKey,
+      });
+      firstLink.dispatchEvent(clickEvent);
     });
   }
 </script>

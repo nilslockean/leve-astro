@@ -406,6 +406,13 @@ td p {
     var(--default-transition-timing-function);
 }
 
+.card--error {
+  background-color: var(--color-red-200);
+  border: var(--border-width) solid var(--color-red-400);
+  color: var(--color-red-900);
+  padding: calc(var(--spacing) * 6);
+}
+
 .card img {
   width: 100%;
   max-width: var(--container-lg);

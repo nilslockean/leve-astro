@@ -1,4 +1,5 @@
 import { SiteLanguage } from "@config/site";
+import { formatDate, joinDates, type PickupDateEntry } from "./dateUtils";
 
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -66,4 +67,33 @@ export function formatPrice(prices: number[]) {
   }
 
   return "Från " + formattedPrice;
+}
+
+export function getPickupDateDescription(
+  entry: PickupDateEntry,
+  availablePickupDates: string[],
+  minOffset: number,
+  maxOffset: number,
+) {
+  const { pickupDateRangeEnd, pickupDates, pickupDateRangeStart } = entry;
+
+  if (pickupDates && pickupDates.length > 0) {
+    return availablePickupDates.length > 0
+      ? `Går att hämta ${joinDates(availablePickupDates)}.`
+      : "Inga upphämtningsdatum är tillgängliga just nu.";
+  }
+
+  if (pickupDateRangeStart && pickupDateRangeEnd) {
+    return `Går att hämta mellan ${formatDate(pickupDateRangeStart)} och ${formatDate(pickupDateRangeEnd)}.`;
+  }
+
+  if (pickupDateRangeStart) {
+    return `Går att hämta tidigast ${formatDate(pickupDateRangeStart)}.`;
+  }
+
+  if (pickupDateRangeEnd) {
+    return `Sista upphämtningsdatum: ${formatDate(pickupDateRangeEnd)}.`;
+  }
+
+  return `Går att hämta under våra öppettider med minst ${minOffset} dagars framförhållning, och max ${maxOffset} dagar in i framtiden.`;
 }

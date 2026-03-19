@@ -2,13 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { getEntry } from "astro:content";
 import ProductDetail from "@components/ProductDetail/index.astro";
-import { sanityAPI } from "@lib/sanityAPI";
-import {
-  PICKUP_DATE_MIN_OFFSET,
-  PICKUP_DATE_MAX_OFFSET,
-  ENABLE_STOREFRONT,
-} from "astro:env/server";
-import { getDateString, addDays, isDateInFuture } from "@lib/dateUtils";
+import { ENABLE_STOREFRONT } from "astro:env/server";
+import { getPickupDatesForProducts } from "@lib/pickupDates";
 import { captureEvent } from "@lib/posthogServer";
 
 export const prerender = false;
@@ -29,17 +24,7 @@ captureEvent("Product Viewed", Astro.cookies, {
   name: entry.data.title,
 });
 
-const pickupDateMin = addDays(PICKUP_DATE_MIN_OFFSET);
-const pickupDateMax = addDays(PICKUP_DATE_MAX_OFFSET);
-
-const defaultPickupDates = await sanityAPI.getOpenDaysInRange(
-  getDateString(pickupDateMin),
-  getDateString(pickupDateMax),
-);
-
-const availablePickupDates = entry.data.pickupDates?.length
-  ? entry.data.pickupDates.filter((dateStr) => isDateInFuture(dateStr))
-  : defaultPickupDates;
+const availablePickupDates = await getPickupDatesForProducts(entry.data);
 ---
 
 <Layout

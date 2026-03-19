@@ -3,9 +3,12 @@ import { getProductUrl } from "@config/site";
 import type { HTMLAttributes } from "astro/types";
 import { actions } from "astro:actions";
 import type { Product } from "@lib/schemas/Product";
-import { formatPrice } from "@lib/stringUtils";
 import { Image } from "astro:assets";
 import { urlFor } from "@lib/sanityAPI";
+import { getProductName } from "@lib/variantDescription";
+import { hasDateConstraints } from "@lib/dateUtils";
+import { getPickupDatesDescriptionForProduct as getPickupDatesDescription } from "@lib/pickupDates";
+import { formatPrice } from "@lib/stringUtils";
 
 interface Props extends HTMLAttributes<"li"> {
   productId: string;
@@ -15,17 +18,10 @@ interface Props extends HTMLAttributes<"li"> {
 }
 
 const { productId, price, qty, product, ...rest } = Astro.props;
-
-const priceOptionDesc = product.variants.find(
-  (option) => option.price === price,
-)?.description;
-
-const title =
-  product.variants.length === 1 && priceOptionDesc === "Standard"
-    ? product.title
-    : `${product.title} - ${priceOptionDesc}`;
-
+const title = getProductName(product, price);
+const hasLimitedPickupDates = hasDateConstraints(product);
 const thumbnail = product.images[0];
+const pickupDatesDescription = await getPickupDatesDescription(product);
 ---
 
 <li {...rest} class="flex gap-4 border-white/30 pb-6 border-b last:border-b-0">
@@ -48,14 +44,7 @@ const thumbnail = product.images[0];
         {formatPrice([price * qty])}
       </p>
     </div>
-    <p class="text-sm" data-translate="never">{formatPrice([price])}</p>
-    {
-      product.pickupDates?.length && (
-        <p class="text-sm">
-          Kan endast hämtas {product.pickupDates.join(", ")}
-        </p>
-      )
-    }
+    {hasLimitedPickupDates && <p class="text-sm">{pickupDatesDescription}</p>}
     <div class="flex flex-wrap gap-4 justify-between items-baseline">
       <!-- Update itme quantity form -->
       <form

@@ -25,8 +25,10 @@ const products = defineCollection({
           price,
           description
         },
-        pickupDates
-      }`
+        pickupDates,
+        pickupDateRangeStart,
+        pickupDateRangeEnd,
+      }`,
     );
     return z.array(LoaderJSONSchema).parse(json);
   },

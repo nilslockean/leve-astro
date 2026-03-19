@@ -6,6 +6,7 @@ import { ENABLE_STOREFRONT } from "astro:env/server";
 import { getCollection } from "astro:content";
 import { captureEvent } from "@lib/posthogServer";
 import { getVariantDescription } from "@lib/variantDescription";
+import { getPickupDatesForProducts } from "@lib/pickupDates";
 
 export const prerender = false;
 
@@ -17,6 +18,9 @@ const cart = getCart(Astro.cookies);
 const products = await getCollection("products");
 const cartContents = getCartContents(cart, products);
 const cartTotal = getCartTotal(cart);
+const availablePickupDates = await getPickupDatesForProducts(
+  cartContents.map((cartItem) => cartItem.product),
+);
 
 await captureEvent("Cart Viewed", Astro.cookies, {
   products: cartContents.map((item) => ({
@@ -33,5 +37,5 @@ await captureEvent("Cart Viewed", Astro.cookies, {
   title="Gör ändringar i din kundvagn"
   metaDescription="Produkter i din kundvagn"
 >
-  <Cart contents={cartContents} total={cartTotal} />
+  <Cart contents={cartContents} total={cartTotal} {availablePickupDates} />
 </Layout>
