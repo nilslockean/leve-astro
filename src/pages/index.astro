@@ -44,25 +44,10 @@ const instagramFeedId = BEHOLD_FEED_ID;
       {
         ENABLE_STOREFRONT && (
           <a href="/bestall" class="btn btn--primary" data-cta="primary">
-            Beställ tårta
+            Beställ
           </a>
         )
       }
-
-      <a
-        href="/bestall/fredagsmunk"
-        class="btn"
-        class:list={[
-          "btn",
-          {
-            "btn--outline-light": ENABLE_STOREFRONT,
-            "btn--primary": !ENABLE_STOREFRONT,
-          },
-        ]}
-        data-cta={`${ENABLE_STOREFRONT ? "secondary" : "primary"}`}
-      >
-        Beställ fredagsmunk
-      </a>
 
       <a href="#oppettider" class="btn btn--outline-light" data-cta="secondary"
         >Kolla öppettiderna</a
