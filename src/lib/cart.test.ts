@@ -68,12 +68,12 @@ describe("getCartTotal", () => {
       items: [
         {
           productId: "test-1",
-          price: 112,
+          price: 106,
           qty: 1,
         },
       ],
     });
-    expect(tax).toBe(12);
+    expect(tax).toBe(6);
   });
 });
 

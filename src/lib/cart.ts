@@ -21,7 +21,7 @@ export type CartTotal = {
   tax: number;
 };
 
-const TAX_PERCENTAGE = 0.12;
+const TAX_PERCENTAGE = 0.06;
 const CART_COOKIE = "cart";
 export const EMPTY_CART = Object.freeze({ items: [] }) satisfies Cart;
 
