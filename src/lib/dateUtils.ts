@@ -193,8 +193,6 @@ export async function getAvailablePickupDates(
     getOpenDaysInRange,
   };
 
-  console.log("ctx", ctx);
-
   const defaultDates = await ctx.getOpenDaysInRange(
     getDateString(ctx.pickupDateMin),
     getDateString(ctx.pickupDateMax),
@@ -206,13 +204,9 @@ export async function getAvailablePickupDates(
     return defaultDates;
   }
 
-  console.log("constrainedEntries", constrainedEntries);
-
   const allowedDatesByEntry = await Promise.all(
     constrainedEntries.map((entry) => getAllowedDatesForEntry(entry, ctx)),
   );
-
-  console.log("allowedDatesByEntry", allowedDatesByEntry);
 
   const result = intersectDateArrays(allowedDatesByEntry);
 
