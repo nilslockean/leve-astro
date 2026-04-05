@@ -1,6 +1,7 @@
 import { z } from "astro/zod";
 
 export const orderSnapshotSchema = z.object({
+  idempotencyKey: z.string().uuid().optional(),
   customer: z.object({
     name: z.string(),
     email: z.string().email(),
@@ -25,3 +26,9 @@ export const orderSnapshotSchema = z.object({
 });
 
 export type OrderSnapshot = z.infer<typeof orderSnapshotSchema>;
+
+export interface SanityOrder extends OrderSnapshot {
+  _id: string;
+  _createdAt: string;
+  orderNumber: string;
+}

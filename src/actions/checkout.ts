@@ -24,9 +24,10 @@ export const checkout = defineAction({
     phone: z.string(),
     message: z.string().optional(),
     acceptTerms: z.literal("1"),
+    idempotencyKey: z.string().uuid(),
   }),
   handler: async (input, context) => {
-    const { pickupDate, name, email, phone, message } = input;
+    const { pickupDate, name, email, phone, message, idempotencyKey } = input;
 
     const products = await getCollection("products");
     const productIds = products.map((product) => product.id);
@@ -95,7 +96,7 @@ export const checkout = defineAction({
       })),
       totals,
     });
-    const order = await sanityAPI.createOrder(orderSnapshot);
+    const order = await sanityAPI.createOrder(orderSnapshot, idempotencyKey);
 
     const secret = ORDER_CONFIRMATION_SECRET;
     if (!secret) {
