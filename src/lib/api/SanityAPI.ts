@@ -148,7 +148,7 @@ export class SanityAPI {
   public createOrder = async (
     orderSnapshot: OrderSnapshot,
     idempotencyKey?: string,
-  ): Promise<SanityOrder> => {
+  ): Promise<{ order: SanityOrder; wasDuplicate: boolean }> => {
     const { customer, pickupDate, items, totals } = orderSnapshot;
 
     if (!this.client.create) {
@@ -172,7 +172,7 @@ export class SanityAPI {
         })),
       });
 
-      return order as SanityOrder;
+      return { order: order as SanityOrder, wasDuplicate: false };
     } catch (error: unknown) {
       if (
         idempotencyKey &&
@@ -181,7 +181,8 @@ export class SanityAPI {
         "statusCode" in error &&
         error.statusCode === 409
       ) {
-        return await this.getOrderByIdempotencyKey(idempotencyKey);
+        const order = await this.getOrderByIdempotencyKey(idempotencyKey);
+        return { order, wasDuplicate: true };
       }
       throw error;
     }
