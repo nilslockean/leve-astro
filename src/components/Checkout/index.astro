@@ -19,9 +19,10 @@ interface Props extends HTMLAttributes<"section"> {
     qty: number;
     product: Product;
   }[];
+  idempotencyKey: string;
 }
 
-const { availablePickupDates, total, contents, ...rest } = Astro.props;
+const { availablePickupDates, total, contents, idempotencyKey, ...rest } = Astro.props;
 const result = Astro.getActionResult(actions.checkout);
 const errorMessage = result?.error?.message;
 ---
@@ -51,6 +52,7 @@ const errorMessage = result?.error?.message;
     action={actions.checkout}
     class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12"
   >
+    <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
     <!-- Image and description -->
     <div class="lg:col-span-2">
       <PickupDateSelector {availablePickupDates} legend="1. Upphämtning" />

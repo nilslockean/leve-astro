@@ -205,13 +205,20 @@ export async function getAvailablePickupDates(
   }
 
   const allowedDatesByEntry = await Promise.all(
-    constrainedEntries.map((entry) => getAllowedDatesForEntry(entry, ctx)),
+    entries.map(async (entry) =>
+      hasDateConstraints(entry) ? getAllowedDatesForEntry(entry, ctx) : defaultDates
+    ),
   );
 
   const result = intersectDateArrays(allowedDatesByEntry);
 
-  // Handle empty results for single entry
-  if (result.length === 0 && constrainedEntries.length === 1) {
+  // Handle empty results for single constrained entry
+  // (when there are multiple entries with no overlap, return empty - don't fall back to defaults)
+  if (
+    result.length === 0 &&
+    constrainedEntries.length === 1 &&
+    entries.length === 1
+  ) {
     const entry = constrainedEntries[0];
 
     // If end date is explicitly set and in the past, return empty (expired range)

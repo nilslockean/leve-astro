@@ -24,9 +24,10 @@ export const checkout = defineAction({
     phone: z.string(),
     message: z.string().optional(),
     acceptTerms: z.literal("1"),
+    idempotencyKey: z.string().uuid(),
   }),
   handler: async (input, context) => {
-    const { pickupDate, name, email, phone, message } = input;
+    const { pickupDate, name, email, phone, message, idempotencyKey } = input;
 
     const products = await getCollection("products");
     const productIds = products.map((product) => product.id);
@@ -95,7 +96,10 @@ export const checkout = defineAction({
       })),
       totals,
     });
-    const order = await sanityAPI.createOrder(orderSnapshot);
+    const { order, wasDuplicate } = await sanityAPI.createOrder(
+      orderSnapshot,
+      idempotencyKey,
+    );
 
     const secret = ORDER_CONFIRMATION_SECRET;
     if (!secret) {
@@ -106,42 +110,44 @@ export const checkout = defineAction({
     }
     const token = createOrderConfirmationToken(order.orderNumber, secret);
 
-    const mailerSend = new MailerSendAPI({
-      snapshot: orderSnapshot,
-      createdAt: order._createdAt,
-      orderNr: order.orderNumber,
-      adminEmail: ORDER_ADMIN_EMAIL,
-      apiKey: MAILERSEND_API_KEY,
-      hostname: context.url.hostname,
-    });
+    if (!wasDuplicate) {
+      const mailerSend = new MailerSendAPI({
+        snapshot: orderSnapshot,
+        createdAt: order._createdAt,
+        orderNr: order.orderNumber,
+        adminEmail: ORDER_ADMIN_EMAIL,
+        apiKey: MAILERSEND_API_KEY,
+        hostname: context.url.hostname,
+      });
 
-    try {
-      await mailerSend.sendOrderConfirmation();
-      await mailerSend.sendAdminNotification();
-      if (ORDER_ADMIN_PRINTER_EMAIL) {
-        await mailerSend.sendAdminNotification(ORDER_ADMIN_PRINTER_EMAIL);
+      try {
+        await mailerSend.sendOrderConfirmation();
+        await mailerSend.sendAdminNotification();
+        if (ORDER_ADMIN_PRINTER_EMAIL) {
+          await mailerSend.sendAdminNotification(ORDER_ADMIN_PRINTER_EMAIL);
+        }
+      } catch (error) {
+        throw new ActionError({
+          code: "SERVICE_UNAVAILABLE",
+          message: "Kunde inte skicka bekräftelsemail.",
+        });
       }
-    } catch (error) {
-      throw new ActionError({
-        code: "SERVICE_UNAVAILABLE",
-        message: "Kunde inte skicka bekräftelsemail.",
+
+      await captureEvent("Order Completed", context.cookies, {
+        order_id: order.orderNumber,
+        total: totals.total,
+        revenue: totals.total - totals.tax,
+        tax: totals.tax,
+        currency: "SEK",
+        products: orderSnapshot.items.map((item) => ({
+          product_id: item.variantId,
+          name: item.productTitle,
+          variant: item.variantDescription,
+          price: item.unitPrice,
+          quantity: item.quantity,
+        })),
       });
     }
-
-    await captureEvent("Order Completed", context.cookies, {
-      order_id: order.orderNumber,
-      total: totals.total,
-      revenue: totals.total - totals.tax,
-      tax: totals.tax,
-      currency: "SEK",
-      products: orderSnapshot.items.map((item) => ({
-        product_id: item.variantId,
-        name: item.productTitle,
-        variant: item.variantDescription,
-        price: item.unitPrice,
-        quantity: item.quantity,
-      })),
-    });
 
     setCart(context.cookies, EMPTY_CART);
 

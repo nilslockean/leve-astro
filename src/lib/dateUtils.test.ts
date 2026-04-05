@@ -233,7 +233,26 @@ describe("getAvailablePickupDates", () => {
     expect(pickupDates).toEqual(["2024-03-03"]);
   });
 
-  test("doeesnt allow pickup today if special pickup date is today", async () => {
+  test("doesn't allow pickup tomorrow if cart also contains a product without special pickup dates", async () => {
+    const entries = [
+      {
+        pickupDates: ["2024-03-03"],
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+      {
+        pickupDates: null,
+        pickupDateRangeStart: null,
+        pickupDateRangeEnd: null,
+      },
+    ];
+    const pickupDates = await curry(entries, {
+      baseDate: new Date("2024-03-02"),
+    });
+    expect(pickupDates.length).toBe(0);
+  });
+
+  test("doesn't allow pickup today if special pickup date is today", async () => {
     const entries = [
       {
         pickupDates: ["2024-03-03"],

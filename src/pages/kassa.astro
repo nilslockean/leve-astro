@@ -39,6 +39,8 @@ const availablePickupDates = await getPickupDatesForProducts(
   cartContents.map((item) => item.product),
 );
 
+const idempotencyKey = crypto.randomUUID();
+
 await captureEvent("Checkout Started", Astro.cookies, {
   currency: "SEK",
   products: cartContents.map((item) => ({
@@ -54,5 +56,5 @@ await captureEvent("Checkout Started", Astro.cookies, {
   title="Slutför din beställning"
   metaDescription="Slutför din beställning"
 >
-  <Checkout {availablePickupDates} contents={cartContents} total={cartTotal} />
+  <Checkout {availablePickupDates} contents={cartContents} total={cartTotal} idempotencyKey={idempotencyKey} />
 </Layout>

@@ -10,7 +10,7 @@ import {
 } from "@lib/schemas/OpeningHoursSchema";
 import { capitalize } from "@lib/stringUtils";
 import { getDatesInRange } from "@lib/dateUtils";
-import type { OrderSnapshot } from "@lib/schemas/OrderSnapshot";
+import type { OrderSnapshot, SanityOrder } from "@lib/schemas/OrderSnapshot";
 
 export class SanityAPI {
   private client: ISanityClient;
@@ -145,26 +145,78 @@ export class SanityAPI {
     return `${y}${m}${d}-${rand}`;
   }
 
-  public createOrder = async (orderSnapshot: OrderSnapshot) => {
+  public createOrder = async (
+    orderSnapshot: OrderSnapshot,
+    idempotencyKey?: string,
+  ): Promise<{ order: SanityOrder; wasDuplicate: boolean }> => {
     const { customer, pickupDate, items, totals } = orderSnapshot;
 
     if (!this.client.create) {
       throw new Error("Create method not available in Sanity client instance");
     }
 
-    const order = await this.client.create({
-      _type: "order",
-      orderNumber: this.generateOrderNumber(),
-      customer,
-      pickupDate,
-      totals,
-      items: items.map((item) => ({
-        _key: crypto.randomUUID(), // 👈 required
-        ...item,
-      })),
-    });
+    const documentId = idempotencyKey ? `order-${idempotencyKey}` : undefined;
 
-    return order;
+    try {
+      const order = await this.client.create({
+        _type: "order",
+        _id: documentId,
+        idempotencyKey,
+        orderNumber: this.generateOrderNumber(),
+        customer,
+        pickupDate,
+        totals,
+        items: items.map((item) => ({
+          _key: crypto.randomUUID(),
+          ...item,
+        })),
+      });
+
+      return { order: order as SanityOrder, wasDuplicate: false };
+    } catch (error: unknown) {
+      if (
+        idempotencyKey &&
+        typeof error === "object" &&
+        error !== null &&
+        "statusCode" in error &&
+        error.statusCode === 409
+      ) {
+        const order = await this.getOrderByIdempotencyKey(idempotencyKey);
+        return { order, wasDuplicate: true };
+      }
+      throw error;
+    }
+  };
+
+  public getOrderByIdempotencyKey = async (
+    idempotencyKey: string,
+  ): Promise<SanityOrder> => {
+    const result = await this.client.fetch<SanityOrder>(
+      `*[_type == "order" && idempotencyKey == $idempotencyKey][0]{
+        _id,
+        _createdAt,
+        orderNumber,
+        customer,
+        pickupDate,
+        totals,
+        idempotencyKey,
+        "items": items[]{
+          productTitle,
+          variantId,
+          variantDescription,
+          unitPrice,
+          quantity,
+          lineTotal
+        }
+      }`,
+      { idempotencyKey },
+    );
+
+    if (!result) {
+      throw new Error(`Order not found for idempotency key: ${idempotencyKey}`);
+    }
+
+    return result;
   };
 
   /**
