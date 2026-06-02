@@ -2,7 +2,7 @@
 import Section from "@components/Section.astro";
 import Layout from "src/layouts/Layout.astro";
 import IntroText from "@components/IntroText.astro";
-import { getCollection } from "astro:content";
+import { getProducts } from "@lib/products";
 import ProductOverview from "@components/ProductOverview.astro";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 import { sanityAPI } from "@lib/sanityAPI";
@@ -12,11 +12,14 @@ import {
   PICKUP_DATE_MAX_OFFSET,
 } from "astro:env/server";
 
+export const prerender = false;
+
 if (!ENABLE_STOREFRONT) {
   return Astro.rewrite("/bestall/kommer-snart");
 }
 
-const productEntries = await getCollection("products");
+const productEntries = await getProducts();
+console.log({ productEntries });
 const pickupDateMin = addDays(PICKUP_DATE_MIN_OFFSET);
 const pickupDateMax = addDays(PICKUP_DATE_MAX_OFFSET);
 const defaultPickupDates = await sanityAPI.getOpenDaysInRange(

@@ -1,7 +1,7 @@
 import { type AstroCookies } from "astro";
 import { z } from "astro/zod";
-import type { CollectionEntry } from "astro:content";
 import type { Product } from "./schemas/Product";
+import type { ProductEntry } from "./products";
 
 const cartItemSchema = z.object({
   productId: z.string(),
@@ -166,7 +166,7 @@ interface DecoratedCartItem extends CartItem {
 }
 export function getCartContents(
   cart: Cart,
-  products: CollectionEntry<"products">[],
+  products: ProductEntry[],
 ): DecoratedCartItem[] {
   const productIds = products.map((product) => product.id);
 

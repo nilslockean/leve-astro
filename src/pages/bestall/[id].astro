@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getEntry } from "astro:content";
+import { getProduct } from "@lib/products";
 import ProductDetail from "@components/ProductDetail/index.astro";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 import { getPickupDatesForProducts } from "@lib/pickupDates";
@@ -13,7 +13,7 @@ if (!ENABLE_STOREFRONT) {
 }
 
 const { id = "" } = Astro.params;
-const entry = await getEntry("products", id);
+const entry = await getProduct(id);
 
 if (!entry) {
   return Astro.rewrite("/404");
