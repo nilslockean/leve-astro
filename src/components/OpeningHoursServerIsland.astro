@@ -1,0 +1,12 @@
+---
+import { sanityAPI } from "@lib/sanityAPI";
+import OpeningHours from "./OpeningHours.astro";
+
+const openingHours = await sanityAPI.getOpeningHours();
+---
+
+<OpeningHours data={openingHours} irregularLimit={0} consolidated>
+  <p class="mt-4" slot="has-irregular">
+    <a href="/kontakt#oppettider">Se avvikande öppettider</a>
+  </p>
+</OpeningHours>

@@ -3,7 +3,12 @@ import {
   OrderTermsSchema,
   type OrderTerms,
 } from "@lib/schemas/OrderTermsSchema";
-import { FaqSchema, type Faq } from "@lib/schemas/FAQSchema";
+import {
+  FaqItemSchema,
+  FaqSchema,
+  type Faq,
+  type FaqItem,
+} from "@lib/schemas/FAQSchema";
 import {
   OpeningHoursSchema,
   type OpeningHours,
@@ -76,10 +81,18 @@ export class SanityAPI {
 
   public async getFaq(): Promise<Faq> {
     const groqJson = await this.client.fetch(
-      `*[_type == "faq"] {question, answer}`,
+      `*[_type == "faq"] {"id": _id, question, answer}`,
     );
-    const faq = FaqSchema.parse(groqJson);
-    return faq;
+    return FaqSchema.parse(groqJson);
+  }
+
+  public async getFaqItem(id: string): Promise<FaqItem | null> {
+    const groqJson = await this.client.fetch(
+      `*[_type == "faq" && _id == $id][0] {"id": _id, question, answer}`,
+      { id },
+    );
+    if (!groqJson) return null;
+    return FaqItemSchema.parse(groqJson);
   }
 
   public async query(
@@ -125,7 +138,6 @@ export class SanityAPI {
           if (a.date === b.date) {
             return 0;
           }
-
           return a.date < b.date ? -1 : 1;
         })
         .map((irregular) => {

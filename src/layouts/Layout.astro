@@ -5,7 +5,7 @@ import Logo from "@components/Logo.astro";
 import { NavArea } from "@lib/enums/NavArea";
 import config, { getCartUrl, SiteLanguage } from "@config/site";
 import NavLinks from "@components/NavLinks.astro";
-import OpeningHours from "@components/OpeningHours.astro";
+import OpeningHoursServerIsland from "@components/OpeningHoursServerIsland.astro";
 import { getNavLinks } from "@lib/navigation";
 import defaultOgImage from "@lib/assets/og.png";
 import { getImage } from "astro:assets";
@@ -18,7 +18,6 @@ import {
 import { ENABLE_POSTHOG } from "astro:env/client";
 import WeGlotScript from "@components/WeGlotScript.astro";
 import { getCanonicalUrl } from "@lib/canonicalUrl";
-import { sanityAPI } from "@lib/sanityAPI";
 import Posthog from "@components/Posthog.astro";
 import { isProduction } from "@lib/envUtils";
 import { ENABLE_STOREFRONT } from "astro:env/server";
@@ -48,7 +47,6 @@ const { pathname } = Astro.url;
 const _getNavLinks = (area: NavArea) =>
   getNavLinks(area, config.navigation, pathname);
 
-const openingHours = await sanityAPI.getOpeningHours();
 const { address } = config.contact;
 
 const title = `${pageTitle} • ${description}`;
@@ -153,11 +151,9 @@ const optimizedOgImage = await getImage({
         </div>
         <div>
           <p class="h4 mb-4">Öppettider</p>
-          <OpeningHours data={openingHours} irregularLimit={0} consolidated>
-            <p class="mt-4" slot="has-irregular">
-              <a href="/kontakt#oppettider">Se avvikande öppettider </a>
-            </p>
-          </OpeningHours>
+          <OpeningHoursServerIsland server:defer>
+            <span slot="fallback" />
+          </OpeningHoursServerIsland>
         </div>
         <div>
           <p class="h4 mb-4" id="footer-nav">Meny</p>
