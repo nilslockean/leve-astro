@@ -5,6 +5,7 @@ import {
   addToCart,
   type Cart,
   updateCart,
+  validateCartContents,
 } from "./cart";
 
 describe("getCartTotal", () => {
@@ -316,5 +317,103 @@ describe("updateCart", () => {
 
     expect(cart.items).toHaveLength(CART.items.length - 1);
     expect(cart.items.map((item) => item.productId)).not.toContain("test-2");
+  });
+});
+
+const makeEntry = (overrides: {
+  id?: string;
+  price?: number;
+  maxQuantityPerOrder?: number | null;
+}) => ({
+  id: overrides.id ?? "muffin",
+  data: {
+    id: overrides.id ?? "muffin",
+    title: "Muffin",
+    variants: [{ id: "v1", price: overrides.price ?? 25, description: "St" }],
+    images: null,
+    content: [],
+    maxQuantityPerOrder: overrides.maxQuantityPerOrder !== undefined ? overrides.maxQuantityPerOrder : 10,
+    pickupDates: null,
+    pickupDateRangeStart: null,
+    pickupDateRangeEnd: null,
+  },
+});
+
+const MUFFIN = makeEntry({});
+
+describe("validateCartContents", () => {
+  describe("removes items when", () => {
+    test("product no longer exists in CMS", () => {
+      const cart: Cart = { items: [{ productId: "deleted", price: 25, qty: 1 }] };
+      expect(validateCartContents(cart, [MUFFIN])).toHaveLength(0);
+    });
+
+    test("variant price no longer exists on the product", () => {
+      const cart: Cart = { items: [{ productId: "muffin", price: 999, qty: 1 }] };
+      expect(validateCartContents(cart, [MUFFIN])).toHaveLength(0);
+    });
+
+    test("product is marked out of stock (maxQuantityPerOrder === 0)", () => {
+      const cart: Cart = { items: [{ productId: "muffin", price: 25, qty: 1 }] };
+      expect(validateCartContents(cart, [makeEntry({ maxQuantityPerOrder: 0 })])).toHaveLength(0);
+    });
+  });
+
+  describe("adjusts qty when", () => {
+    test("cart qty exceeds new maxQuantityPerOrder", () => {
+      const cart: Cart = { items: [{ productId: "muffin", price: 25, qty: 8 }] };
+      const [item] = validateCartContents(cart, [makeEntry({ maxQuantityPerOrder: 3 })]);
+      expect(item.qty).toBe(3);
+    });
+
+    test("cart qty is at exactly maxQuantityPerOrder", () => {
+      const cart: Cart = { items: [{ productId: "muffin", price: 25, qty: 3 }] };
+      const [item] = validateCartContents(cart, [makeEntry({ maxQuantityPerOrder: 3 })]);
+      expect(item.qty).toBe(3);
+    });
+
+    test("maxQuantityPerOrder is null (unlimited) — qty is never capped", () => {
+      const cart: Cart = { items: [{ productId: "muffin", price: 25, qty: 999 }] };
+      const [item] = validateCartContents(cart, [makeEntry({ maxQuantityPerOrder: null })]);
+      expect(item.qty).toBe(999);
+    });
+  });
+
+  describe("passthrough", () => {
+    test("returns valid item with product data attached", () => {
+      const cart: Cart = { items: [{ productId: "muffin", price: 25, qty: 2 }] };
+      const [item] = validateCartContents(cart, [MUFFIN]);
+      expect(item.product).toEqual(MUFFIN.data);
+      expect(item.qty).toBe(2);
+      expect(item.price).toBe(25);
+    });
+  });
+
+  describe("multi-item cart", () => {
+    test("returns only valid items from a mixed cart", () => {
+      const cart: Cart = {
+        items: [
+          { productId: "muffin", price: 25, qty: 1 },
+          { productId: "muffin", price: 999, qty: 1 }, // invalid price
+          { productId: "ghost", price: 25, qty: 1 },   // product gone
+        ],
+      };
+      const result = validateCartContents(cart, [MUFFIN]);
+      expect(result).toHaveLength(1);
+      expect(result[0].productId).toBe("muffin");
+      expect(result[0].price).toBe(25);
+    });
+
+    test("returns all valid items when multiple products are valid", () => {
+      const croissant = makeEntry({ id: "croissant", price: 35 });
+      const cart: Cart = {
+        items: [
+          { productId: "muffin", price: 25, qty: 2 },
+          { productId: "croissant", price: 35, qty: 1 },
+        ],
+      };
+      const result = validateCartContents(cart, [MUFFIN, croissant]);
+      expect(result).toHaveLength(2);
+    });
   });
 });

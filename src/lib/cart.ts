@@ -158,30 +158,33 @@ export function getCartTotal(cart: Cart): CartTotal {
   };
 }
 
-// Returns the cart contents with the product data from the collection and
-// filters out items that are not in the collection (ID's might change in the CMS)
-// This is useful for pages that need to display the cart contents with the product data
 interface DecoratedCartItem extends CartItem {
   product: Product;
 }
+
+export function validateCartContents(
+  cart: Cart,
+  products: ProductEntry[],
+): DecoratedCartItem[] {
+  return cart.items.flatMap((item) => {
+    const product = products.find((p) => p.id === item.productId)?.data;
+
+    if (!product) return [];
+    if (!product.variants.some((v) => v.price === item.price)) return [];
+    if (product.maxQuantityPerOrder === 0) return [];
+
+    const qty =
+      product.maxQuantityPerOrder !== null
+        ? Math.min(item.qty, product.maxQuantityPerOrder)
+        : item.qty;
+
+    return [{ ...item, qty, product }];
+  });
+}
+
 export function getCartContents(
   cart: Cart,
   products: ProductEntry[],
 ): DecoratedCartItem[] {
-  const productIds = products.map((product) => product.id);
-
-  return cart.items
-    .filter((item) => productIds.includes(item.productId))
-    .map((item) => {
-      // Get the product data from the collection
-      // We know the product ID is valid, so we can use ! to assert it's not undefined
-      const product = products.find(
-        (product) => product.id === item.productId,
-      )!.data;
-
-      return {
-        ...item,
-        product,
-      };
-    });
+  return validateCartContents(cart, products);
 }
