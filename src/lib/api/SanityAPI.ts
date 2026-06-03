@@ -8,6 +8,7 @@ import {
   OpeningHoursSchema,
   type OpeningHours,
 } from "@lib/schemas/OpeningHoursSchema";
+import { ProductSchema, type Product } from "@lib/schemas/Product";
 import { capitalize } from "@lib/stringUtils";
 import { getDatesInRange } from "@lib/dateUtils";
 import type { OrderSnapshot, SanityOrder } from "@lib/schemas/OrderSnapshot";
@@ -18,6 +19,21 @@ export class SanityAPI {
   private projectId = "mz20cm4o";
   private dataset = "production";
   private _now?: Date;
+  private PRODUCT_FIELDS = `{
+    'id': slug.current,
+    maxQuantityPerOrder,
+    title,
+    content,
+    images,
+    variants[]{
+      "id": id.current,
+      price,
+      description
+    },
+    pickupDates,
+    pickupDateRangeStart,
+    pickupDateRangeEnd,
+  }`;
 
   constructor(client: ISanityClient, projectId?: string, dataset?: string) {
     this.client = client;
@@ -66,9 +82,28 @@ export class SanityAPI {
     return faq;
   }
 
-  public async query(query: string): Promise<unknown> {
-    const groqJson = await this.client.fetch(query);
+  public async query(
+    query: string,
+    params?: Record<string, unknown>,
+  ): Promise<unknown> {
+    const groqJson = await this.client.fetch(query, params);
     return groqJson;
+  }
+
+  public async getProducts(): Promise<Product[]> {
+    const json = await this.client.fetch(
+      `*[_type == "product"] ` + this.PRODUCT_FIELDS,
+    );
+    return ProductSchema.array().parse(json);
+  }
+
+  public async getProduct(id: string): Promise<Product | null> {
+    const json = await this.client.fetch(
+      `*[_type == "product" && slug.current == $id][0] ` + this.PRODUCT_FIELDS,
+      { id },
+    );
+    if (!json) return null;
+    return ProductSchema.parse(json);
   }
 
   public async getOpeningHours(): Promise<OpeningHours> {

@@ -1,9 +1,9 @@
 import { describe, test, expect, vi } from "vitest";
 
-vi.mock("astro:content", async () => {
-  const { z } = await import("zod");
-  return { getLiveCollection: vi.fn(), getLiveEntry: vi.fn(), z };
-});
+vi.mock("astro:content", () => ({
+  getLiveCollection: vi.fn(),
+  getLiveEntry: vi.fn(),
+}));
 import { getProducts, getProduct } from "./products";
 import type { ProductEntry } from "./products";
 

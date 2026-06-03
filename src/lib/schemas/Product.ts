@@ -1,4 +1,4 @@
-import { z } from "astro:content";
+import { z } from "astro/zod";
 
 export const ProductSchema = z.object({
   id: z.string(),
@@ -20,9 +20,9 @@ export const ProductSchema = z.object({
   ),
   content: z.array(z.any()), // Portable text
   maxQuantityPerOrder: z.number().min(0).nullable(),
-  pickupDates: z.array(z.string().date()).nullable(),
-  pickupDateRangeStart: z.string().date().nullable().default(null),
-  pickupDateRangeEnd: z.string().date().nullable().default(null),
+  pickupDates: z.array(z.iso.date()).nullable(),
+  pickupDateRangeStart: z.iso.date().nullable().default(null),
+  pickupDateRangeEnd: z.iso.date().nullable().default(null),
 });
 
 export type Product = z.infer<typeof ProductSchema>;
