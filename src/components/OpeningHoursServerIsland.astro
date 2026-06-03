@@ -1,8 +1,8 @@
 ---
-import { sanityAPI } from "@lib/sanityAPI";
+import { getDefaultOpeningHours } from "@lib/openingHours";
 import OpeningHours from "./OpeningHours.astro";
 
-const openingHours = await sanityAPI.getOpeningHours();
+const openingHours = await getDefaultOpeningHours();
 ---
 
 <OpeningHours data={openingHours} irregularLimit={0} consolidated>

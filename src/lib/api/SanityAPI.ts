@@ -119,43 +119,48 @@ export class SanityAPI {
     return ProductSchema.parse(json);
   }
 
-  public async getOpeningHours(): Promise<OpeningHours> {
-    const groqJson = await this.client.fetch(
-      `*[_type == "opening-hours" && setId.current == "default"]{title, irregular, days}`,
-    );
-    const openingHours = OpeningHoursSchema.parse(groqJson);
-    // Filter out any irregular opening hours that are in the past
-    if (openingHours.irregular) {
-      openingHours.irregular = openingHours.irregular
-        .filter((irregular) => {
-          // Compare start of day to include irregular hours that start today
-          const irregularDate = new Date(irregular.date);
-          irregularDate.setHours(0, 0, 0, 0);
+  private readonly OPENING_HOURS_FIELDS = `{"id": setId.current, title, irregular, days}`;
 
-          return new Date(irregular.date) >= this.today;
-        })
-        .sort((a, b) => {
-          if (a.date === b.date) {
-            return 0;
-          }
-          return a.date < b.date ? -1 : 1;
-        })
-        .map((irregular) => {
-          if (irregular.formattedDate) {
-            return irregular;
-          }
-
-          const formatter = new Intl.DateTimeFormat("sv-SE", {
-            dateStyle: "full",
-          });
-          const formattedDate = formatter.format(new Date(irregular.date));
-          irregular.formattedDate = capitalize(formattedDate);
-
-          return irregular;
+  private processIrregularHours(set: OpeningHours): OpeningHours {
+    if (!set.irregular) return set;
+    set.irregular = set.irregular
+      .filter((irregular) => {
+        const irregularDate = new Date(irregular.date);
+        irregularDate.setHours(0, 0, 0, 0);
+        return irregularDate >= this.today;
+      })
+      .sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? -1 : 1))
+      .map((irregular) => {
+        if (irregular.formattedDate) return irregular;
+        const formatter = new Intl.DateTimeFormat("sv-SE", {
+          dateStyle: "full",
         });
-    }
+        irregular.formattedDate = capitalize(
+          formatter.format(new Date(irregular.date)),
+        );
+        return irregular;
+      });
+    return set;
+  }
 
-    return openingHours;
+  public async getOpeningHours(): Promise<OpeningHours[]> {
+    const json = await this.client.fetch(
+      `*[_type == "opening-hours"] ${this.OPENING_HOURS_FIELDS}`,
+    );
+    return OpeningHoursSchema.array()
+      .parse(json)
+      .map((set) => this.processIrregularHours(set));
+  }
+
+  public async getOpeningHoursEntry(
+    setId: string,
+  ): Promise<OpeningHours | null> {
+    const json = await this.client.fetch(
+      `*[_type == "opening-hours" && setId.current == $setId][0] ${this.OPENING_HOURS_FIELDS}`,
+      { setId },
+    );
+    if (!json) return null;
+    return this.processIrregularHours(OpeningHoursSchema.parse(json));
   }
 
   public async getOpenDaysInRange(start: string, end: string) {

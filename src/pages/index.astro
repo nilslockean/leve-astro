@@ -13,7 +13,7 @@ import { getImage } from "astro:assets";
 import heroVideoPoster from "@lib/assets/BrodTrim-poster.jpg";
 import footerVideoPoster from "@lib/assets/Kanelbulle-poster.jpg";
 import Hero from "@components/Hero.astro";
-import { sanityAPI } from "@lib/sanityAPI";
+import { getDefaultOpeningHours } from "@lib/openingHours";
 import GartnerFilm from "@components/GartnerFilm.astro";
 import { ENABLE_STOREFRONT } from "astro:env/server";
 
@@ -26,7 +26,7 @@ const optimizedFooterVideoPoster = await getImage({
   format: "webp",
 });
 
-const openingHours = await sanityAPI.getOpeningHours();
+const openingHours = await getDefaultOpeningHours();
 const instagramFeedId = BEHOLD_FEED_ID;
 ---
 

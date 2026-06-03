@@ -7,7 +7,7 @@ import IntroText from "@components/IntroText.astro";
 import OpeningHours from "@components/OpeningHours.astro";
 import Section from "@components/Section.astro";
 import { IconName } from "@lib/enums/IconName";
-import { sanityAPI } from "@lib/sanityAPI";
+import { getDefaultOpeningHours } from "@lib/openingHours";
 import { getFaq } from "@lib/faq";
 import { PortableText } from "astro-portabletext";
 import config, { phoneLink, emailLink } from "@config/site";
@@ -16,7 +16,7 @@ import Card from "@components/Card.astro";
 
 const { contact } = config;
 const faq = await getFaq();
-const openingHours = await sanityAPI.getOpeningHours();
+const openingHours = await getDefaultOpeningHours();
 ---
 
 <Layout
