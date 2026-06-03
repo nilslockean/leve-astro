@@ -38,30 +38,38 @@ export const checkout = defineAction({
       });
     }
 
-    const cartItems = await Promise.all(
+    const resolved = await Promise.all(
       cart.items.map(async (item) => {
         const entry = await getProduct(item.productId);
-        if (!entry) {
-          throw new ActionError({
-            code: "BAD_REQUEST",
-            message: `Hittade ingen produkt med ID ${item.productId}`,
-          });
-        }
+        if (!entry) return null;
 
         const product = entry.data;
-        const variant = product.variants.find(
-          ({ price }) => item.price === price,
-        );
-        if (!variant) {
-          throw new ActionError({
-            code: "BAD_REQUEST",
-            message: `Hittade ingen variant med pris ${item.price}`,
-          });
-        }
+        if (product.maxQuantityPerOrder === 0) return null;
 
-        return { ...item, product, variant };
+        const variant = product.variants.find(({ price }) => item.price === price);
+        if (!variant) return null;
+
+        const qty =
+          product.maxQuantityPerOrder !== null
+            ? Math.min(item.qty, product.maxQuantityPerOrder)
+            : item.qty;
+
+        return { ...item, qty, product, variant };
       }),
     );
+
+    const cartItems = resolved.filter((item) => item !== null);
+    const cleanedCart = {
+      items: cartItems.map(({ productId, price, qty }) => ({ productId, price, qty })),
+    };
+    setCart(context.cookies, cleanedCart);
+
+    if (cartItems.length === 0) {
+      throw new ActionError({
+        code: "BAD_REQUEST",
+        message: "Kundvagnen är tom",
+      });
+    }
 
     const availablePickupDates = await getPickupDatesForProducts(
       cartItems.map((item) => item.product),
@@ -73,7 +81,7 @@ export const checkout = defineAction({
       });
     }
 
-    const totals = getCartTotal(cart);
+    const totals = getCartTotal(cleanedCart);
     const orderSnapshot = orderSnapshotSchema.parse({
       customer: {
         name,
