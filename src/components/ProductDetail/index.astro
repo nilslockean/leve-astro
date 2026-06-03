@@ -27,7 +27,7 @@ interface Props extends HTMLAttributes<"section"> {
 }
 
 const { product, availablePickupDates, ...rest } = Astro.props;
-const featuredImage = product.images[0];
+const featuredImage = product.images?.[0];
 
 const qtyInCart = cart.items
   .filter((item) => item.productId === product.id)
@@ -82,12 +82,14 @@ const disabled =
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12">
     <!-- Image and description -->
     <div class="lg:col-span-2">
-      <Image
-        src={urlFor(featuredImage.asset).width(1980).height(1485).url()}
-        alt={featuredImage.alt}
-        inferSize
-        class="border-4 mb-6 block"
-      />
+      {featuredImage && (
+        <Image
+          src={urlFor(featuredImage.asset).width(1980).height(1485).url()}
+          alt={featuredImage.alt}
+          inferSize
+          class="border-4 mb-6 block"
+        />
+      )}
       <div class="max-w-prose">
         <PortableText value={product.content} />
       </div>
