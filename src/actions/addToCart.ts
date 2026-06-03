@@ -1,10 +1,10 @@
 import { addToCart as addToCartInStore, getCart, setCart } from "@lib/cart";
 import { defineAction, ActionError } from "astro:actions";
-import { getEntry } from "astro:content";
 import { z } from "astro/zod";
 import type { ActionSuccess } from "./types";
 import { captureEvent } from "@lib/posthogServer";
 import { getVariantDescription } from "@lib/variantDescription";
+import { getProduct } from "@lib/products";
 
 export const addToCart = defineAction({
   accept: "form",
@@ -19,7 +19,7 @@ export const addToCart = defineAction({
   ): Promise<ActionSuccess<{ productTitle: string }>> => {
     const { productId, price, qty } = input;
 
-    const entry = await getEntry("products", productId);
+    const entry = await getProduct(productId);
 
     if (!entry) {
       throw new ActionError({

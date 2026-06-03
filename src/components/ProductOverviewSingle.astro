@@ -5,6 +5,7 @@ import { urlFor } from "@lib/sanityAPI";
 import { formatPrice } from "@lib/stringUtils";
 import { getProductUrl } from "@config/site";
 import Card from "./Card.astro";
+import Logo from "./Logo.astro";
 
 interface Props {
   product: Product;
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const { product, availablePickupDates } = Astro.props;
-const featuredImage = product.images[0];
+const featuredImage = product.images?.[0];
 const prices = product.variants.map(({ price }) => price);
 const outOfStock = product.maxQuantityPerOrder === 0;
 const noPickupDatesAvailable = availablePickupDates.length === 0;
@@ -32,12 +33,20 @@ const buttonLabel = outOfStock
   data-product-id={product.id}
 >
   <p data-translate="never">{formatPrice(prices)}</p>
-  <Image
-    src={urlFor(featuredImage.asset).width(770).height(580).url()}
-    alt={featuredImage.alt}
-    inferSize
-    slot="image"
-  />
+  {
+    featuredImage ? (
+      <Image
+        src={urlFor(featuredImage.asset).width(770).height(580).url()}
+        alt={featuredImage.alt}
+        inferSize
+        slot="image"
+      />
+    ) : (
+      <div class="image-placeholder" slot="image">
+        <Logo />
+      </div>
+    )
+  }
   <a
     href={getProductUrl(product.id)}
     slot="actions"
@@ -53,5 +62,16 @@ const buttonLabel = outOfStock
 
   :global(.card__title) {
     margin-bottom: calc(var(--spacing) * 1);
+  }
+
+  .image-placeholder {
+    width: 100%;
+    aspect-ratio: 770 / 580;
+    background-color: var(--color-orange-100);
+    border: none;
+    color: var(--color-blue-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

@@ -6,7 +6,7 @@ import { captureEvent } from "@lib/posthogServer";
 import { sanityAPI } from "@lib/sanityAPI";
 import { orderSnapshotSchema } from "@lib/schemas/OrderSnapshot";
 import { defineAction, ActionError } from "astro:actions";
-import { getCollection } from "astro:content";
+import { getProduct } from "@lib/products";
 import {
   MAILERSEND_API_KEY,
   ORDER_ADMIN_EMAIL,
@@ -18,7 +18,7 @@ import { z } from "astro/zod";
 export const checkout = defineAction({
   accept: "form",
   input: z.object({
-    pickupDate: z.string().date(),
+    pickupDate: z.iso.date(),
     name: z.string(),
     email: z.string().email(),
     phone: z.string(),
@@ -29,9 +29,7 @@ export const checkout = defineAction({
   handler: async (input, context) => {
     const { pickupDate, name, email, phone, message, idempotencyKey } = input;
 
-    const products = await getCollection("products");
-    const productIds = products.map((product) => product.id);
-    const cart = getCart(context.cookies, productIds);
+    const cart = getCart(context.cookies);
 
     if (cart.items.length === 0) {
       throw new ActionError({
@@ -40,32 +38,38 @@ export const checkout = defineAction({
       });
     }
 
-    const cartItems = cart.items.map((item) => {
-      const collectionEntry = products.find(({ id }) => id === item.productId);
-      if (!collectionEntry) {
-        throw new ActionError({
-          code: "BAD_REQUEST",
-          message: `Hittade ingen produkt med ID ${item.productId}`,
-        });
-      }
+    const resolved = await Promise.all(
+      cart.items.map(async (item) => {
+        const entry = await getProduct(item.productId);
+        if (!entry) return null;
 
-      const product = collectionEntry.data;
-      const variant = product.variants.find(
-        ({ price }) => item.price === price,
-      );
-      if (!variant) {
-        throw new ActionError({
-          code: "BAD_REQUEST",
-          message: `Hittade ingen variant med pris ${item.price}`,
-        });
-      }
+        const product = entry.data;
+        if (product.maxQuantityPerOrder === 0) return null;
 
-      return {
-        ...item,
-        product,
-        variant,
-      };
-    });
+        const variant = product.variants.find(({ price }) => item.price === price);
+        if (!variant) return null;
+
+        const qty =
+          product.maxQuantityPerOrder !== null
+            ? Math.min(item.qty, product.maxQuantityPerOrder)
+            : item.qty;
+
+        return { ...item, qty, product, variant };
+      }),
+    );
+
+    const cartItems = resolved.filter((item) => item !== null);
+    const cleanedCart = {
+      items: cartItems.map(({ productId, price, qty }) => ({ productId, price, qty })),
+    };
+    setCart(context.cookies, cleanedCart);
+
+    if (cartItems.length === 0) {
+      throw new ActionError({
+        code: "BAD_REQUEST",
+        message: "Kundvagnen är tom",
+      });
+    }
 
     const availablePickupDates = await getPickupDatesForProducts(
       cartItems.map((item) => item.product),
@@ -77,7 +81,7 @@ export const checkout = defineAction({
       });
     }
 
-    const totals = getCartTotal(cart);
+    const totals = getCartTotal(cleanedCart);
     const orderSnapshot = orderSnapshotSchema.parse({
       customer: {
         name,

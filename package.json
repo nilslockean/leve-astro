@@ -15,14 +15,14 @@
     "watch": "vitest"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/netlify": "^6.6.4",
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/mdx": "^6.0.1",
+    "@astrojs/netlify": "^7.0.12",
+    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/dm-sans": "^5.2.8",
-    "@sanity/astro": "^3.2.11",
+    "@sanity/astro": "^3.4.0",
     "@sanity/client": "^7.15.0",
     "@tailwindcss/vite": "^4.2.0",
-    "astro": "^5.17.1",
+    "astro": "^6.4.3",
     "astro-portabletext": "^0.13.0",
     "clsx": "^2.1.1",
     "mailersend": "^2.6.0",
@@ -48,7 +48,7 @@
     "vitest": "^4.0.18"
   },
   "overrides": {
-    "zod": "3.24.4",
-    "zod-to-json-schema": "3.24.6"
+    "zod": "4.4.3",
+    "zod-to-json-schema": "3.25.2"
   }
 }

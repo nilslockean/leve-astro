@@ -1,6 +1,6 @@
 import { getCart, setCart, updateCart as updateCartInStore } from "@lib/cart";
 import { defineAction, ActionError } from "astro:actions";
-import { getEntry } from "astro:content";
+import { getProduct } from "@lib/products";
 import { z } from "astro/zod";
 import type { ActionSuccess } from "./types";
 
@@ -13,7 +13,7 @@ export const updateCart = defineAction({
   }),
   handler: async (input, context): Promise<ActionSuccess> => {
     const { productId, price, qty } = input;
-    const entry = await getEntry("products", productId);
+    const entry = await getProduct(productId);
 
     if (!entry) {
       throw new ActionError({

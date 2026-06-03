@@ -133,3 +133,44 @@ describe("SanityAPI", () => {
     );
   });
 });
+
+const MOCK_PRODUCT = {
+  id: "test-product",
+  title: "Test Product",
+  variants: [{ id: "v1", price: 100, description: "Variant 1" }],
+  images: [{ asset: { _ref: "image-ref" }, alt: "Test image" }],
+  content: [],
+  maxQuantityPerOrder: 5,
+  pickupDates: null,
+  pickupDateRangeStart: null,
+  pickupDateRangeEnd: null,
+};
+
+describe("getProducts", () => {
+  test("returns parsed products", async () => {
+    sanityClient.returnData = [MOCK_PRODUCT];
+    const result = await api.getProducts();
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ id: "test-product", title: "Test Product" });
+  });
+
+  test("returns empty array when no products", async () => {
+    sanityClient.returnData = [];
+    const result = await api.getProducts();
+    expect(result).toEqual([]);
+  });
+});
+
+describe("getProduct", () => {
+  test("returns parsed product when found", async () => {
+    sanityClient.returnData = MOCK_PRODUCT;
+    const result = await api.getProduct("test-product");
+    expect(result).toMatchObject({ id: "test-product", title: "Test Product" });
+  });
+
+  test("returns null when product not found", async () => {
+    sanityClient.returnData = null;
+    const result = await api.getProduct("nonexistent");
+    expect(result).toBeNull();
+  });
+});

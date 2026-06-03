@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Cart from "@components/Cart/index.astro";
 import { getCart, getCartTotal, getCartContents } from "@lib/cart";
 import { ENABLE_STOREFRONT } from "astro:env/server";
-import { getCollection } from "astro:content";
+import { getProducts } from "@lib/products";
 import { captureEvent } from "@lib/posthogServer";
 import { getVariantDescription } from "@lib/variantDescription";
 import { getPickupDatesForProducts } from "@lib/pickupDates";
@@ -15,7 +15,7 @@ if (!ENABLE_STOREFRONT) {
 }
 
 const cart = getCart(Astro.cookies);
-const products = await getCollection("products");
+const products = await getProducts();
 const cartContents = getCartContents(cart, products);
 const cartTotal = getCartTotal(cart);
 const availablePickupDates = await getPickupDatesForProducts(
