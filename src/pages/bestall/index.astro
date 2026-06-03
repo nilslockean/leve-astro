@@ -19,7 +19,6 @@ if (!ENABLE_STOREFRONT) {
 }
 
 const productEntries = await getProducts();
-console.log({ productEntries });
 const pickupDateMin = addDays(PICKUP_DATE_MIN_OFFSET);
 const pickupDateMax = addDays(PICKUP_DATE_MAX_OFFSET);
 const defaultPickupDates = await sanityAPI.getOpenDaysInRange(
