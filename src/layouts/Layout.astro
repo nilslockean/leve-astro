@@ -26,6 +26,7 @@ import { IconName } from "@lib/enums/IconName";
 import MobileHeader from "@components/MobileHeader.astro";
 import type { ImageMetadata } from "astro";
 import "@fontsource-variable/dm-sans";
+import MailerLiteScript from "@components/MailerLiteScript.astro";
 
 interface Props {
   title: string;
@@ -105,7 +106,7 @@ const optimizedOgImage = await getImage({
     }
     {ENABLE_VIEW_TRANSITIONS && <ClientRouter />}
     {ENABLE_POSTHOG && <Posthog />}
-
+    <MailerLiteScript />
     <slot name="head" />
   </head>
   <body>
@@ -151,11 +152,15 @@ const optimizedOgImage = await getImage({
         </div>
         <div>
           <p class="h4 mb-4">Öppettider</p>
-          <OpeningHoursServerIsland server:defer irregularLimit={0} consolidated>
+          <OpeningHoursServerIsland
+            server:defer
+            irregularLimit={0}
+            consolidated
+          >
             <p class="mt-4" slot="has-irregular">
               <a href="/kontakt#oppettider">Se avvikande öppettider</a>
             </p>
-            <span slot="fallback" />
+            <span slot="fallback"></span>
           </OpeningHoursServerIsland>
         </div>
         <div>
