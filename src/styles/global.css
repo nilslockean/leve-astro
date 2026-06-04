@@ -415,7 +415,6 @@ td p {
 
 .card img {
   width: 100%;
-  max-width: var(--container-lg);
 }
 
 .card--transparent img {
@@ -437,6 +436,16 @@ td p {
 .card--stacked .card__body {
   flex-direction: column;
   align-items: start;
+}
+.card--padded {
+  border: var(--border-width) var(--border-style);
+  background: var(--color-surface-light);
+}
+.card--padded .card__body {
+  padding: calc(var(--spacing) * 4);
+}
+.card--padded img {
+  border: none;
 }
 
 .card__content {
