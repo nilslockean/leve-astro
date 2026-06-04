@@ -151,7 +151,10 @@ const optimizedOgImage = await getImage({
         </div>
         <div>
           <p class="h4 mb-4">Öppettider</p>
-          <OpeningHoursServerIsland server:defer>
+          <OpeningHoursServerIsland server:defer irregularLimit={0} consolidated>
+            <p class="mt-4" slot="has-irregular">
+              <a href="/kontakt#oppettider">Se avvikande öppettider</a>
+            </p>
             <span slot="fallback" />
           </OpeningHoursServerIsland>
         </div>
