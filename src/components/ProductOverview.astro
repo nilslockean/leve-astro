@@ -24,12 +24,17 @@ const { products, class: className, ...rest } = Astro.props;
     ))
   }
 
-  <Card linked title="Fredagsmunk" description="Ny smak varje vecka" stacked>
+  <Card
+    padded
+    linked
+    title="Fredagsmunk"
+    description="Ny smak varje vecka"
+    stacked
+  >
     <Image
       src={donutImage}
       alt="Fredagsmunk med rabarber"
       width={770}
-      height={580}
       slot="image"
     />
     <a href="/bestall/fredagsmunk" slot="actions" class="btn btn--small"
