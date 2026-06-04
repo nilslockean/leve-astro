@@ -6,8 +6,8 @@ import { SanityAPI } from "./SanityAPI";
 class MockSanityClient implements ISanityClient {
   public returnData: unknown = {};
 
-  public async fetch(): Promise<unknown> {
-    return this.returnData;
+  public async fetch<T>(): Promise<T> {
+    return this.returnData as T;
   }
 }
 const sanityClient = new MockSanityClient();

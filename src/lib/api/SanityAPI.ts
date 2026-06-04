@@ -165,7 +165,8 @@ export class SanityAPI {
 
   public async getOpenDaysInRange(start: string, end: string) {
     const datesInRange = getDatesInRange(start, end);
-    const openingHours = await this.getOpeningHours();
+    const openingHours = await this.getOpeningHoursEntry("default");
+    if (!openingHours) return [];
     const closedWeekdays = Object.values(openingHours.days)
       .filter(({ closed }) => closed)
       .map(({ day }) => day);
