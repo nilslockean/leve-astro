@@ -2,12 +2,26 @@
 import type { HTMLAttributes } from "astro/types";
 import { capitalize } from "@lib/stringUtils";
 import { formatDate } from "@lib/dateUtils";
+import { getDefaultOpeningHours } from "@lib/openingHours";
+import { getOpeningHoursForDate } from "@lib/openingHoursUtils";
+
 interface Props extends HTMLAttributes<"fieldset"> {
   availablePickupDates: string[];
   legend?: string;
 }
 
 const { availablePickupDates, legend, ...rest } = Astro.props;
+
+const openingHours = await getDefaultOpeningHours();
+
+const hoursMap: Record<string, string> = {};
+for (const dateStr of availablePickupDates) {
+  const { closed, time } = getOpeningHoursForDate(dateStr, openingHours);
+  if (!closed && time) hoursMap[dateStr] = time;
+}
+
+const autoSelectedDate =
+  availablePickupDates.length === 1 ? availablePickupDates[0] : "";
 ---
 
 <fieldset {...rest}>
@@ -32,4 +46,19 @@ const { availablePickupDates, legend, ...rest } = Astro.props;
       ))
     }
   </select>
+  <small id="pickupDateHint"></small>
 </fieldset>
+
+<script is:inline define:vars={{ hoursMap, autoSelectedDate }}>
+  const hint = document.getElementById("pickupDateHint");
+  const select = document.getElementById("pickupDate");
+
+  function updateHint(dateStr) {
+    if (!hint) return;
+    hint.textContent =
+      dateStr && hoursMap[dateStr] ? `Öppet ${hoursMap[dateStr]}` : "";
+  }
+
+  select?.addEventListener("change", (e) => updateHint(e.target.value));
+  updateHint(autoSelectedDate);
+</script>

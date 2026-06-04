@@ -1,5 +1,44 @@
 import type { OpeningHours } from "./schemas/OpeningHoursSchema";
 
+export type DayOpeningHours = {
+  closed: boolean;
+  irregular: boolean;
+  time?: string;
+  name?: string;
+};
+
+const DAY_KEYS: (keyof OpeningHours["days"])[] = [
+  "sun",
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat",
+];
+
+export function getOpeningHoursForDate(
+  dateStr: string,
+  openingHours: OpeningHours,
+): DayOpeningHours {
+  const irregular = openingHours.irregular?.find((i) => i.date === dateStr);
+  if (irregular) {
+    return {
+      closed: irregular.closed ?? false,
+      irregular: true,
+      time: irregular.time ?? undefined,
+      name: irregular.name ?? undefined,
+    };
+  }
+  const dayKey = DAY_KEYS[new Date(dateStr + "T00:00:00Z").getUTCDay()];
+  const day = openingHours.days[dayKey];
+  return {
+    closed: day.closed ?? false,
+    irregular: false,
+    time: day.time ?? undefined,
+  };
+}
+
 type ConsolidatedHour = {
   from: number;
   to: number;
@@ -13,7 +52,7 @@ export function consolidateOpeningHours(days: OpeningHours["days"]) {
 
   // Sort according to that order
   const sortedDays = Object.values(days).sort(
-    (a, b) => weekOrder.indexOf(a.day) - weekOrder.indexOf(b.day)
+    (a, b) => weekOrder.indexOf(a.day) - weekOrder.indexOf(b.day),
   );
 
   const consolidated: ConsolidatedHour[] = [];
