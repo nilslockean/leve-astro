@@ -15,7 +15,7 @@ const { products, class: className, ...rest } = Astro.props;
 
 <div
   {...rest}
-  class:list={["grid md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-16", className]}
+  class:list={["product-overview md:columns-2 lg:columns-3", className]}
 >
   {
     products.map(({ product, availablePickupDates }) => (
@@ -41,3 +41,14 @@ const { products, class: className, ...rest } = Astro.props;
     >
   </Card>
 </div>
+
+<style>
+  .product-overview {
+    column-gap: calc(var(--spacing) * 8);
+  }
+
+  .product-overview :global(.card) {
+    break-inside: avoid;
+    margin-bottom: calc(var(--spacing) * 8);
+  }
+</style>

@@ -415,7 +415,6 @@ td p {
 
 .card img {
   width: 100%;
-  max-width: var(--container-lg);
 }
 
 .card--transparent img {
