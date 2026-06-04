@@ -24,6 +24,7 @@ describe("getOpeningHoursForDate", () => {
   test("returns time for a regular open day", () => {
     // 2026-06-08 is a Monday
     expect(getOpeningHoursForDate("2026-06-08", baseOpeningHours)).toEqual({
+      closed: false,
       irregular: false,
       time: "10:00-18:00",
     });
@@ -32,6 +33,7 @@ describe("getOpeningHoursForDate", () => {
   test("returns different time for Saturday", () => {
     // 2026-06-06 is a Saturday
     expect(getOpeningHoursForDate("2026-06-06", baseOpeningHours)).toEqual({
+      closed: false,
       irregular: false,
       time: "10:00-15:00",
     });
@@ -51,6 +53,7 @@ describe("getOpeningHoursForDate", () => {
       irregular: [{ date: "2026-06-08", time: "12:00-16:00", name: "Kortdag" }],
     };
     expect(getOpeningHoursForDate("2026-06-08", openingHours)).toEqual({
+      closed: false,
       irregular: true,
       time: "12:00-16:00",
       name: "Kortdag",
@@ -84,6 +87,7 @@ describe("getOpeningHoursForDate", () => {
       irregular: [{ date: "2026-06-09", closed: true }],
     };
     expect(getOpeningHoursForDate("2026-06-08", openingHours)).toEqual({
+      closed: false,
       irregular: false,
       time: "10:00-18:00",
     });
