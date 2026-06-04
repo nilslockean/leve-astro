@@ -1,0 +1,22 @@
+---
+import { getDefaultOpeningHours } from "@lib/openingHours";
+import OpeningHours from "./OpeningHours.astro";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  irregularLimit?: number;
+  consolidated?: boolean;
+}
+
+const { irregularLimit, consolidated, class: className } = Astro.props;
+const openingHours = await getDefaultOpeningHours();
+---
+
+<OpeningHours
+  data={openingHours}
+  {irregularLimit}
+  {consolidated}
+  class={className}
+>
+  <slot name="has-irregular" slot="has-irregular" />
+</OpeningHours>

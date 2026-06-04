@@ -6,8 +6,8 @@ import { SanityAPI } from "./SanityAPI";
 class MockSanityClient implements ISanityClient {
   public returnData: unknown = {};
 
-  public async fetch(): Promise<unknown> {
-    return this.returnData;
+  public async fetch<T>(): Promise<T> {
+    return this.returnData as T;
   }
 }
 const sanityClient = new MockSanityClient();
@@ -76,8 +76,8 @@ describe("SanityAPI", () => {
 
   test("should return faq as is", async () => {
     sanityClient.returnData = [
-      { question: "Q1", answer: [] },
-      { question: "Q2", answer: [] },
+      { id: "faq-1", question: "Q1", answer: [] },
+      { id: "faq-2", question: "Q2", answer: [] },
     ];
 
     const result = await api.getFaq();
@@ -98,6 +98,7 @@ describe("SanityAPI", () => {
     api.now = new Date("2023-12-24 14:45:26");
     sanityClient.returnData = [
       {
+        id: "default",
         title,
         irregular,
         days,
@@ -105,11 +106,11 @@ describe("SanityAPI", () => {
     ];
 
     const result = await api.getOpeningHours();
-    expect(result.title).toEqual(title);
-    expect(result.days).toStrictEqual(DEFAULT_WEEKDAYS);
-    expect(result.irregular?.length).toBe(2);
-    expect(result.irregular![0].date).toEqual("2023-12-24");
-    expect(result.irregular![1].date).toEqual("2023-12-25");
+    expect(result[0].title).toEqual(title);
+    expect(result[0].days).toStrictEqual(DEFAULT_WEEKDAYS);
+    expect(result[0].irregular?.length).toBe(2);
+    expect(result[0].irregular![0].date).toEqual("2023-12-24");
+    expect(result[0].irregular![1].date).toEqual("2023-12-25");
   });
 
   test("should format format irregular dates correctly", async () => {
@@ -120,6 +121,7 @@ describe("SanityAPI", () => {
     api.now = new Date("2021-01-01");
     sanityClient.returnData = [
       {
+        id: "default",
         title,
         irregular,
         days,
@@ -127,8 +129,8 @@ describe("SanityAPI", () => {
     ];
 
     const result = await api.getOpeningHours();
-    expect(result.irregular![0].date).toEqual("2022-02-01");
-    expect(result.irregular![0].formattedDate).toEqual(
+    expect(result[0].irregular![0].date).toEqual("2022-02-01");
+    expect(result[0].irregular![0].formattedDate).toEqual(
       "Tisdag 1 februari 2022"
     );
   });
