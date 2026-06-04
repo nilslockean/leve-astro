@@ -18,6 +18,7 @@ export enum Slug {
   ADMIN = "admin",
   CART = "kundvagn",
   CHECKOUT = "kassa",
+  FARMING = "odling",
 }
 
 type SiteConfig = {
@@ -66,6 +67,7 @@ export const PageMap: Record<Slug, NavLink> = Object.freeze({
     label: "Kassa",
     path: "/kassa",
   },
+  [Slug.FARMING]: { label: "Odling", path: "/odling" },
 });
 
 const config: SiteConfig = {
@@ -80,6 +82,7 @@ const config: SiteConfig = {
       link: PageMap[Slug.ORDER_DONUT],
       areas: [NavArea.HEADER, NavArea.FOOTER],
     },
+    { link: PageMap[Slug.FARMING], areas: [NavArea.HEADER, NavArea.FOOTER] },
     { link: PageMap[Slug.CONTACT], areas: [NavArea.HEADER, NavArea.FOOTER] },
     { link: PageMap[Slug.PRIVACY_POLICY], areas: [NavArea.COLOPHON] },
     { link: PageMap[Slug.ORDER_TERMS], areas: [NavArea.COLOPHON] },
