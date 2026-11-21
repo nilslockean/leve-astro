@@ -30,6 +30,13 @@ export class SanityAPI {
     title,
     content,
     images,
+    "video": video {
+      "url": asset->url,
+      "mimeType": asset->mimeType,
+      "originalFilename": asset->originalFilename,
+    },
+    external,
+    externalUrl,
     variants[]{
       "id": id.current,
       price,

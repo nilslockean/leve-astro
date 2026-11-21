@@ -3,13 +3,17 @@ import { z } from "astro/zod";
 export const ProductSchema = z.object({
   id: z.string(),
   title: z.string(),
-  variants: z.array(
-    z.object({
-      price: z.number().min(0),
-      description: z.string(),
-      id: z.string(),
-    }),
-  ),
+  external: z.boolean().optional().nullable().default(false),
+  externalUrl: z.url().optional().nullable(),
+  variants: z
+    .array(
+      z.object({
+        price: z.number().min(0),
+        description: z.string(),
+        id: z.string(),
+      }),
+    )
+    .nullable(),
   images: z
     .array(
       z.object({
@@ -20,6 +24,14 @@ export const ProductSchema = z.object({
       }),
     )
     .min(1)
+    .nullable(),
+  video: z
+    .object({
+      url: z.url().nullable(),
+      mimeType: z.string().optional().nullable(),
+      originalFilename: z.string().optional().nullable(),
+    })
+    .optional()
     .nullable(),
   content: z.array(z.any()), // Portable text
   maxQuantityPerOrder: z.number().min(0).nullable(),

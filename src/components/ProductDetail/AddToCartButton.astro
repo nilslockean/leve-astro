@@ -25,7 +25,7 @@ const actionLabel = isOutOfStock
     ? "Ej tillgänglig"
     : "Beställ";
 const buttonLabel =
-  product.variants.length === 1
+  product.variants?.length === 1
     ? `${formatPrice([product.variants[0].price])} - ${actionLabel}`
     : actionLabel;
 const showViewCartLink = isCartFull && !isOutOfStock;
