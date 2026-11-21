@@ -25,6 +25,14 @@ export const ProductSchema = z.object({
     )
     .min(1)
     .nullable(),
+  video: z
+    .object({
+      url: z.url().nullable(),
+      mimeType: z.string().optional().nullable(),
+      originalFilename: z.string().optional().nullable(),
+    })
+    .optional()
+    .nullable(),
   content: z.array(z.any()), // Portable text
   maxQuantityPerOrder: z.number().min(0).nullable(),
   pickupDates: z.array(z.iso.date()).nullable(),

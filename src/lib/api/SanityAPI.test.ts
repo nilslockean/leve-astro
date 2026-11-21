@@ -5,8 +5,10 @@ import { SanityAPI } from "./SanityAPI";
 
 class MockSanityClient implements ISanityClient {
   public returnData: unknown = {};
+  public lastQuery?: string;
 
-  public async fetch<T>(): Promise<T> {
+  public async fetch<T>(query: string): Promise<T> {
+    this.lastQuery = query;
     return this.returnData as T;
   }
 }
@@ -51,6 +53,7 @@ const DEFAULT_WEEKDAYS = {
 
 beforeEach(() => {
   sanityClient.returnData = {};
+  sanityClient.lastQuery = undefined;
   api.now = undefined;
 });
 
@@ -131,7 +134,7 @@ describe("SanityAPI", () => {
     const result = await api.getOpeningHours();
     expect(result[0].irregular![0].date).toEqual("2022-02-01");
     expect(result[0].irregular![0].formattedDate).toEqual(
-      "Tisdag 1 februari 2022"
+      "Tisdag 1 februari 2022",
     );
   });
 });
@@ -146,6 +149,11 @@ const MOCK_PRODUCT = {
   pickupDates: null,
   pickupDateRangeStart: null,
   pickupDateRangeEnd: null,
+  video: {
+    url: "https://cdn.sanity.io/files/project/dataset/video.mp4",
+    mimeType: "video/mp4",
+    originalFilename: "product-video.mp4",
+  },
 };
 
 describe("getProducts", () => {
@@ -153,7 +161,16 @@ describe("getProducts", () => {
     sanityClient.returnData = [MOCK_PRODUCT];
     const result = await api.getProducts();
     expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({ id: "test-product", title: "Test Product" });
+    expect(result[0]).toMatchObject({
+      id: "test-product",
+      title: "Test Product",
+    });
+    expect(result[0].video).toEqual(MOCK_PRODUCT.video);
+    expect(sanityClient.lastQuery).toContain('"url": asset->url');
+    expect(sanityClient.lastQuery).toContain('"mimeType": asset->mimeType');
+    expect(sanityClient.lastQuery).toContain(
+      '"originalFilename": asset->originalFilename',
+    );
   });
 
   test("returns empty array when no products", async () => {
