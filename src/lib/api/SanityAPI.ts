@@ -105,7 +105,7 @@ export class SanityAPI {
 
   public async getProducts(): Promise<Product[]> {
     const json = await this.client.fetch(
-      `*[_type == "product"] ` + this.PRODUCT_FIELDS,
+      `*[_type == "product" && archived != true] ` + this.PRODUCT_FIELDS,
     );
     return ProductSchema.array().parse(json);
   }
