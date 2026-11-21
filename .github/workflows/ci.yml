@@ -19,7 +19,7 @@ on:
 jobs:
   lint-and-test:
     name: Lint & test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CI: true
       SANITY_DATASET: preview

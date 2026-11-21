@@ -20,11 +20,6 @@ if (!SANITY_TOKEN) {
   throw new Error("SANITY_TOKEN is not set in the environment variables");
 }
 
-console.log("Early env variables:", {
-  SANITY_DATASET,
-  SANITY_TOKEN,
-});
-
 // https://astro.build/config
 export default defineConfig({
   site: "https://bagerileve.se",
