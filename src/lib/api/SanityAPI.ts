@@ -30,6 +30,9 @@ export class SanityAPI {
     title,
     content,
     images,
+    video,
+    external,
+    externalUrl,
     variants[]{
       "id": id.current,
       price,

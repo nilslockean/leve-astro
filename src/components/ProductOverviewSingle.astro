@@ -13,7 +13,7 @@ interface Props {
 
 const { product, availablePickupDates } = Astro.props;
 const featuredImage = product.images?.[0];
-const prices = product.variants.map(({ price }) => price);
+const prices = product.variants?.map(({ price }) => price);
 const outOfStock = product.maxQuantityPerOrder === 0;
 const noPickupDatesAvailable = availablePickupDates.length === 0;
 const buttonLabel = outOfStock
@@ -28,7 +28,7 @@ const buttonLabel = outOfStock
   title={product.title}
   stacked
   padded
-  data-variants-count={product.variants.length}
+  data-variants-count={product.variants?.length ?? 0}
   data-available={!outOfStock && availablePickupDates.length > 0}
   data-product-id={product.id}
 >
@@ -42,8 +42,7 @@ const buttonLabel = outOfStock
       />
     )
   }
-  <p data-translate="never">{formatPrice(prices)}</p>
-  <a
+  {prices && <p data-translate="never">{formatPrice(prices)}</p>}<a
     href={getProductUrl(product.id)}
     slot="actions"
     class="btn btn--small"

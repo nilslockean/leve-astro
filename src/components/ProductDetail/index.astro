@@ -101,23 +101,39 @@ const disabled =
 
     <!-- Aside, add to cart button, variant and date selector -->
     <div class="bg-blue-950 p-8 w-full">
-      <form method="POST" action={actions.addToCart}>
-        <input name="productId" value={product.id} class="hidden" />
+      {
+        product.external && product.externalUrl ? (
+          <form>
+            <p>Denna produkt beställer du på en annan hemsida.</p>
+            <a
+              href={product.externalUrl}
+              target="_blank"
+              class="btn btn--primary w-full text-center"
+            >
+              Till beställningen
+            </a>
+          </form>
+        ) : (
+          <form method="POST" action={actions.addToCart}>
+            <input name="productId" value={product.id} class="hidden" />
 
-        {
-          isOutOfStock ? (
-            <ProductOutOfStock {product} />
-          ) : (
-            <ProductPickupDate {product} {availablePickupDates} />
-          )
-        }
+            {isOutOfStock ? (
+              <ProductOutOfStock {product} />
+            ) : (
+              <ProductPickupDate {product} {availablePickupDates} />
+            )}
 
-        <ProductVariantSelector prices={product.variants} />
+            {product.variants && (
+              <ProductVariantSelector prices={product.variants} />
+            )}
+            {!disabled && (
+              <ProductQtySelector max={max} qtyInCart={qtyInCart} />
+            )}
 
-        {!disabled && <ProductQtySelector max={max} qtyInCart={qtyInCart} />}
-
-        <AddToCartButton {product} {availablePickupDates} {qtyInCart} />
-      </form>
+            <AddToCartButton {product} {availablePickupDates} {qtyInCart} />
+          </form>
+        )
+      }
     </div>
   </div>
 </Section>
