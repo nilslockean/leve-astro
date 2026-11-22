@@ -2,8 +2,6 @@
 import type { Product } from "@lib/schemas/Product";
 import type { HTMLAttributes } from "astro/types";
 import ProductOverviewSingle from "./ProductOverviewSingle.astro";
-import { Image } from "astro:assets";
-import Card from "./Card.astro";
 
 interface Props extends HTMLAttributes<"div"> {
   products: Array<{ product: Product; availablePickupDates: string[] }>;
