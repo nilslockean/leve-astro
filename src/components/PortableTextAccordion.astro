@@ -1,0 +1,37 @@
+---
+import { PortableText } from "astro-portabletext";
+import type { Props as PortableTextProps } from "astro-portabletext/types";
+import type { PortableTextBlock } from "@portabletext/types";
+import Accordion from "./Accordion.astro";
+
+interface AccordionNode {
+  _key: string;
+  _type: "accordion";
+  title: string;
+  content: PortableTextBlock[];
+}
+
+type Props = PortableTextProps<AccordionNode>;
+
+const { node } = Astro.props;
+const title = typeof node?.title === "string" ? node.title.trim() : "";
+const content =
+  Array.isArray(node?.content) &&
+  node.content.every(
+    (block) =>
+      typeof block === "object" &&
+      block !== null &&
+      block._type === "block" &&
+      Array.isArray(block.children),
+  )
+    ? node.content
+    : undefined;
+---
+
+{
+  title && content && content.length > 0 && (
+    <Accordion title={title}>
+      <PortableText value={content} />
+    </Accordion>
+  )
+}

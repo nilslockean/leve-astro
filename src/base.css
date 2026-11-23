@@ -113,4 +113,11 @@
   textarea {
     @apply min-h-32 resize-y;
   }
+
+  details.accordion {
+    @apply mb-4;
+    &:last-child {
+      @apply mb-0;
+    }
+  }
 }
