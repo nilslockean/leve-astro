@@ -15,6 +15,7 @@ import AddToCartButton from "./AddToCartButton.astro";
 import { actions } from "astro:actions";
 import { getCart } from "@lib/cart";
 import Card from "@components/Card.astro";
+import PortableTextAccordion from "@components/PortableTextAccordion.astro";
 
 const cart = getCart(Astro.cookies);
 const result = Astro.getActionResult(actions.addToCart);
@@ -111,7 +112,10 @@ const disabled =
         )
       }
       <div class="max-w-prose">
-        <PortableText value={product.content} />
+        <PortableText
+          value={product.content}
+          components={{ type: { accordion: PortableTextAccordion } }}
+        />
       </div>
     </div>
 
